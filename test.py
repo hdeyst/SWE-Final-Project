@@ -61,8 +61,9 @@ class GameView(arcade.View):
         if key == arcade.key.ESCAPE:
             arcade.exit()
         if key == arcade.key.R:
-            #TODO: find a way to reset the screen when the users presses "r"
-            self.clear()
+            # reset the screen when the user presses "r"
+            self.__init__()
+            self.setup()
 
 
     def on_mouse_press(self, x, y, button, key_modifiers):
