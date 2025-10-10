@@ -12,6 +12,7 @@ WINDOW_TITLE = "Tile Example"
 TILE_SCALE = 0.6
 TILE_WIDTH = 140 * TILE_SCALE
 TILE_HEIGHT = 190 * TILE_SCALE
+TILE_COLORS = ["cyan", "red", "yellow", "black"]
 
 
 class Tile(arcade.Sprite):
@@ -39,13 +40,9 @@ class GameView(arcade.View):
         self.held_tiles = []
         self.held_tiles_original_position = []
 
-        for i in range(4):
+        for i, c in enumerate(TILE_COLORS):
             for j in range(13):
-                if i == 0: color = "cyan"
-                elif i == 1: color = "red"
-                elif i == 2: color = "yellow"
-                else: color = "black"
-                tile = Tile(f"tiles/{color}_{j + 1}.png", TILE_SCALE)
+                tile = Tile(f"tiles/{c}_{j + 1}.png", TILE_SCALE)
                 tile.center_x = 0 + TILE_WIDTH * (j + 1)
                 tile.center_y = WINDOW_HEIGHT - ((i + 1) * TILE_HEIGHT)
                 self.tile_list.append(tile)
