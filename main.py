@@ -1,54 +1,91 @@
 """
-Solitaire clone.
+Basic Basic Game Board
 """
 import arcade
 
-# Screen title and size
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
-COLORS = ["BLUE", "RED", "BLACK", "YELLOW"]
+# --- Tile constants ---
+TILE_SCALE = .4
+TILE_WIDTH = 140 * TILE_SCALE
+TILE_HEIGHT = 190 * TILE_SCALE
 
-NUM_TILES = 106
-TILE_HEIGHT = SCREEN_HEIGHT // NUM_TILES
-TILE_WIDTH = SCREEN_WIDTH // NUM_TILES
+# --- Grid constants ---
+ROW_COUNT = 8
+COLUMN_COUNT = 11
+INNER_MARGIN = 5 # between cells in grid
+OUTER_MARGIN = 30 # around the outside of the grid
 
-print(TILE_WIDTH, TILE_HEIGHT)
+# --- Screen constants ---
+WINDOW_WIDTH = (TILE_WIDTH + INNER_MARGIN) * COLUMN_COUNT + OUTER_MARGIN * 2
+WINDOW_HEIGHT = (TILE_HEIGHT + INNER_MARGIN) * ROW_COUNT + OUTER_MARGIN * 2
+WINDOW_TITLE = "Rummikub Game Board!"
 
-class Tile(arcade.Sprite):
-    # scale can be used to alter the sizes of tiles eventually (?)
-    def __init__(self, color, value, scale=1):
-        self.color = color
-        self.value = value
+class Gameboard(arcade.View):
 
-        # TODO: use quinn's pretty tiles
-        self.image_file_name = f"tiles/{self.color}_{self.value}.png"
+    def __init__(self):
+        super().__init__()
 
-        super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
+        self.grid = []
+        # TODO: in the future, it would be cool if maybe a grid element
+        # was also a sprite, but an empty tile sprite? this might help w/
+        # overlapping/snapping to place
+        # also that way we can give them attributes- len, width (in case we
+        # decide to scale stuff), center, etc
+        for row in range(ROW_COUNT):
+            self.grid.append([])
+            for column in range(COLUMN_COUNT):
+                self.grid[row].append(0)
 
-# populate list of all tiles
-# def create_tile_lst():
-#
-#     all_tiles = []
-#     for num in range(13):
-#         for color in COLORS:
-#             all_tiles.append(Tile(color, num))
-#
-#     print(all_tiles)
-#
-# create_tile_lst()
+        # Set the background window
+        arcade.set_background_color(arcade.color.EMINENCE)
 
-t = Tile("blue", 1)
+    def on_draw(self):
+        """
+        Draw the game board.
+        """
+        self.clear()
 
-# set up window
-arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Testing Window")
-background_color = arcade.color.PURPLE_TAUPE
-arcade.set_background_color(background_color)
+        # Draw grid by iterating through and checking values
+        for row in range(ROW_COUNT):
+            for column in range(COLUMN_COUNT):
+                if self.grid[row][column] == 1:
+                    color = arcade.color.LAVENDER
+                else:
+                    color = arcade.color.NADESHIKO_PINK
 
-# start drawing
-arcade.start_render()
+                x = (INNER_MARGIN + TILE_WIDTH) * column + OUTER_MARGIN + TILE_WIDTH // 2
+                y = (INNER_MARGIN + TILE_HEIGHT) * row + OUTER_MARGIN + TILE_HEIGHT // 2
 
-# finish drawing
-arcade.finish_render()
+                arcade.draw_rect_filled(arcade.rect.XYWH(x, y, TILE_WIDTH, TILE_HEIGHT), color)
 
-# keep output window open
-arcade.run()
+    def on_mouse_press(self, x, y, button, modifiers):
+        # Change the x/y screen coordinates to grid coordinates
+        column = int(x // (TILE_WIDTH + INNER_MARGIN))
+        row = int(y // (TILE_HEIGHT + INNER_MARGIN))
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
+
+        # Make sure we are on-grid. It is possible to click in the upper right
+        # corner in the margin and go to a grid location that doesn't exist
+        if row < ROW_COUNT and column < COLUMN_COUNT:
+            # Flip the location between 1 and 0.
+            if self.grid[row][column] == 0:
+                self.grid[row][column] = 1
+            else:
+                self.grid[row][column] = 0
+
+
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = Gameboard()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
+if __name__ == "__main__":
+    main()

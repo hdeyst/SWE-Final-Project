@@ -45,6 +45,10 @@ class GameView(arcade.View):
                 tile = Tile(f"tiles/{c}_{j + 1}.png", TILE_SCALE)
                 tile.center_x = 0 + TILE_WIDTH * (j + 1)
                 tile.center_y = WINDOW_HEIGHT - ((i + 1) * TILE_HEIGHT)
+
+                # give the tiles color and value attributes
+                tile.color_name = c
+                tile.value = j + 1
                 self.tile_list.append(tile)
 
     def on_draw(self):
@@ -79,6 +83,9 @@ class GameView(arcade.View):
             self.held_tiles_original_position = [self.held_tiles[0].position]
             # Put on top in drawing order
             self.pull_to_top(self.held_tiles[0])
+
+            # print extra tile attributes for testing
+            print(self.held_tiles[0].value, self.held_tiles[0].color_name)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ User moves mouse """
