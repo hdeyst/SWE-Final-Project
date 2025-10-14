@@ -13,3 +13,16 @@ class Collection:
 
     def remove(self, item):
         self.tiles.remove(item)
+
+    def getValue(self):
+        sum = 0
+        for e in self.tiles:
+            sum += e.number
+        return sum
+
+    def isSet(self):
+        isSet = True
+        for e in self.tiles:
+            if e.number != self.tiles[0]:
+                isSet = False
+        return isSet
