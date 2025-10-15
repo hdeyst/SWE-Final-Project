@@ -10,6 +10,14 @@ class Tile(arcade.Sprite):
     """A single tile sprite."""
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
+        #tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)
+        split = filename.split("_")
+        color_split = split[0].split("/")
+        color = color_split[1]
+
+        number_split = split[1].split(".")
+        number = number_split[1]
+
 
 class Collection:
     def __init__(self, item, isSet): #assuming a collection will be created whenever a tile is added to the board alone
