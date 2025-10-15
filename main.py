@@ -72,6 +72,9 @@ class Gameboard(arcade.View):
             else:
                 self.grid[row][col] = 0
 
+        for row in self.grid:
+            print(row)
+
     def convert_coords(self, x, y):
         # math:
         # get the clicked x value and subtract the outer margin value to make
