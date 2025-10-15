@@ -5,19 +5,23 @@ import arcade
 
 # --- Tile constants ---
 TILE_SCALE = .4
-TILE_WIDTH = 140 * TILE_SCALE
-TILE_HEIGHT = 190 * TILE_SCALE
+# TILE_WIDTH = 140 * TILE_SCALE
+# TILE_HEIGHT = 190 * TILE_SCALE
 
 # --- Grid constants ---
-ROW_COUNT = 8
-COLUMN_COUNT = 11
+ROW_COUNT = 12
+COLUMN_COUNT = 12
 INNER_MARGIN = 5 # between cells in grid
-OUTER_MARGIN = 50 # around the outside of the grid
+OUTER_MARGIN = 30 # around the outside of the grid
 
 # --- Screen constants ---
-WINDOW_WIDTH = (TILE_WIDTH + INNER_MARGIN) * COLUMN_COUNT + OUTER_MARGIN * 2
-WINDOW_HEIGHT = (TILE_HEIGHT + INNER_MARGIN) * ROW_COUNT + OUTER_MARGIN * 2
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 400
 WINDOW_TITLE = "Rummikub Game Board!"
+
+# calculating tile dimensions based on the size of the window
+TILE_WIDTH = (WINDOW_WIDTH - OUTER_MARGIN * 2) // COLUMN_COUNT - INNER_MARGIN
+TILE_HEIGHT = (WINDOW_HEIGHT - OUTER_MARGIN * 2) // ROW_COUNT - INNER_MARGIN
 
 class Gameboard(arcade.View):
 
@@ -36,7 +40,7 @@ class Gameboard(arcade.View):
                 self.grid[row].append(0)
 
         # Set the background window
-        arcade.set_background_color(arcade.color.ASH_GREY)
+        arcade.set_background_color(arcade.color.LIGHT_CORNFLOWER_BLUE)
 
     def on_draw(self):
         """
@@ -48,9 +52,9 @@ class Gameboard(arcade.View):
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 if self.grid[row][column] == 1:
-                    color = arcade.color.DARK_IMPERIAL_BLUE
+                    color = arcade.color.LAVENDER
                 else:
-                    color = arcade.color.CEIL
+                    color = arcade.color.BONE
 
                 x = (INNER_MARGIN + TILE_WIDTH) * column + OUTER_MARGIN + TILE_WIDTH // 2
                 y = (INNER_MARGIN + TILE_HEIGHT) * row + OUTER_MARGIN + TILE_HEIGHT // 2
@@ -71,6 +75,9 @@ class Gameboard(arcade.View):
                 self.grid[row][col] = 1
             else:
                 self.grid[row][col] = 0
+        # print("grid: ", self.grid)
+        # print("hard coded width ", TILE_WIDTH)
+        # print("backwards from window width ", TILE_W)
 
     def convert_coords(self, x, y):
         # math:
