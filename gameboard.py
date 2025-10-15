@@ -8,7 +8,7 @@ class Gameboard:
         # 8 x 14 board
 
         coord_map = []
-        rows, cols = 10, 18
+        rows, cols = 10, 26
         for row in range(rows):
             for col in range(cols):
                 x_coord = utils.TILE_WIDTH / 2 + col * utils.TILE_WIDTH
