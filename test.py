@@ -5,6 +5,17 @@ import arcade
 import utils
 import gameboard
 
+# --- Window constants ---
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Tile Example"
+
+# --- Tile constants ---
+TILE_SCALE = 0.6
+TILE_WIDTH = 140 * TILE_SCALE
+TILE_HEIGHT = 190 * TILE_SCALE
+TILE_COLORS = ["cyan", "red", "yellow", "black"]
+
 
 class Tile(arcade.Sprite):
     """A single tile sprite."""
@@ -77,6 +88,7 @@ class GameView(arcade.View):
             arcade.exit()
         if key == arcade.key.R:
             #TODO: find a way to reset the screen when the users presses "r"
+            self.__init__()
             self.clear()
 
 
