@@ -2,20 +2,17 @@
 Tile Example with Arcade
 """
 import arcade
-
-# --- Window constants ---
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Tile Example"
-
-# --- Tile constants ---
-TILE_SCALE = 0.6
-TILE_WIDTH = 140 * TILE_SCALE
-TILE_HEIGHT = 190 * TILE_SCALE
+import utils
+import gameboard
 
 
 class Tile(arcade.Sprite):
     """A single tile sprite."""
+    def __init__(self, filename, scale=1):
+        super().__init__(filename, scale)
+
+class Peg(arcade.Sprite):
+    """A single peg sprite."""
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
 
@@ -30,6 +27,7 @@ class GameView(arcade.View):
         self.background_color = arcade.color.BLUE_SAPPHIRE
         # Sprite list for tiles
         self.tile_list = arcade.SpriteList()
+        self.peg_list = arcade.SpriteList()
 
         self.held_tiles = None
         self.held_tiles_original_position = None
@@ -39,21 +37,35 @@ class GameView(arcade.View):
         self.held_tiles = []
         self.held_tiles_original_position = []
 
+        board = gameboard.Gameboard()
+        for i in board.pegs:
+            peg = Peg("tiles/black_1.png", utils.TILE_SCALE)
+            peg.center_x = i[0]
+            peg.center_y = i[1]
+            self.peg_list.append(peg)
+
+
         for i in range(4):
             for j in range(13):
                 if i == 0: color = "cyan"
                 elif i == 1: color = "red"
                 elif i == 2: color = "yellow"
                 else: color = "black"
-                tile = Tile(f"tiles/{color}_{j + 1}.png", TILE_SCALE)
-                tile.center_x = 0 + TILE_WIDTH * (j + 1)
-                tile.center_y = WINDOW_HEIGHT - ((i + 1) * TILE_HEIGHT)
+                tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)
+                # Grid placement, lays all tiles out to see
+                #tile.center_x = 0 + utils.TILE_WIDTH * (j + 1)
+                #tile.center_y = utils.WINDOW_HEIGHT - ((i + 1) * utils.TILE_HEIGHT)
+
+                # Stacked tile placement, places all tiles in the top left stacked on one another
+                tile.center_x = 0 + utils.TILE_WIDTH
+                tile.center_y = utils.WINDOW_HEIGHT - utils.TILE_HEIGHT
                 self.tile_list.append(tile)
 
     def on_draw(self):
         """Render the screen."""
         self.clear()
         self.tile_list.draw()
+        self.peg_list.draw()
 
     def on_update(self, delta_time: float):
         """Game logic (not used yet)."""
@@ -101,7 +113,7 @@ class GameView(arcade.View):
 
 def main():
     """Main function."""
-    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    window = arcade.Window(utils.WINDOW_WIDTH, utils.WINDOW_HEIGHT, utils.WINDOW_TITLE)
     game = GameView()
     game.setup()
     window.show_view(game)
