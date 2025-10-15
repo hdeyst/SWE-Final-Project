@@ -59,18 +59,29 @@ class Gameboard(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         # Change the x/y screen coordinates to grid coordinates
-        column = int(x // (TILE_WIDTH + INNER_MARGIN))
-        row = int(y // (TILE_HEIGHT + INNER_MARGIN))
-        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
+        col, row = self.convert_coords(x, y)
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {col})")
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
-        if row < ROW_COUNT and column < COLUMN_COUNT:
+        if ((row < ROW_COUNT and row >= 0) and
+                (col < COLUMN_COUNT and col >= 0)):
             # Flip the location between 1 and 0.
-            if self.grid[row][column] == 0:
-                self.grid[row][column] = 1
+            if self.grid[row][col] == 0:
+                self.grid[row][col] = 1
             else:
-                self.grid[row][column] = 0
+                self.grid[row][col] = 0
+
+    def convert_coords(self, x, y):
+        # math:
+        # get the clicked x value and subtract the outer margin value to make
+        # sure you don't go over total window size.
+        # floor divide that value by the size of the tile while accounting for
+        # the margin. Do similar thing for y
+        column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
+        row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
+
+        return column, row
 
 
 def main():
