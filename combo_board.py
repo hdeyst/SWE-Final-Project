@@ -53,6 +53,9 @@ class GameView(arcade.View):
 
                 sprite.center_x = x
                 sprite.center_y = y
+                # add field for if there is a tile on the specified square
+                sprite.occupied = False
+
                 self.peg_sprite_list.append(sprite)
                 self.peg_sprites[row].append(sprite)
 
@@ -125,13 +128,14 @@ class GameView(arcade.View):
         reset_position = True
 
         # See if we are in contact with the closest pile
-        if arcade.check_for_collision(self.held_tiles[0], peg):
+        if arcade.check_for_collision(self.held_tiles[0], peg) and not peg.occupied:
             # For each held tile, move it to the pile we dropped on
             for i, dropped_card in enumerate(self.held_tiles):
                 # Move tiles to proper position
                 dropped_card.position = peg.center_x, peg.center_y
                 # TODO: mark that peg as filled
                 #  (right now just changing its color)
+                peg.occupied = True
                 self.highlight_spot(peg.center_x, peg.center_y)
 
             # Success, don't reset position of tiles
@@ -163,6 +167,11 @@ class GameView(arcade.View):
             self.held_tiles_original_position = [self.held_tiles[0].position]
             # Put on top in drawing order
             self.pull_to_top(self.held_tiles[0])
+
+            # if the tile was on the board, toggle the background color of square
+            # self.highlight_spot(x, y)
+            # peg = arcade.get_sprites_at_point((x, y), self.peg_sprite_list)
+            # peg.occupied = True
 
     # function to highlight a grid position based on given (x, y) coords
     def highlight_spot(self, x, y):
