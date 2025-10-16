@@ -112,10 +112,6 @@ class GameView(arcade.View):
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ User moves mouse """
-        # highlight corresponding grid place if holding tile
-        # if len(self.held_tiles) != 0:
-        #     self.highlight_spot(x, y)
-
         for tile in self.held_tiles:
             tile.center_x += dx
             tile.center_y += dy
@@ -134,6 +130,10 @@ class GameView(arcade.View):
             for i, dropped_card in enumerate(self.held_tiles):
                 # Move tiles to proper position
                 dropped_card.position = peg.center_x, peg.center_y
+                # TODO: mark that peg as filled
+                #  (right now just changing its color)
+                self.highlight_spot(peg.center_x, peg.center_y)
+
             # Success, don't reset position of tiles
             reset_position = False
 
@@ -166,9 +166,7 @@ class GameView(arcade.View):
 
     # function to highlight a grid position based on given (x, y) coords
     def highlight_spot(self, x, y):
-        # Convert the clicked mouse position into grid coordinates
-        column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
-        row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
+        column, row = self.mouse_coords_to_grid(x, y)
 
         print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
 
@@ -182,6 +180,14 @@ class GameView(arcade.View):
             self.peg_sprites[row][column].color = arcade.color.LAVENDER_BLUE
         else:
             self.peg_sprites[row][column].color = arcade.color.CEIL
+
+    def mouse_coords_to_grid(self, x, y):
+        # Convert the clicked mouse position into grid coordinates
+        column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
+        row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
+
+        return column, row
+
 
 def main():
     """ Main function """
