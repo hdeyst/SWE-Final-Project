@@ -1,36 +1,27 @@
-"""
-Array Backed Grid Shown By Sprites
-
-Show how to use a two-dimensional list/array to back the display of a
-grid on-screen.
-
-This version makes a grid of sprites instead of numbers. Instead of
-iterating all the cells when the grid changes we simply just
-swap the color of the selected sprite. This means this version
-can handle very large grids and still have the same performance.
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.array_backed_grid_sprites_2
-"""
 import arcade
+import gameboard
 
-# Set how many rows and columns we will have
-ROW_COUNT = 15
-COLUMN_COUNT = 15
+# --- Tile constants ---
+TILE_SCALE = .4
+TILE_WIDTH = 140 * TILE_SCALE
+TILE_HEIGHT = 190 * TILE_SCALE
 
-# This sets the WIDTH and HEIGHT of each grid location
-WIDTH = 30
-HEIGHT = 30
+# --- Grid constants ---
+ROW_COUNT = 8
+COLUMN_COUNT = 12
+INNER_MARGIN = 5 # between cells in grid
+OUTER_MARGIN = 50 # around the outside of the grid
 
-# This sets the margin between each cell
-# and on the edges of the screen.
-INNER_MARGIN = 5
-OUTER_MARGIN = 50
+# --- Screen constants ---
+WINDOW_WIDTH = (TILE_WIDTH + INNER_MARGIN) * COLUMN_COUNT + OUTER_MARGIN * 2
+WINDOW_HEIGHT = (TILE_HEIGHT + INNER_MARGIN) * ROW_COUNT + OUTER_MARGIN * 2
+WINDOW_TITLE = "Rummikub Game Board!"
 
-# Do the math to figure out our screen dimensions
-WINDOW_WIDTH = (WIDTH + INNER_MARGIN) * COLUMN_COUNT + INNER_MARGIN + OUTER_MARGIN * 2
-WINDOW_HEIGHT = (HEIGHT + INNER_MARGIN) * ROW_COUNT + INNER_MARGIN + OUTER_MARGIN * 2
-WINDOW_TITLE = "Array Backed Grid Buffered Example"
+
+class Peg(arcade.Sprite):
+    """A single peg sprite."""
+    def __init__(self, filename, scale=1):
+        super().__init__(filename, scale)
 
 
 class GameView(arcade.View):
@@ -49,23 +40,34 @@ class GameView(arcade.View):
 
         # One dimensional list of all sprites in the two-dimensional sprite list
         self.grid_sprite_list = arcade.SpriteList()
+        self.grid_tile_list = arcade.SpriteList()
 
         # This will be a two-dimensional grid of sprites to mirror the two
         # dimensional grid of numbers. This points to the SAME sprites that are
         # in grid_sprite_list, just in a 2d manner.
         self.grid_sprites = []
+        self.grid_tiles = []
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
             self.grid_sprites.append([])
+            self.grid_tiles.append([])
             for column in range(COLUMN_COUNT):
-                x = column * (WIDTH + INNER_MARGIN) + (WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
-                y = row * (HEIGHT + INNER_MARGIN) + (HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN
-                sprite = arcade.SpriteSolidColor(WIDTH, HEIGHT, color=arcade.color.CEIL)
+                x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
+                y = row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN
+
+                peg = Peg("peg.png")
+                sprite = arcade.SpriteSolidColor(TILE_WIDTH, TILE_HEIGHT, color=arcade.color.CEIL)
+
+                peg.center_x = x
+                peg.center_y = y
                 sprite.center_x = x
                 sprite.center_y = y
                 self.grid_sprite_list.append(sprite)
                 self.grid_sprites[row].append(sprite)
+
+                self.grid_tile_list.append(peg)
+                self.grid_tiles[row].append(peg)
 
     def on_draw(self):
         """
@@ -76,6 +78,7 @@ class GameView(arcade.View):
 
         # Batch draw the grid sprites
         self.grid_sprite_list.draw()
+        self.grid_tile_list.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -83,8 +86,8 @@ class GameView(arcade.View):
         """
 
         # Convert the clicked mouse position into grid coordinates
-        column = int((x - OUTER_MARGIN) // (WIDTH + INNER_MARGIN))
-        row = int((y - OUTER_MARGIN) // (HEIGHT + INNER_MARGIN))
+        column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
+        row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
 
         print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
 
