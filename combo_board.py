@@ -17,13 +17,6 @@ WINDOW_WIDTH = (TILE_WIDTH + INNER_MARGIN) * COLUMN_COUNT + OUTER_MARGIN * 2
 WINDOW_HEIGHT = (TILE_HEIGHT + INNER_MARGIN) * ROW_COUNT + OUTER_MARGIN * 2
 WINDOW_TITLE = "Rummikub Game Board!"
 
-
-class Peg(arcade.Sprite):
-    """A single peg sprite."""
-    def __init__(self, filename, scale=1):
-        super().__init__(filename, scale)
-
-
 class GameView(arcade.View):
     """
     Main application class.
@@ -40,34 +33,26 @@ class GameView(arcade.View):
 
         # One dimensional list of all sprites in the two-dimensional sprite list
         self.grid_sprite_list = arcade.SpriteList()
-        self.grid_tile_list = arcade.SpriteList()
 
         # This will be a two-dimensional grid of sprites to mirror the two
         # dimensional grid of numbers. This points to the SAME sprites that are
         # in grid_sprite_list, just in a 2d manner.
         self.grid_sprites = []
-        self.grid_tiles = []
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
             self.grid_sprites.append([])
-            self.grid_tiles.append([])
             for column in range(COLUMN_COUNT):
                 x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
                 y = row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN
 
-                peg = Peg("peg.png")
                 sprite = arcade.SpriteSolidColor(TILE_WIDTH, TILE_HEIGHT, color=arcade.color.CEIL)
 
-                peg.center_x = x
-                peg.center_y = y
                 sprite.center_x = x
                 sprite.center_y = y
                 self.grid_sprite_list.append(sprite)
                 self.grid_sprites[row].append(sprite)
 
-                self.grid_tile_list.append(peg)
-                self.grid_tiles[row].append(peg)
 
     def on_draw(self):
         """
@@ -78,7 +63,8 @@ class GameView(arcade.View):
 
         # Batch draw the grid sprites
         self.grid_sprite_list.draw()
-        self.grid_tile_list.draw()
+        for s in self.grid_sprite_list:
+            arcade.draw_point(s.center_x, s.center_y, arcade.color.BLACK, size=10)
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -93,7 +79,7 @@ class GameView(arcade.View):
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
-        if row >= ROW_COUNT or column >= COLUMN_COUNT:
+        if row >= ROW_COUNT or row < 0 or column >= COLUMN_COUNT or column < 0:
             # Simply return from this method since nothing needs updating
             return
 
