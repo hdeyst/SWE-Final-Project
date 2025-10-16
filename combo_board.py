@@ -1,5 +1,4 @@
 import arcade
-import gameboard
 
 # --- Tile constants ---
 TILE_SCALE = .4
@@ -28,6 +27,7 @@ class GameView(arcade.View):
     """
     # TODO: convert this into a gameboard class
     # TODO: snap tiles to peg center
+    # TODO: organize code into nicer functions
 
     def __init__(self):
         """
@@ -107,17 +107,74 @@ class GameView(arcade.View):
         """
         Called when the user presses a mouse button.
         """
+        # get any tiles that might be selected
+        self.pick_up_tile(x, y)
 
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+        """ User moves mouse """
+        # highlight corresponding grid place if holding tile
+        # if len(self.held_tiles) != 0:
+        #     self.highlight_spot(x, y)
+
+        for tile in self.held_tiles:
+            tile.center_x += dx
+            tile.center_y += dy
+
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+        """ Called when the user presses a mouse button. """
+        if len(self.held_tiles) == 0:
+            return
+
+        peg, distance = arcade.get_closest_sprite(self.held_tiles[0], self.peg_sprite_list)
+        reset_position = True
+
+        # See if we are in contact with the closest pile
+        if arcade.check_for_collision(self.held_tiles[0], peg):
+            # For each held tile, move it to the pile we dropped on
+            for i, dropped_card in enumerate(self.held_tiles):
+                # Move tiles to proper position
+                dropped_card.position = peg.center_x, peg.center_y
+            # Success, don't reset position of tiles
+            reset_position = False
+
+        if reset_position:
+            # Where-ever we were dropped, it wasn't valid. Reset each tile's position
+            # to its original spot.
+            for tile_index, card in enumerate(self.held_tiles):
+                card.position = self.held_tiles_original_position[tile_index]
+
+
+        self.held_tiles = []
+
+    def pull_to_top(self, tile: arcade.Sprite):
+        """ Pull tile to top of rendering order (last to render, looks on-top) """
+        self.tile_list.remove(tile)
+        self.tile_list.append(tile)
+
+    def pick_up_tile(self, x, y):
+        tiles = arcade.get_sprites_at_point((x, y), self.tile_list)
+
+        if len(tiles) > 0:
+            primary_tile = tiles[-1]
+
+            # All other cases, grab the tile we are clicking on
+            self.held_tiles = [primary_tile]
+            # Save the position
+            self.held_tiles_original_position = [self.held_tiles[0].position]
+            # Put on top in drawing order
+            self.pull_to_top(self.held_tiles[0])
+
+    # function to highlight a grid position based on given (x, y) coords
+    def highlight_spot(self, x, y):
         # Convert the clicked mouse position into grid coordinates
         column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
         row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
 
         print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
 
-        # Make sure we are on-grid. It is possible to click in the upper right
-        # corner in the margin and go to a grid location that doesn't exist
+        # check if user clicked in the grid or in the margins
         if row >= ROW_COUNT or row < 0 or column >= COLUMN_COUNT or column < 0:
-            # Simply return from this method since nothing needs updating
+            # nothing needs to happen
             return
 
         # Flip the color of the sprite
@@ -125,7 +182,6 @@ class GameView(arcade.View):
             self.peg_sprites[row][column].color = arcade.color.LAVENDER_BLUE
         else:
             self.peg_sprites[row][column].color = arcade.color.CEIL
-
 
 def main():
     """ Main function """
