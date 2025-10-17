@@ -1,5 +1,5 @@
 """
-Defines 3 different types: Peg, Tile, and Grid
+Defines 5 different types: Peg, Tile, Grid, and Dock
 - Pegs are sprites representing the positions that a tile
   can be on the grid
 - Tiles have color and value fields, represent game pieces
@@ -65,3 +65,24 @@ class Grid():
     def get_nearest_peg(self, x, y):
         nearest_peg = arcade.get_sprites_at_point((x, y), self.peg_sprite_list)
         return nearest_peg[0]
+
+class Dock():
+    def __init__(self, board):
+        self.board = board
+        self.width = WINDOW_WIDTH
+
+        for row in range(1):
+            board.peg_sprites.append([])
+            for column in range(20):
+                x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
+                y = (row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
+
+                # create peg objects
+                peg = Peg(TILE_WIDTH, TILE_HEIGHT, color=arcade.color.RED)
+
+                peg.center_x = x
+                peg.center_y = y
+
+                board.peg_sprite_list.append(peg)
+                board.peg_sprites[row].append(peg)
+

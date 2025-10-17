@@ -12,6 +12,7 @@ class GameView(arcade.View):
 
         # create grid of gameboard
         self.grid = Grid()
+        self.dock = Dock(self.grid)
 
         # create list of tile sprites (which will use quinn's tiles)
         self.tile_list = arcade.SpriteList()
