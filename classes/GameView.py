@@ -1,3 +1,4 @@
+import arcade
 from classes.gridboard import *
 from classes.Tile import Tile
 

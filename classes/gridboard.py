@@ -43,7 +43,7 @@ class Grid():
             self.peg_sprites.append([])
             for column in range(COLUMN_COUNT):
                 x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
-                y = row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN
+                y = DOCK_OFFSET + (row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
 
                 # create peg objects
                 peg = Peg(TILE_WIDTH, TILE_HEIGHT, color=arcade.color.CEIL)
