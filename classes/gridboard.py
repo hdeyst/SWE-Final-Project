@@ -6,6 +6,7 @@ Defines 5 different types: Peg, Tile, Grid, and Dock
 - Grid creates the actual grid section of the game board,
   consisting of a variety of peg objects
 """
+import arcade.color
 from utils import *
 
 class Peg(arcade.SpriteSolidColor):
@@ -19,12 +20,13 @@ class Peg(arcade.SpriteSolidColor):
         self.Tile = None
 
     def toggle_occupied(self):
-        if self.occupied:
-            self.occupied = False
-            self.color = arcade.color.CEIL
-        else:
-            self.occupied = True
-            self.color =arcade.color.LAVENDER_BLUE
+        if self.color == arcade.color.CEIL or self.color == arcade.color.LAVENDER_BLUE:
+            if self.occupied:
+                self.occupied = False
+                self.color = arcade.color.CEIL
+            else:
+                self.occupied = True
+                self.color =arcade.color.LAVENDER_BLUE
 
 class Grid():
     def __init__(self):
@@ -78,7 +80,7 @@ class Dock():
                 y = (row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
 
                 # create peg objects
-                peg = Peg(TILE_WIDTH, TILE_HEIGHT, color=arcade.color.RED)
+                peg = Peg(TILE_WIDTH, TILE_HEIGHT, color=arcade.color.COPPER)
 
                 peg.center_x = x
                 peg.center_y = y
