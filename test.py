@@ -5,6 +5,17 @@ import arcade
 import utils
 import gameboard
 
+# --- Window constants ---
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Tile Example"
+
+# --- Tile constants ---
+TILE_SCALE = 0.6
+TILE_WIDTH = 140 * TILE_SCALE
+TILE_HEIGHT = 190 * TILE_SCALE
+TILE_COLORS = ["cyan", "red", "yellow", "black"]
+
 
 class Tile(arcade.Sprite):
     """A single tile sprite."""
@@ -99,7 +110,7 @@ class GameView(arcade.View):
 
         board = gameboard.Gameboard()
         for i in board.pegs:
-            peg = Peg("tiles/black_1.png", utils.TILE_SCALE)
+            peg = Peg("peg.png", utils.TILE_SCALE)
             peg.center_x = i[0]
             peg.center_y = i[1]
             self.peg_list.append(peg)
@@ -137,6 +148,7 @@ class GameView(arcade.View):
             arcade.exit()
         if key == arcade.key.R:
             #TODO: find a way to reset the screen when the users presses "r"
+            self.__init__()
             self.clear()
 
 
@@ -164,6 +176,26 @@ class GameView(arcade.View):
         """ Called when the user presses a mouse button. """
         if len(self.held_tiles) == 0:
             return
+
+        peg, distance = arcade.get_closest_sprite(self.held_tiles[0], self.peg_list)
+        reset_position = True
+
+        # See if we are in contact with the closest pile
+        if arcade.check_for_collision(self.held_tiles[0], peg):
+            # For each held tile, move it to the pile we dropped on
+            for i, dropped_card in enumerate(self.held_tiles):
+                # Move tiles to proper position
+                dropped_card.position = peg.center_x, peg.center_y
+            # Success, don't reset position of tiles
+            reset_position = False
+
+        if reset_position:
+            # Where-ever we were dropped, it wasn't valid. Reset each tile's position
+            # to its original spot.
+            for tile_index, card in enumerate(self.held_tiles):
+                card.position = self.held_tiles_original_position[tile_index]
+
+
         self.held_tiles = []
 
     def pull_to_top(self, tile: arcade.Sprite):
