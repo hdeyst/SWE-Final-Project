@@ -110,7 +110,7 @@ class GameView(arcade.View):
 
         board = gameboard.Gameboard()
         for i in board.pegs:
-            peg = Peg("peg.png", utils.TILE_SCALE)
+            peg = Peg("../peg.png", utils.TILE_SCALE)
             peg.center_x = i[0]
             peg.center_y = i[1]
             self.peg_list.append(peg)
@@ -213,4 +213,33 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+
+    r0 = Tile(0, "red")
+    b0 = Tile(0, "blue")
+    g0 = Tile(0, "green")
+    o0 = Tile(0, "orange")
+    r1 = Tile(1, "red")
+    r2 = Tile(2, "red")
+    r3 = Tile(3, "red")
+
+    group0 = Collection(r0) #all 0s, 3 different colors
+    group0.add(g0, 1)
+    group0.add(b0, 2)
+    group0.add(o0, 3)
+
+    group1 = Collection(r0)  #all 0s, 4 different colors
+    group1.add(g0, 1)
+    group1.add(b0, 2)
+    group1.add(o0, 3)
+
+    group2 = Collection(r0)  #all reds, [0,1,2,3]
+    group2.add(r1, 1)
+    group2.add(r2, 2)
+    group2.add(r3, 3)
+
+
+    print(group0.isValid())
+    print(group1.isValid())
+    print(group2.isValid())
+

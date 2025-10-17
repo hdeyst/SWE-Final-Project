@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 
 # Output folder
-out_dir = "tiles"
+out_dir = "../tiles"
 os.makedirs(out_dir, exist_ok=True)
 
 # Tile settings

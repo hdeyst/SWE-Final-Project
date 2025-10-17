@@ -1,8 +1,5 @@
-class Tile: #for testing of collection until Tile class is complete in front end
-    def __init__(self, num, col):
-        self.number = num
-        self.color = col
-        
+import arcade
+import utils
 
 class Collection:
     def __init__(self, tile): #assuming a collection will be created whenever a tile is added to the board alone
@@ -48,39 +45,7 @@ class Collection:
                 return False
         return True
 
-
-
     def isValid(self):
         if self.set() == True or self.run() == True:
             return True
         return False
-
-#tests
-if __name__ == "__main__":
-    r0 = Tile(0, "red")
-    b0 = Tile(0, "blue")
-    g0 = Tile(0, "green")
-    o0 = Tile(0, "orange")
-    r1 = Tile(1, "red")
-    r2 = Tile(2, "red")
-    r3 = Tile(3, "red")
-
-    group0 = Collection(r0) #all 0s, 3 different colors
-    group0.add(g0, 1)
-    group0.add(b0, 2)
-    group0.add(o0, 3)
-
-    group1 = Collection(r0)  #all 0s, 4 different colors
-    group1.add(g0, 1)
-    group1.add(b0, 2)
-    group1.add(o0, 3)
-
-    group2 = Collection(r0)  #all reds, [0,1,2,3]
-    group2.add(r1, 1)
-    group2.add(r2, 2)
-    group2.add(r3, 3)
-
-
-    print(group0.isValid())
-    print(group1.isValid())
-    print(group2.isValid())

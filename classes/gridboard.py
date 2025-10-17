@@ -26,14 +26,6 @@ class Peg(arcade.SpriteSolidColor):
             self.occupied = True
             self.color =arcade.color.LAVENDER_BLUE
 
-class Tile(arcade.Sprite):
-    """A single tile sprite."""
-    def __init__(self, filename, color, value, scale=1):
-        super().__init__(filename, scale)
-        self.tile_color = color
-        self.value = value
-
-
 class Grid():
     def __init__(self):
         # TODO: change these s.t. the grid is independent of the rest of the window
