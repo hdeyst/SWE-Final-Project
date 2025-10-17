@@ -1,19 +1,30 @@
-##
-
-# --- Window constants ---
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Tile Example"
+import arcade
 
 # --- Tile constants ---
-TILE_SCALE = 0.45
-TILE_WIDTH = 100 * TILE_SCALE
-TILE_HEIGHT = 150 * TILE_SCALE
+TILE_SCALE = .4
+TILE_WIDTH = 140 * TILE_SCALE
+TILE_HEIGHT = 190 * TILE_SCALE
+COLORS = {
+    "cyan": arcade.color.CYAN,
+    "red": arcade.color.RED,
+    "yellow": arcade.color.YELLOW,
+    "black": arcade.color.BLACK,
+}
 
 # --- Board Constants ---
 INNER_MARGIN = 5
-OUTER_MARGIN = 30
+OUTER_MARGIN = 50
+DECK_HEIGHT = 75
 
+# --- Window constants ---
+# WINDOW_WIDTH = 1280
+# WINDOW_HEIGHT = 720
+# WINDOW_TITLE = "Tile Example"
 
-PEG_SPACING_X = TILE_WIDTH * 0.2   # 20% of tile width
-PEG_SPACING_Y = TILE_HEIGHT * 0.3  # 30% of tile height
+COLUMN_COUNT = 12
+ROW_COUNT = 8
+
+# --- Screen constants ---
+WINDOW_WIDTH = (TILE_WIDTH + INNER_MARGIN) * COLUMN_COUNT + OUTER_MARGIN * 2
+WINDOW_HEIGHT = (TILE_HEIGHT + INNER_MARGIN) * ROW_COUNT + OUTER_MARGIN * 2
+WINDOW_TITLE = "Rummikub Game Board!"
