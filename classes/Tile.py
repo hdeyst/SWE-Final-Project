@@ -1,6 +1,5 @@
 import arcade
 import utils
-import gameboard
 
 
 class Tile(arcade.Sprite):
@@ -18,6 +17,6 @@ class Tile(arcade.Sprite):
         self.number = int(number_split[0])
 
 if __name__ == "__main__":
-    tile = Tile(f"tiles/black_1.png", utils.TILE_SCALE)
+    tile = Tile(f"../tiles/black_1.png", utils.TILE_SCALE)
 
     print(tile.number)

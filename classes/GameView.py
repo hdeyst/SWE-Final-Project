@@ -1,4 +1,4 @@
-from gridboard import *
+from classes.gridboard import *
 
 class GameView(arcade.View):
     """A game view."""

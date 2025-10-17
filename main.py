@@ -1,5 +1,5 @@
 from utils import *
-from GameView import GameView
+from classes.GameView import GameView
 
 def main():
     """ Main function """

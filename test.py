@@ -3,7 +3,7 @@ Tile Example with Arcade
 """
 import arcade
 import utils
-import gameboard
+from classes import gameboard
 
 # --- Window constants ---
 WINDOW_WIDTH = 1280
