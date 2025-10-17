@@ -36,6 +36,9 @@ class Tile(arcade.Sprite):
 
 class Grid():
     def __init__(self):
+        # TODO: change these s.t. the grid is independent of the rest of the window
+        # I want to be able to move the grid around in the space to make room
+        # for the user dock and stuff
         self.width = WINDOW_WIDTH
         self.height = WINDOW_HEIGHT
 

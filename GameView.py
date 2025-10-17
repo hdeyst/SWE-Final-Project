@@ -105,6 +105,7 @@ class GameView(arcade.View):
             # Put on top in drawing order
             self.pull_to_top(self.held_tiles[0])
 
-        # mark the peg as available again
-        nearest_peg = self.grid.get_nearest_peg(x, y)
-        nearest_peg.toggle_occupied()
+            # mark the peg as available again
+            nearest_peg = self.grid.get_nearest_peg(x, y)
+            if nearest_peg.occupied:
+                nearest_peg.toggle_occupied()
