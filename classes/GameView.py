@@ -1,4 +1,5 @@
 from classes.gridboard import *
+from classes.Tile import Tile
 
 class GameView(arcade.View):
     """A game view."""
@@ -24,7 +25,7 @@ class GameView(arcade.View):
 
         for color in COLORS:
             for j in range(13):
-                tile = Tile(f"tiles/{color}_{j + 1}.png", color, j + 1, scale=TILE_SCALE)
+                tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
 
                 # Stacked tile placement, places all tiles in the top left stacked on one another
                 tile.center_x = deck_x_pos
