@@ -10,7 +10,7 @@ class Tile(arcade.Sprite):
         super().__init__(filename, scale)
         # tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)
         split = filename.split("_")
-        color_split = split[0].split("/")
+        color_split = split[0].split("tiles/")
         self.color = color_split[1]
 
         number_split = split[1].split(".")
