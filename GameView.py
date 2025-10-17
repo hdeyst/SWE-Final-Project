@@ -67,7 +67,7 @@ class GameView(arcade.View):
                 # Move tiles to proper position
                 dropped_card.position = peg.center_x, peg.center_y
                 # There is a tile on the peg
-                peg.occupied = True
+                peg.toggle_occupied()
 
             # Success, don't reset position of tiles
             reset_position = False
@@ -107,4 +107,4 @@ class GameView(arcade.View):
 
         # mark the peg as available again
         nearest_peg = self.grid.get_nearest_peg(x, y)
-        nearest_peg.occupied = False
+        nearest_peg.toggle_occupied()

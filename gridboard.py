@@ -18,6 +18,14 @@ class Peg(arcade.SpriteSolidColor):
         # POSSIBLE field for if a peg has a tile
         self.Tile = None
 
+    def toggle_occupied(self):
+        if self.occupied:
+            self.occupied = False
+            self.color = arcade.color.CEIL
+        else:
+            self.occupied = True
+            self.color =arcade.color.LAVENDER_BLUE
+
 class Tile(arcade.Sprite):
     """A single tile sprite."""
     def __init__(self, filename, color, value, scale=1):
