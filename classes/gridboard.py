@@ -71,7 +71,7 @@ class Dock():
         self.board = board
         self.width = WINDOW_WIDTH
 
-        for row in range(1):
+        for row in range(2):
             board.peg_sprites.append([])
             for column in range(20):
                 x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
