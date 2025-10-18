@@ -83,8 +83,8 @@ class Grid():
 
         return column, row
 
-    def get_nearest_peg(self, x, y):
-        nearest_peg = arcade.get_sprites_at_point((x, y), self.peg_sprite_list)
+    def get_nearest_peg(self, tile):
+        nearest_peg = arcade.get_closest_sprite(tile, self.peg_sprite_list)
         return nearest_peg[0]
 
 class Dock():
