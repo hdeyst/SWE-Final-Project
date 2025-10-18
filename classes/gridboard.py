@@ -19,9 +19,14 @@ class Peg(arcade.SpriteSolidColor):
         # POSSIBLE field for if a peg has a tile
         self.Tile = None
 
+        # determine if an individual peg is on the grid or in the dock
+        # if we wanted to import Enum, we could but for now
+        self.on_grid = False
+        self.on_dock = False
+
     def toggle_occupied(self):
         # grid tile
-        if self.color == arcade.color.CEIL or self.color == arcade.color.LAVENDER_BLUE:
+        if self.on_grid:
             if self.occupied:
                 self.occupied = False
                 self.color = arcade.color.CEIL
@@ -30,7 +35,7 @@ class Peg(arcade.SpriteSolidColor):
                 self.color =arcade.color.LAVENDER_BLUE
 
         # dock tile
-        if self.color == arcade.color.COPPER or self.color == arcade.color.PALE_COPPER:
+        if self.on_dock:
             if self.occupied:
                 self.occupied = False
                 self.color = arcade.color.COPPER
@@ -64,6 +69,9 @@ class Grid():
                 peg.center_x = x
                 peg.center_y = y
 
+                peg.on_grid = True
+                peg.on_dock = False
+
                 self.peg_sprite_list.append(peg)
                 self.peg_sprites[row].append(peg)
 
@@ -95,6 +103,8 @@ class Dock():
 
                 peg.center_x = x
                 peg.center_y = y
+                peg.on_dock = True
+                peg.on_grid = False
 
                 board.peg_sprite_list.append(peg)
                 board.peg_sprites[row].append(peg)
