@@ -20,6 +20,7 @@ class Peg(arcade.SpriteSolidColor):
         self.Tile = None
 
     def toggle_occupied(self):
+        # grid tile
         if self.color == arcade.color.CEIL or self.color == arcade.color.LAVENDER_BLUE:
             if self.occupied:
                 self.occupied = False
@@ -27,6 +28,16 @@ class Peg(arcade.SpriteSolidColor):
             else:
                 self.occupied = True
                 self.color =arcade.color.LAVENDER_BLUE
+
+        # dock tile
+        if self.color == arcade.color.COPPER or self.color == arcade.color.PALE_COPPER:
+            if self.occupied:
+                self.occupied = False
+                self.color = arcade.color.COPPER
+            else:
+                self.occupied = True
+                self.color = arcade.color.PALE_COPPER
+
 
 class Grid():
     def __init__(self):
