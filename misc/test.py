@@ -3,7 +3,7 @@ Tile Example with Arcade
 """
 import arcade
 import utils
-from classes import gameboard
+from classes import Gameboard
 
 # --- Window constants ---
 WINDOW_WIDTH = 1280
@@ -110,7 +110,7 @@ class GameView(arcade.View):
 
         board = gameboard.Gameboard()
         for i in board.pegs:
-            peg = Peg("../peg.png", utils.TILE_SCALE)
+            peg = Peg("peg.png", utils.TILE_SCALE)
             peg.center_x = i[0]
             peg.center_y = i[1]
             self.peg_list.append(peg)

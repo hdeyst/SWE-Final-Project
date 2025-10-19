@@ -1,6 +1,6 @@
 import arcade
 from classes.gridboard import *
-from classes.Tile import Tile
+from classes.tile import Tile
 
 class GameView(arcade.View):
     """A game view."""
