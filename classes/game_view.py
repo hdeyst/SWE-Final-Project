@@ -29,7 +29,7 @@ class GameView(arcade.View):
             for j in range(13):
                 tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
 
-                # Stacked tile placement, places all tiles in the top left stacked on one another
+                # Stacked tile placement, places all tiles in the corner stacked on one another
                 tile.center_x = deck_x_pos
                 tile.center_y = deck_y_pos
                 self.tile_list.append(tile)
@@ -69,8 +69,10 @@ class GameView(arcade.View):
             for i, dropped_card in enumerate(self.held_tiles):
                 # Move tiles to proper position
                 dropped_card.position = peg.center_x, peg.center_y
+
                 # There is a tile on the peg
                 peg.toggle_occupied()
+                peg.Tile = dropped_card
 
             # Success, don't reset position of tiles
             reset_position = False

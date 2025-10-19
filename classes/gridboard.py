@@ -25,7 +25,7 @@ class Peg(arcade.SpriteSolidColor):
         self.on_dock = False
 
     def toggle_occupied(self):
-        # grid tile
+        # grid peg
         if self.on_grid:
             if self.occupied:
                 self.occupied = False
@@ -34,7 +34,7 @@ class Peg(arcade.SpriteSolidColor):
                 self.occupied = True
                 self.color =arcade.color.LAVENDER_BLUE
 
-        # dock tile
+        # dock peg
         if self.on_dock:
             if self.occupied:
                 self.occupied = False
@@ -49,8 +49,8 @@ class Grid():
         # TODO: change these s.t. the grid is independent of the rest of the window
         # I want to be able to move the grid around in the space to make room
         # for the user dock and stuff
-        self.width = WINDOW_WIDTH
-        self.height = WINDOW_HEIGHT
+        self.width = GRID_WIDTH
+        self.height = GRID_HEIGHT
 
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
@@ -94,7 +94,7 @@ class Dock():
 
         for row in range(2):
             board.peg_sprites.append([])
-            for column in range(20):
+            for column in range(COLUMN_COUNT):
                 x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
                 y = (row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
 
