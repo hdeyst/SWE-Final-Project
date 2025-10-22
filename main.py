@@ -8,7 +8,8 @@ def main():
 
     # Create the GameView
     game = GameView()
-    game.build_deck(35, 55)
+    game.setup()
+
 
     # Show GameView on screen
     window.show_view(game)

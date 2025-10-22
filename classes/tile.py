@@ -16,7 +16,10 @@ class Tile(arcade.Sprite):
         number_split = split[1].split(".")
         self.number = int(number_split[0])
 
+    def __str__(self):
+        return f"{self.color}{self.number}"
+
 if __name__ == "__main__":
     tile = Tile(f"../tiles/black_1.png", utils.TILE_SCALE)
 
-    print(tile.number)
+    print(tile)

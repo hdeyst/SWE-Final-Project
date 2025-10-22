@@ -1,6 +1,8 @@
 import arcade
 from classes.gridboard import *
 from classes.tile import Tile
+import utils
+import random
 
 class GameView(arcade.View):
     """A game view."""
@@ -16,6 +18,9 @@ class GameView(arcade.View):
 
         # create list of tile sprites (which will use quinn's tiles)
         self.tile_list = arcade.SpriteList()
+
+        #create list of cards in player's dock
+        self.hand = arcade.SpriteList()
 
         self.held_tiles = None
         self.held_tiles_original_position = None
@@ -34,6 +39,15 @@ class GameView(arcade.View):
                 tile.center_y = deck_y_pos
                 self.tile_list.append(tile)
 
+    def setup(self):
+        self.build_deck(35, 55)
+        self.tile_list.shuffle()
+        for _ in range(14):
+            self.hand.append(self.tile_list[-1])
+            self.tile_list.pop()
+        for index in range(len(self.hand)):
+            peg = self.dock.board.peg_sprite_list[index]
+            self.hand[index].position = peg.center_x, peg.center_y
 
     # Draws the gameboard grid
     def on_draw(self):
@@ -49,6 +63,7 @@ class GameView(arcade.View):
 
         # draw the tiles
         self.tile_list.draw()
+        self.hand.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
