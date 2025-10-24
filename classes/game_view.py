@@ -81,13 +81,13 @@ class GameView(arcade.View):
         # See if we are in contact with the closest pile
         if arcade.check_for_collision(self.held_tiles[0], peg) and not peg.occupied:
             # For each held tile, move it to the pile we dropped on
-            for i, dropped_card in enumerate(self.held_tiles):
-                # Move tiles to proper position
-                dropped_card.position = peg.center_x, peg.center_y
+            primary_tile = self.held_tiles[0]
+            # Move tiles to proper position
+            primary_tile.position = peg.center_x, peg.center_y
 
-                # There is a tile on the peg
-                peg.toggle_occupied()
-                peg.Tile = dropped_card
+            # There is a tile on the peg
+            peg.toggle_occupied()
+            peg.Tile = primary_tile
 
             # Success, don't reset position of tiles
             reset_position = False
@@ -97,6 +97,8 @@ class GameView(arcade.View):
             # to its original spot.
             for tile_index, card in enumerate(self.held_tiles):
                 card.position = self.held_tiles_original_position[tile_index]
+                # og_peg = arcade.get_sprites_at_point(self.held_tiles_original_position[tile_index], self.grid.peg_sprite_list)[-1]
+                # og_peg.toggle_occupied()
 
         # empty out held tile list
         self.held_tiles = []
@@ -114,9 +116,15 @@ class GameView(arcade.View):
 
     def pick_up_tile(self, x, y):
         tiles = arcade.get_sprites_at_point((x, y), self.tile_list)
+        pegs = arcade.get_sprites_at_point((x, y), self.grid.peg_sprite_list)
 
         if len(tiles) > 0:
             primary_tile = tiles[-1]
+
+            if pegs:
+                associated_peg = pegs[-1]
+                associated_peg.toggle_occupied()
+                associated_peg.Tile = None
 
             # All other cases, grab the tile we are clicking on
             self.held_tiles = [primary_tile]
@@ -125,7 +133,5 @@ class GameView(arcade.View):
             # Put on top in drawing order
             self.pull_to_top(self.held_tiles[0])
 
-            # mark the peg as available again
-            nearest_peg = self.grid.get_nearest_peg(self.held_tiles[0])
-            if nearest_peg.occupied:
-                nearest_peg.toggle_occupied()
+            # mark the tile as not having a peg
+            self.held_tiles[0].peg = None

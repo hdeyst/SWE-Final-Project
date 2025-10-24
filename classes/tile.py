@@ -6,6 +6,7 @@ class Tile(arcade.Sprite):
     """A single tile sprite."""
     color = ""
     number = 0
+    peg = None
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
         # tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)
