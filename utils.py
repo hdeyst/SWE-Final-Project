@@ -21,8 +21,8 @@ DECK_HEIGHT = 75
 # WINDOW_HEIGHT = 720
 # WINDOW_TITLE = "Tile Example"
 
-COLUMN_COUNT = 18
-ROW_COUNT = 7
+COLUMN_COUNT = 24
+ROW_COUNT = 8
 
 DOCK_OFFSET = (3 * TILE_HEIGHT)
 # --- Screen constants ---
