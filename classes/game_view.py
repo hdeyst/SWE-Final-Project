@@ -12,7 +12,7 @@ class GameView(arcade.View):
         # Set the background color of the window
         self.background_color = arcade.color.ASH_GREY
 
-        # create grid of gameboard
+        # create grid of gameboard and Dock object, linked to grid
         self.grid = Grid()
         self.dock = Dock(self.grid)
 
@@ -37,6 +37,8 @@ class GameView(arcade.View):
                 # Stacked tile placement, places all tiles in the corner stacked on one another
                 tile.center_x = deck_x_pos
                 tile.center_y = deck_y_pos
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
                 self.tile_list.append(tile)
 
     def setup(self):
@@ -103,7 +105,6 @@ class GameView(arcade.View):
         # empty out held tile list
         self.held_tiles = []
 
-
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
             tile.center_x += dx
@@ -133,5 +134,26 @@ class GameView(arcade.View):
             # Put on top in drawing order
             self.pull_to_top(self.held_tiles[0])
 
-            # mark the tile as not having a peg
-            self.held_tiles[0].peg = None
+            # Bookmark the starting x and y when you pick up a tile ONLY ON FIRST TIME GRABBING TILE
+            if primary_tile.start_of_turn_x == 0 and primary_tile.start_of_turn_y == 0:
+                print(primary_tile.center_x)
+                primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
+                print(primary_tile.start_of_turn_x)
+
+            # mark the peg as available again
+            nearest_peg = self.grid.get_nearest_peg(self.held_tiles[0])
+            if nearest_peg.occupied:
+                nearest_peg.toggle_occupied()
+
+    def on_key_press(self, symbol: int, modifiers: int):
+
+        # for now if user press' S reset tiles to O.G. Poss
+        if symbol == arcade.key.S:
+            for tile in self.tile_list:
+                print(tile.start_of_turn_x)
+                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    tile.center_x = tile.start_of_turn_x
+                    tile.center_y = tile.start_of_turn_y
+                    # set the start of turns back to 0 meaning "unchanged"
+                    tile.start_of_turn_x = 0
+                    tile.start_of_turn_y = 0
