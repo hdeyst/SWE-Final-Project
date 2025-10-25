@@ -3,3 +3,5 @@ _____
 ### Run with:
 `python main.py`
 
+### Necessary packages:
+- pyarcade
