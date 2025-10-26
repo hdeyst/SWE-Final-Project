@@ -1,4 +1,3 @@
-import arcade
 from utils import *
 
 peg_colors = {
@@ -28,14 +27,12 @@ class Peg(arcade.SpriteSolidColor):
     def is_occupied(self):
         if self.tile is None:
             return False
-        else:
-            return True
+        return True
 
     def get_tile(self):
         if self.tile:
-            return self.Tile
-        else:
-            return None
+            return self.tile
+        return None
 
     def occupy_peg(self, tile):
         if not self.is_occupied():
