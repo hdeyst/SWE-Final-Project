@@ -1,4 +1,7 @@
 import arcade
+from spyder.widgets import dock
+
+from classes.gameboard import Gameboard
 from classes.gridboard import *
 from classes.tile import Tile
 import utils
@@ -13,8 +16,10 @@ class GameView(arcade.View):
         self.background_color = arcade.color.ASH_GREY
 
         # create grid of gameboard and Dock object, linked to grid
-        self.grid = Grid()
-        self.dock = Dock(self.grid)
+        # self.grid = Grid()
+        # self.dock = Dock()
+
+        self.gameboard = Gameboard()
 
         # create list of tile sprites (which will use quinn's tiles)
         self.tile_list = arcade.SpriteList()
@@ -48,7 +53,7 @@ class GameView(arcade.View):
             self.hand.append(self.tile_list[-1])
             self.tile_list.pop()
         for index, tile in enumerate(self.hand):
-            peg = self.dock.board.peg_sprite_list[index]
+            peg = self.gameboard.dock.peg_sprite_list[index]
             self.hand[index].position = peg.center_x, peg.center_y
 
     # Draws the gameboard grid
@@ -57,11 +62,12 @@ class GameView(arcade.View):
         self.clear()
 
         # Batch draw the grid sprites
-        self.grid.peg_sprite_list.draw()
+        # self.grid.peg_sprite_list.draw()
+        # self.dock.peg_sprite_list.draw()
+        self.gameboard.all_pegs.draw()
 
-        # draw the center points of each grid square
-        for s in self.grid.peg_sprite_list:
-            arcade.draw_point(s.center_x, s.center_y, arcade.color.WHITE, size=5)
+        for peg in self.gameboard.all_pegs:
+            arcade.draw_point(peg.center_x, peg.center_y, arcade.color.WHITE, size=5)
 
         # draw the tiles
         self.tile_list.draw()
@@ -77,7 +83,7 @@ class GameView(arcade.View):
         if len(self.held_tiles) == 0:
             return
 
-        peg, distance = arcade.get_closest_sprite(self.held_tiles[0], self.grid.peg_sprite_list)
+        peg, distance = arcade.get_closest_sprite(self.held_tiles[0], self.gameboard.all_pegs)
         reset_position = True
 
         # See if we are in contact with the closest pile
@@ -99,7 +105,8 @@ class GameView(arcade.View):
             for tile_index, card in enumerate(self.held_tiles):
                 card.position = self.held_tiles_original_position[tile_index]
                 # make sure that the peg being returned to exists
-                pegs = arcade.get_sprites_at_point(card.position, self.grid.peg_sprite_list)
+                pegs = arcade.get_sprites_at_point(card.position, self.gameboard.all_pegs)
+
                 if pegs:
                     og_peg = pegs[-1]
                     og_peg.occupy_peg(card)
@@ -119,7 +126,7 @@ class GameView(arcade.View):
 
     def pick_up_tile(self, x, y):
         tiles = arcade.get_sprites_at_point((x, y), self.tile_list)
-        pegs = arcade.get_sprites_at_point((x, y), self.grid.peg_sprite_list)
+        pegs = arcade.get_sprites_at_point((x, y), self.gameboard.all_pegs)
 
         if len(tiles) > 0:
             primary_tile = tiles[-1]

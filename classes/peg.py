@@ -38,12 +38,15 @@ class Peg(arcade.SpriteSolidColor):
         if not self.is_occupied():
             print("window coords of peg center: ", self.get_center())
             print("grid coords of peg center: ", self.get_grid_coords())
+            print("peg placement: ", self.placement)
             self.tile = tile
 
             if self.placement == "grid":
                 self.color = peg_colors["grid"]["occupied"]
+                print(f"{self.placement} peg occupied!")
             else:
                 self.color = peg_colors["dock"]["occupied"]
+                print(f"{self.placement} peg occupied!")
 
 
     def empty_peg(self):
