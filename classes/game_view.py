@@ -71,7 +71,7 @@ class GameView(arcade.View):
         self.hand.draw()
 
         # draw the pass button
-        self.pass_button.draw()
+        #self.pass_button.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
