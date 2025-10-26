@@ -79,7 +79,7 @@ class GameView(arcade.View):
         self.pick_up_tile(x, y)
 
         # indicate pass_button was selected
-        pos = [x, y]
+        """pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.GREEN)
             #self.pass_button.pressed = True
@@ -90,7 +90,7 @@ class GameView(arcade.View):
                     tile.center_y = tile.start_of_turn_y
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
-                    tile.start_of_turn_y = 0
+                    tile.start_of_turn_y = 0"""
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
