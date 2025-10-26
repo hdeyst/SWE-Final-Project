@@ -20,26 +20,28 @@ class Peg(arcade.SpriteSolidColor):
         super().__init__(width, height, color=peg_colors[placement]["empty"])
 
         # field for if a peg has a tile, should also work for checking if occupied
-        self.Tile = None
+        self.tile = None
 
         # peg must be either on grid or on dock
         self.placement = placement
 
     def is_occupied(self):
-        if self.Tile is None:
+        if self.tile is None:
             return False
         else:
             return True
 
     def get_tile(self):
-        if self.Tile:
+        if self.tile:
             return self.Tile
         else:
             return None
 
     def occupy_peg(self, tile):
         if not self.is_occupied():
-            self.Tile = tile
+            print("window coords of peg center: ", self.get_center())
+            print("grid coords of peg center: ", self.get_grid_coords())
+            self.tile = tile
 
             if self.placement == "grid":
                 self.color = peg_colors["grid"]["occupied"]
@@ -48,7 +50,7 @@ class Peg(arcade.SpriteSolidColor):
 
 
     def empty_peg(self):
-        self.Tile = None
+        self.tile = None
         if self.placement == "grid":
             self.color = peg_colors["grid"]["empty"]
         else:
@@ -57,3 +59,9 @@ class Peg(arcade.SpriteSolidColor):
     def set_center(self, x, y):
         self.center_x = x
         self.center_y = y
+
+    def get_center(self):
+        return self.center_x, self.center_y
+
+    def get_grid_coords(self):
+        return convert_to_grid_coords(self.center_x, self.center_y)

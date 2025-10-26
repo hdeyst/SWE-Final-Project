@@ -47,7 +47,7 @@ class GameView(arcade.View):
         for _ in range(14):
             self.hand.append(self.tile_list[-1])
             self.tile_list.pop()
-        for index in range(len(self.hand)):
+        for index, tile in enumerate(self.hand):
             peg = self.dock.board.peg_sprite_list[index]
             self.hand[index].position = peg.center_x, peg.center_y
 
@@ -81,15 +81,14 @@ class GameView(arcade.View):
         reset_position = True
 
         # See if we are in contact with the closest pile
-        if arcade.check_for_collision(self.held_tiles[0], peg) and not peg.occupied:
+        if arcade.check_for_collision(self.held_tiles[0], peg) and not peg.tile:
             # For each held tile, move it to the pile we dropped on
             primary_tile = self.held_tiles[0]
             # Move tiles to proper position
             primary_tile.position = peg.center_x, peg.center_y
 
             # There is a tile on the peg
-            peg.toggle_occupied()
-            peg.Tile = primary_tile
+            peg.occupy_peg(primary_tile)
 
             # Success, don't reset position of tiles
             reset_position = False
@@ -99,8 +98,11 @@ class GameView(arcade.View):
             # to its original spot.
             for tile_index, card in enumerate(self.held_tiles):
                 card.position = self.held_tiles_original_position[tile_index]
-                # og_peg = arcade.get_sprites_at_point(self.held_tiles_original_position[tile_index], self.grid.peg_sprite_list)[-1]
-                # og_peg.toggle_occupied()
+                # make sure that the peg being returned to exists
+                pegs = arcade.get_sprites_at_point(card.position, self.grid.peg_sprite_list)
+                if pegs:
+                    og_peg = pegs[-1]
+                    og_peg.occupy_peg(card)
 
         # empty out held tile list
         self.held_tiles = []
@@ -124,8 +126,7 @@ class GameView(arcade.View):
 
             if pegs:
                 associated_peg = pegs[-1]
-                associated_peg.toggle_occupied()
-                associated_peg.Tile = None
+                associated_peg.empty_peg()
 
             # All other cases, grab the tile we are clicking on
             self.held_tiles = [primary_tile]
@@ -140,10 +141,6 @@ class GameView(arcade.View):
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 print(primary_tile.start_of_turn_x)
 
-            # mark the peg as available again
-            nearest_peg = self.grid.get_nearest_peg(self.held_tiles[0])
-            if nearest_peg.occupied:
-                nearest_peg.toggle_occupied()
 
     def on_key_press(self, symbol: int, modifiers: int):
 

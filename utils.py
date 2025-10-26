@@ -33,3 +33,13 @@ WINDOW_TITLE = "Rummikub Game Board!"
 # --- Grid Variables ---
 GRID_WIDTH = WINDOW_WIDTH * TILE_SCALE
 GRID_HEIGHT = WINDOW_HEIGHT * TILE_SCALE
+
+""" Helper functions """
+
+# --- Coordinate Converter ---
+def convert_to_grid_coords(x, y):
+    # Convert the clicked mouse position into grid coordinates
+    column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
+    row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
+
+    return column, row
