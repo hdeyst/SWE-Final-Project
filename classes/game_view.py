@@ -25,6 +25,9 @@ class GameView(arcade.View):
         self.held_tiles = None
         self.held_tiles_original_position = None
 
+        self.pass_button = Button(50, 50, arcade.color.GREEN,
+                             20, 75, "Pass")
+
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
         self.held_tiles = []
@@ -67,10 +70,28 @@ class GameView(arcade.View):
         self.tile_list.draw()
         self.hand.draw()
 
+        # draw the pass button
+        self.pass_button.draw()
+
 
     def on_mouse_press(self, x, y, button, modifiers):
         # get any tiles that might be selected
         self.pick_up_tile(x, y)
+
+        # indicate pass_button was selected
+        pos = [x, y]
+        if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.GREEN)
+            #self.pass_button.pressed = True
+            for tile in self.tile_list:
+                print(tile.start_of_turn_x)
+                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    tile.center_x = tile.start_of_turn_x
+                    tile.center_y = tile.start_of_turn_y
+                    # set the start of turns back to 0 meaning "unchanged"
+                    tile.start_of_turn_x = 0
+                    tile.start_of_turn_y = 0
+
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
@@ -102,6 +123,10 @@ class GameView(arcade.View):
 
         # empty out held tile list
         self.held_tiles = []
+
+        # revert pass button color
+        self.pass_button.set_color(arcade.color.OLIVE)
+        #self.pass_button.passed = False
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:

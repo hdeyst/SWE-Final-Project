@@ -7,6 +7,7 @@ Defines 5 different types: Peg, Tile, Grid, and Dock
   consisting of a variety of peg objects
 """
 import arcade.color
+import math
 from utils import *
 
 class Peg(arcade.SpriteSolidColor):
@@ -108,4 +109,31 @@ class Dock():
 
                 board.peg_sprite_list.append(peg)
                 board.peg_sprites[row].append(peg)
+
+class Button():
+    def __init__(self, width, height, color, x_pos, y_pos, text=''):
+        self.width = width
+        self.height = height
+        self.color = color
+        self.pressed_color = arcade.color.OLIVE
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.text = text
+        self.radius = self.height / 2
+        self.pressed = False
+    def draw(self):
+        if self.pressed == False:
+            arcade.draw_circle_filled(self.x_pos, self.y_pos, self.radius, self.color)
+        else:
+            arcade.draw_circle_filled(self.x_pos, self.y_pos, self.radius, self.pressed_color)
+        arcade.draw_text(self.text, self.x_pos, self.y_pos, arcade.color.WHITE, 11,
+                             anchor_x="center", anchor_y="center")
+
+    def is_clicked(self, pos):
+        distance = math.sqrt((pos[0] - self.x_pos)**2 + (pos[1] - self.y_pos)**2)
+        return distance <= self.radius
+
+    def set_color(self, color):
+        self.color = color
+
 
