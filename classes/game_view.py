@@ -186,10 +186,15 @@ class GameView(arcade.View):
                     tile.start_of_turn_x = 0
                     tile.start_of_turn_y = 0
             print("Turn Rebased")
+
         if symbol == arcade.key.E:
             for tile in self.tile_list:
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
             print("Turn Ended")
+
+        if symbol == arcade.key.D:
+            # draw functionality
+            pass
         # This sets all start of turn values back to 0
         # This is to "End your turn and move on to a "new turn" and is helpful for testing"
