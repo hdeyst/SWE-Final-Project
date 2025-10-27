@@ -167,10 +167,18 @@ class GameView(arcade.View):
         # for now if user press' S reset tiles to O.G. Poss
         if symbol == arcade.key.S:
             for tile in self.tile_list:
-                print(tile.start_of_turn_x)
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    # look through all pegs to find where tile was sitting (before we move it)
+                    # then set that peg to unocupied before we move it back.
+                    # TODO: make this more efficient
+                    for peg in self.grid.peg_sprite_list:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.toggle_occupied()
+                            break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
+
+
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
                     tile.start_of_turn_y = 0

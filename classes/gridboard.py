@@ -88,6 +88,7 @@ class Grid():
         nearest_peg = arcade.get_closest_sprite(tile, self.peg_sprite_list)
         return nearest_peg[0]
 
+
 class Dock():
     def __init__(self, board):
         self.board = board
