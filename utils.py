@@ -33,3 +33,6 @@ WINDOW_TITLE = "Rummikub Game Board!"
 # --- Grid Variables ---
 GRID_WIDTH = WINDOW_WIDTH * TILE_SCALE
 GRID_HEIGHT = WINDOW_HEIGHT * TILE_SCALE
+
+# --- Gameplay constants ---
+STARTING_TILE_AMT = 14

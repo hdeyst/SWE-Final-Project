@@ -44,15 +44,19 @@ class GameView(arcade.View):
                 tile.start_of_turn_y = 0
                 self.tile_list.append(tile)
 
+    def pick_up(self):
+        if len(self.tile_list) < 1:
+            return False
+        self.hand.append(self.tile_list[-1])
+        self.tile_list.pop()
+        peg = self.dock.board.peg_sprite_list[len(self.hand) - 25] #start of dock is currently index -24?
+        self.hand[-1].position = peg.center_x, peg.center_y
+
     def setup(self):
         self.build_deck(35, 55)
         self.tile_list.shuffle()
-        for _ in range(14):
-            self.hand.append(self.tile_list[-1])
-            self.tile_list.pop()
-        for index in range(len(self.hand)):
-            peg = self.dock.board.peg_sprite_list[index]
-            self.hand[index].position = peg.center_x, peg.center_y
+        for _ in range(STARTING_TILE_AMT):
+            self.pick_up()
 
     # Draws the gameboard grid
     def on_draw(self):
