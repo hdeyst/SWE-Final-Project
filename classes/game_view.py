@@ -163,7 +163,6 @@ class GameView(arcade.View):
                 nearest_peg.toggle_occupied()
 
     def on_key_press(self, symbol: int, modifiers: int):
-
         # for now if user press' S reset tiles to O.G. Poss
         if symbol == arcade.key.S:
             for tile in self.tile_list:
@@ -177,8 +176,18 @@ class GameView(arcade.View):
                             break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
-
-
+                    # TODO: make this more efficient
+                    # this is setting the place where the tile is moving to occupied.
+                    for peg in self.grid.peg_sprite_list:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.toggle_occupied()
+                            break
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
                     tile.start_of_turn_y = 0
+        if symbol == arcade.key.E:
+            for tile in self.tile_list:
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
+        # This sets all start of turn values back to 0
+        # This is to "End your turn and move on to a "new turn" and is helpful for testing"
