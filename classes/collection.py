@@ -1,6 +1,6 @@
 import arcade
 import utils
-import tile
+from classes.tile import Tile
 
 class Collection:
     def __init__(self, tile): #assuming a collection will be created whenever a tile is added to the board alone

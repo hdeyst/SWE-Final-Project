@@ -1,6 +1,7 @@
 import arcade
 from arcade.examples.array_backed_grid_sprites_2 import COLUMN_COUNT
 from arcade.future.input.input_manager_example import WINDOW_WIDTH
+from pygame import BUTTON_X1
 
 # --- Tile constants ---
 TILE_SCALE = .3
@@ -43,3 +44,8 @@ WINDOW_TITLE = "Rummikub Game Board!"
 # --- Grid Variables ---
 GRID_WIDTH = WINDOW_WIDTH * TILE_SCALE
 GRID_HEIGHT = WINDOW_HEIGHT * TILE_SCALE
+
+# --- Button Variables ---
+BUTTON_WIDTH = 50
+BUTTON_LENGTH = 50
+BUTTON_RADIUS = BUTTON_WIDTH / 2

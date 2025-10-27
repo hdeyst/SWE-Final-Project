@@ -1,6 +1,7 @@
 import arcade
 from classes.gridboard import *
 from classes.tile import Tile
+from classes.collection import Collection
 import utils
 import random
 
@@ -25,7 +26,7 @@ class GameView(arcade.View):
         self.held_tiles = None
         self.held_tiles_original_position = None
 
-        self.pass_button = Button(50, 50, arcade.color.GREEN,
+        self.pass_button = Button(arcade.color.GREEN,
                              27, 125, "Pass")
 
     # creates all possible tiles and puts them in a deck
@@ -71,7 +72,7 @@ class GameView(arcade.View):
         self.hand.draw()
 
         # draw the pass button
-        #self.pass_button.draw()
+        self.pass_button.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -79,9 +80,9 @@ class GameView(arcade.View):
         self.pick_up_tile(x, y)
 
         # indicate pass_button was selected
-        """pos = [x, y]
+        pos = [x, y]
         if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.GREEN)
+            self.pass_button.set_color(arcade.color.OLIVE)
             #self.pass_button.pressed = True
             for tile in self.tile_list:
                 print(tile.start_of_turn_x)
@@ -90,7 +91,7 @@ class GameView(arcade.View):
                     tile.center_y = tile.start_of_turn_y
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
-                    tile.start_of_turn_y = 0"""
+                    tile.start_of_turn_y = 0
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -128,7 +129,7 @@ class GameView(arcade.View):
         self.held_tiles = []
 
         # revert pass button color
-        self.pass_button.set_color(arcade.color.OLIVE)
+        self.pass_button.set_color(arcade.color.GREEN)
         #self.pass_button.passed = False
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
@@ -165,7 +166,7 @@ class GameView(arcade.View):
             if nearest_peg.occupied:
                 nearest_peg.toggle_occupied()
 
-    def on_key_press(self, symbol: int, modifiers: int):
+    """def on_key_press(self, symbol: int, modifiers: int):
         # for now if user press' S reset tiles to O.G. Poss
         if symbol == arcade.key.S:
             for tile in self.tile_list:
@@ -200,4 +201,29 @@ class GameView(arcade.View):
             # draw functionality
             pass
         # This sets all start of turn values back to 0
-        # This is to "End your turn and move on to a "new turn" and is helpful for testing"
+        # This is to "End your turn and move on to a "new turn" and is helpful for testing"""
+
+    def on_pass(self):
+        for tile in self.tile_list:
+            if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                # look through all pegs to find where tile was sitting (before we move it)
+                # then set that peg to unocupied before we move it back.
+                # TODO: make this more efficient
+                for peg in self.grid.peg_sprite_list:
+                    if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                        peg.toggle_occupied()
+                        break
+                tile.center_x = tile.start_of_turn_x
+                tile.center_y = tile.start_of_turn_y
+                # TODO: make this more efficient
+                # this is setting the place where the tile is moving to occupied.
+                for peg in self.grid.peg_sprite_list:
+                    if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                        peg.toggle_occupied()
+                        break
+                # set the start of turns back to 0 meaning "unchanged"
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
+        print("Turn Rebased")
+
+        collection = Collection(self.tile_list)
