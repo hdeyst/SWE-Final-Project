@@ -1,4 +1,6 @@
 import arcade
+from arcade.examples.array_backed_grid_sprites_2 import COLUMN_COUNT
+from arcade.future.input.input_manager_example import WINDOW_WIDTH
 
 # --- Tile constants ---
 TILE_SCALE = .3
@@ -23,6 +25,14 @@ DECK_HEIGHT = 75
 
 COLUMN_COUNT = 24
 ROW_COUNT = 8
+
+COLUMN_COUNT_DOCK = 24
+ROW_COUNT_DOCK = 2
+
+DOCK_LENGTH = COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN)
+OUTER_MARGIN_DOCK = ((TILE_WIDTH + INNER_MARGIN) * COLUMN_COUNT + OUTER_MARGIN * 2) / 2 - DOCK_LENGTH / 2
+#OUTER_MARGIN_DOCK = (WINDOW_WIDTH - DOCK_LENGTH) / 2
+
 
 DOCK_OFFSET = (3 * TILE_HEIGHT)
 # --- Screen constants ---
