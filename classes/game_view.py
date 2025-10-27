@@ -153,9 +153,9 @@ class GameView(arcade.View):
 
             # Bookmark the starting x and y when you pick up a tile ONLY ON FIRST TIME GRABBING TILE
             if primary_tile.start_of_turn_x == 0 and primary_tile.start_of_turn_y == 0:
-                print(primary_tile.center_x)
+                print(f"Current center x of primary tile: {primary_tile.center_x}")
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
-                print(primary_tile.start_of_turn_x)
+                print(f"Start of turn pos of primary Tile: {primary_tile.start_of_turn_x}")
 
             # mark the peg as available again
             nearest_peg = self.grid.get_nearest_peg(self.held_tiles[0])
