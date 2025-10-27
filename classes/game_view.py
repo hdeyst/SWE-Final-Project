@@ -19,8 +19,9 @@ class GameView(arcade.View):
         # create list of tile sprites (which will use quinn's tiles)
         self.tile_list = arcade.SpriteList()
 
-        #create list of cards in player's dock
-        self.hand = arcade.SpriteList()
+        #keeping track of how many tiles are in play/left in the deck
+        self.num_dealt = 0
+        self.in_hand = 0
 
         self.held_tiles = None
         self.held_tiles_original_position = None
@@ -44,19 +45,19 @@ class GameView(arcade.View):
                 tile.start_of_turn_y = 0
                 self.tile_list.append(tile)
 
-    def pick_up(self):
+    def deal_tile(self):
         if len(self.tile_list) < 1:
             return False
-        self.hand.append(self.tile_list[-1])
-        self.tile_list.pop()
-        peg = self.dock.board.peg_sprite_list[len(self.hand) - 25] #start of dock is currently index -24?
-        self.hand[-1].position = peg.center_x, peg.center_y
+        peg = self.dock.board.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
+        self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
+        self.num_dealt += 1
+        self.in_hand += 1
 
     def setup(self):
         self.build_deck(35, 55)
         self.tile_list.shuffle()
         for _ in range(STARTING_TILE_AMT):
-            self.pick_up()
+            self.deal_tile()
 
     # Draws the gameboard grid
     def on_draw(self):
@@ -72,7 +73,6 @@ class GameView(arcade.View):
 
         # draw the tiles
         self.tile_list.draw()
-        self.hand.draw()
 
         # draw the pass button
         #self.pass_button.draw()
