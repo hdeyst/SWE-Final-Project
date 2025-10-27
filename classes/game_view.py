@@ -46,9 +46,12 @@ class GameView(arcade.View):
                 self.tile_list.append(tile)
 
     def deal_tile(self):
-        if len(self.tile_list) < 1:
+        if len(self.tile_list) < 1 or self.in_hand > 47: #max that can fit in dock is 48
             return False
-        peg = self.dock.board.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
+        if self.in_hand < 24:
+            peg = self.dock.board.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
+        else:
+            peg = self.dock.board.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
         self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
         self.num_dealt += 1
         self.in_hand += 1

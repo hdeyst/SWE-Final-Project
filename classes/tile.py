@@ -8,6 +8,7 @@ class Tile(arcade.Sprite):
     number = 0
     start_of_turn_x = 0
     start_of_turn_y = 0
+    in_dock = True
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
         # tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)
