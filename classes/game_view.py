@@ -160,9 +160,9 @@ class GameView(arcade.View):
 
             # Bookmark the starting x and y when you pick up a tile ONLY ON FIRST TIME GRABBING TILE
             if primary_tile.start_of_turn_x == 0 and primary_tile.start_of_turn_y == 0:
-                print(primary_tile.center_x)
+                print(f"Current center x of primary tile: {primary_tile.center_x}")
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
-                print(primary_tile.start_of_turn_x)
+                print(f"Start of turn pos of primary Tile: {primary_tile.start_of_turn_x}")
 
             # mark the peg as available again
             nearest_peg = self.grid.get_nearest_peg(self.held_tiles[0])
@@ -170,14 +170,33 @@ class GameView(arcade.View):
                 nearest_peg.toggle_occupied()
 
     def on_key_press(self, symbol: int, modifiers: int):
-
         # for now if user press' S reset tiles to O.G. Poss
         if symbol == arcade.key.S:
             for tile in self.tile_list:
-                print(tile.start_of_turn_x)
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    # look through all pegs to find where tile was sitting (before we move it)
+                    # then set that peg to unocupied before we move it back.
+                    # TODO: make this more efficient
+                    for peg in self.grid.peg_sprite_list:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.toggle_occupied()
+                            break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
+                    # TODO: make this more efficient
+                    # this is setting the place where the tile is moving to occupied.
+                    for peg in self.grid.peg_sprite_list:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.toggle_occupied()
+                            break
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
                     tile.start_of_turn_y = 0
+            print("Turn Rebased")
+        if symbol == arcade.key.E:
+            for tile in self.tile_list:
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
+            print("Turn Ended")
+        # This sets all start of turn values back to 0
+        # This is to "End your turn and move on to a "new turn" and is helpful for testing"
