@@ -27,7 +27,7 @@ class GameView(arcade.View):
         self.held_tiles_original_position = None
 
         self.pass_button = Button(50, 50, arcade.color.GREEN,
-                             20, 75, "Pass")
+                             27, 125, "Pass")
 
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
@@ -122,6 +122,9 @@ class GameView(arcade.View):
             # Success, don't reset position of tiles
             reset_position = False
 
+        if arcade.check_for_collision(self.held_tiles[0], peg) and peg.occupied:
+            occupied_tile = peg.occupied
+
         if reset_position:
             # Where-ever we were dropped, it wasn't valid. Reset each tile's position
             # to its original spot.
@@ -193,10 +196,15 @@ class GameView(arcade.View):
                     tile.start_of_turn_x = 0
                     tile.start_of_turn_y = 0
             print("Turn Rebased")
+
         if symbol == arcade.key.E:
             for tile in self.tile_list:
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
             print("Turn Ended")
+
+        if symbol == arcade.key.D:
+            # draw functionality
+            pass
         # This sets all start of turn values back to 0
         # This is to "End your turn and move on to a "new turn" and is helpful for testing"

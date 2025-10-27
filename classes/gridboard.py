@@ -43,6 +43,9 @@ class Peg(arcade.SpriteSolidColor):
             else:
                 self.occupied = True
                 self.color = arcade.color.PALE_COPPER
+    #def get_tile(self):
+     #   if self.occupied == True:
+
 
 
 class Grid():
@@ -94,10 +97,10 @@ class Dock():
         self.board = board
         self.width = WINDOW_WIDTH
 
-        for row in range(2):
+        for row in range(ROW_COUNT_DOCK):
             board.peg_sprites.append([])
-            for column in range(COLUMN_COUNT):
-                x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN
+            for column in range(COLUMN_COUNT_DOCK):
+                x = column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN_DOCK
                 y = (row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
 
                 # create peg objects
