@@ -1,5 +1,4 @@
 import arcade
-from spyder.widgets import dock
 
 from classes.gameboard import Gameboard
 from classes.gridboard import *
@@ -94,10 +93,14 @@ class GameView(arcade.View):
             primary_tile.position = peg.center_x, peg.center_y
 
             # There is a tile on the peg
-            peg.occupy_peg(primary_tile)
+            p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
+
+            p.occupy_peg(primary_tile)
 
             # Success, don't reset position of tiles
             reset_position = False
+            print(f"p pos: {p.position} p color: {p.color}\n"
+                  f"peg pos: {peg.position} peg color: {peg.color}")
 
         if reset_position:
             # Where-ever we were dropped, it wasn't valid. Reset each tile's position
@@ -113,6 +116,7 @@ class GameView(arcade.View):
 
         # empty out held tile list
         self.held_tiles = []
+        print("peg color at end: ", peg.color)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
