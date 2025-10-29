@@ -148,9 +148,9 @@ class GameView(arcade.View):
 
             # Bookmark the starting x and y when you pick up a tile ONLY ON FIRST TIME GRABBING TILE
             if primary_tile.start_of_turn_x == 0 and primary_tile.start_of_turn_y == 0:
-                print(primary_tile.center_x)
+                # print(primary_tile.center_x)
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
-                print(primary_tile.start_of_turn_x)
+                # print(primary_tile.start_of_turn_x)
 
 
     def on_key_press(self, symbol: int, modifiers: int):

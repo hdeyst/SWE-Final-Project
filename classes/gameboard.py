@@ -19,5 +19,4 @@ class Gameboard:
 
         # print out grid coors as well as technical screen coords
         for peg in self.all_pegs:
-            print(f"{peg.position} : "
-                  f"{convert_to_grid_coords(peg.center_x, peg.center_y)}")
+            print(peg)
