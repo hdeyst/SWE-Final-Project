@@ -1,19 +1,18 @@
+import arcade
+from classes.gridboard import Grid, Dock
 
-import utils
 class Gameboard:
     def __init__(self):
-        self.width = utils.WINDOW_WIDTH
-        self.height = utils.WINDOW_HEIGHT
-        #  pegs = [(x, y), (x1, y1)]
-        # 8 x 14 board
+        self.grid = Grid()
+        self.dock = Dock()
 
-        coord_map = []
-        rows, cols = 10, 26
-        for row in range(rows):
-            for col in range(cols):
-                x_coord = utils.TILE_WIDTH / 2 + col * utils.TILE_WIDTH
-                y_coord = self.height - (utils.TILE_HEIGHT / 2 + row * (utils.TILE_HEIGHT + utils.PEG_SPACING_Y))
-                coord_map.append([x_coord, y_coord])
-        self.pegs = coord_map
+        # make a mega list of all pegs from dock and grid
+        self.all_pegs = arcade.SpriteList()
+        for gp in self.grid.peg_sprite_list:
+            self.all_pegs.append(gp)
+        for dp in self.dock.peg_sprite_list:
+            self.all_pegs.append(dp)
 
-
+        # print out grid coords
+        for peg in self.all_pegs:
+            print(peg)

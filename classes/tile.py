@@ -6,8 +6,11 @@ class Tile(arcade.Sprite):
     """A single tile sprite."""
     color = ""
     number = 0
+
+    # TODO: can we just make this a tuple?
     start_of_turn_x = 0
     start_of_turn_y = 0
+    peg = None
     in_dock = True
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)

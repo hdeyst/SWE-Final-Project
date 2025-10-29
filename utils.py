@@ -44,5 +44,29 @@ WINDOW_TITLE = "Rummikub Game Board!"
 GRID_WIDTH = WINDOW_WIDTH * TILE_SCALE
 GRID_HEIGHT = WINDOW_HEIGHT * TILE_SCALE
 
+# --- Peg Variables ---
+PEG_COLORS = {
+    "grid": {
+        "occupied": arcade.color.LAVENDER_BLUE,
+        "empty": arcade.color.CEIL
+    },
+    "dock": {
+        "occupied": arcade.color.PALE_COPPER,
+        "empty": arcade.color.COPPER
+    }
+}
+PLACEMENTS = ["grid", "dock"]
+
+
+""" Helper functions """
+
+# --- Coordinate Converter ---
+def convert_to_grid_coords(x, y):
+    # Convert the clicked mouse position into grid coordinates
+    column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
+    row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
+
+    return column, row
+
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
