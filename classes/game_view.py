@@ -53,10 +53,13 @@ class GameView(arcade.View):
         if len(self.tile_list) < 1 or self.in_hand > 47: #max that can fit in dock is 48
             return False
         if self.in_hand < 24:
-            peg = self.dock.board.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
+            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
+            # peg.occupy_peg()
         else:
-            peg = self.dock.board.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
+            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
+            # peg.occupy_peg()
         self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
+        peg.occupy_peg(self.tile_list[self.num_dealt])
         self.num_dealt += 1
         self.in_hand += 1
 
@@ -135,8 +138,8 @@ class GameView(arcade.View):
             # Success, don't reset position of tiles
             reset_position = False
 
-        if arcade.check_for_collision(self.held_tiles[0], peg) and peg.occupied:
-            occupied_tile = peg.occupied
+        if arcade.check_for_collision(self.held_tiles[0], peg) and peg.tile:
+            occupied_tile = peg.tile
 
         if reset_position:
             # Where-ever we were dropped, it wasn't valid. Reset each tile's position
