@@ -1,22 +1,9 @@
 from utils import *
 
-peg_colors = {
-    "grid": {
-        "occupied": arcade.color.LAVENDER_BLUE,
-        "empty": arcade.color.CEIL
-    },
-    "dock": {
-        "occupied": arcade.color.PALE_COPPER,
-        "empty": arcade.color.COPPER
-    }
-}
-
-placements = ["grid", "dock"]
-
 class Peg(arcade.SpriteSolidColor):
 
     def __init__(self, width, height, placement):
-        super().__init__(width, height, color=peg_colors[placement]["empty"])
+        super().__init__(width, height, color=PEG_COLORS[placement]["empty"])
 
         # field for if a peg has a tile, should also work for checking if occupied
         self.tile = None
@@ -39,19 +26,17 @@ class Peg(arcade.SpriteSolidColor):
             self.tile = tile
 
             if self.placement == "grid":
-                self.color = peg_colors["grid"]["occupied"]
-                print(f"{self.placement} peg occupied!")
+                self.color = PEG_COLORS["grid"]["occupied"]
             else:
-                self.color = peg_colors["dock"]["occupied"]
-                print(f"{self.placement} peg occupied!")
+                self.color = PEG_COLORS["dock"]["occupied"]
 
 
     def empty_peg(self):
         self.tile = None
         if self.placement == "grid":
-            self.color = peg_colors["grid"]["empty"]
+            self.color = PEG_COLORS["grid"]["empty"]
         else:
-            self.color = peg_colors["dock"]["empty"]
+            self.color = PEG_COLORS["dock"]["empty"]
 
     def set_center(self, x, y):
         self.center_x = x

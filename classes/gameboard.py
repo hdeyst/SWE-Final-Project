@@ -1,9 +1,5 @@
 import arcade
-
-import utils
 from classes.gridboard import Grid, Dock
-from utils import convert_to_grid_coords
-
 
 class Gameboard:
     def __init__(self):
@@ -17,6 +13,6 @@ class Gameboard:
         for dp in self.dock.peg_sprite_list:
             self.all_pegs.append(dp)
 
-        # print out grid coors as well as technical screen coords
+        # print out grid coords
         for peg in self.all_pegs:
             print(peg)
