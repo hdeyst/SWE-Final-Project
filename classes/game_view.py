@@ -96,11 +96,10 @@ class GameView(arcade.View):
             p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
 
             p.occupy_peg(primary_tile)
+            print(p)
 
             # Success, don't reset position of tiles
             reset_position = False
-            print(f"p pos: {p.position} p color: {p.color}\n"
-                  f"peg pos: {peg.position} peg color: {peg.color}")
 
         if reset_position:
             # Where-ever we were dropped, it wasn't valid. Reset each tile's position
@@ -113,10 +112,10 @@ class GameView(arcade.View):
                 if pegs:
                     og_peg = pegs[-1]
                     og_peg.occupy_peg(card)
+                    print(og_peg)
 
         # empty out held tile list
         self.held_tiles = []
-        print("peg color at end: ", peg.color)
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
@@ -138,6 +137,7 @@ class GameView(arcade.View):
             if pegs:
                 associated_peg = pegs[-1]
                 associated_peg.empty_peg()
+                print(associated_peg)
 
             # All other cases, grab the tile we are clicking on
             self.held_tiles = [primary_tile]

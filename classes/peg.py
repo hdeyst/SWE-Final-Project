@@ -36,9 +36,6 @@ class Peg(arcade.SpriteSolidColor):
 
     def occupy_peg(self, tile):
         if not self.is_occupied():
-            print("window coords of peg center: ", self.get_center())
-            print("grid coords of peg center: ", self.get_grid_coords())
-            print("peg placement: ", self.placement)
             self.tile = tile
 
             if self.placement == "grid":
@@ -65,3 +62,8 @@ class Peg(arcade.SpriteSolidColor):
 
     def get_grid_coords(self):
         return convert_to_grid_coords(self.center_x, self.center_y)
+
+    def __str__(self):
+        return (f"{self.placement} peg! "
+                f"coords: {self.get_grid_coords()} "
+                f"tile: {self.tile}")
