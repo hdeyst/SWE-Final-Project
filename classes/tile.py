@@ -12,6 +12,7 @@ class Tile(arcade.Sprite):
     start_of_turn_y = 0
     peg = None
     in_dock = True
+    start_in_dock = True #for reset functionality
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
         # tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)

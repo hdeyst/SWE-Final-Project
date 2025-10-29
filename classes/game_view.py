@@ -54,10 +54,8 @@ class GameView(arcade.View):
             return False
         if self.in_hand < 24:
             peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
-            # peg.occupy_peg()
         else:
             peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
-            # peg.occupy_peg()
         self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
         peg.occupy_peg(self.tile_list[self.num_dealt])
         self.num_dealt += 1
@@ -68,12 +66,6 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
         for _ in range(STARTING_TILE_AMT):
             self.deal_tile()
-        # for _ in range(14):
-        #     self.hand.append(self.tile_list[-1])
-        #     self.tile_list.pop()
-        # for index, tile in enumerate(self.hand):
-        #     peg = self.gameboard.dock.peg_sprite_list[index]
-        #     self.hand[index].position = peg.center_x, peg.center_y
 
     # Draws the gameboard grid
     def on_draw(self):
@@ -126,17 +118,24 @@ class GameView(arcade.View):
         if arcade.check_for_collision(self.held_tiles[0], peg) and not peg.tile:
             # For each held tile, move it to the pile we dropped on
             primary_tile = self.held_tiles[0]
-            # Move tiles to proper position
-            primary_tile.position = peg.center_x, peg.center_y
 
-            # There is a tile on the peg
-            p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
+            if peg.placement == "dock" and not primary_tile.start_in_dock:
+                reset_position = True
+            else:
+                if peg.placement == "grid" and primary_tile.in_dock:
+                    primary_tile.in_dock = False
 
-            p.occupy_peg(primary_tile)
-            print(p)
+                # Move tiles to proper position
+                primary_tile.position = peg.center_x, peg.center_y
 
-            # Success, don't reset position of tiles
-            reset_position = False
+                # There is a tile on the peg
+                p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
+
+                p.occupy_peg(primary_tile)
+                print(p)
+
+                # Success, don't reset position of tiles
+                reset_position = False
 
         if arcade.check_for_collision(self.held_tiles[0], peg) and peg.tile:
             occupied_tile = peg.tile
@@ -203,19 +202,19 @@ class GameView(arcade.View):
             for tile in self.tile_list:
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                     # look through all pegs to find where tile was sitting (before we move it)
-                    # then set that peg to unocupied before we move it back.
+                    # then set that peg to unoccupied before we move it back.
                     # TODO: make this more efficient
-                    for peg in self.grid.peg_sprite_list:
+                    for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.toggle_occupied()
+                            peg.empty_peg()
                             break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
                     # TODO: make this more efficient
                     # this is setting the place where the tile is moving to occupied.
-                    for peg in self.grid.peg_sprite_list:
+                    for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.toggle_occupied()
+                            peg.occupy_peg(tile)
                             break
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
@@ -226,10 +225,11 @@ class GameView(arcade.View):
             for tile in self.tile_list:
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
+                tile.start_in_dock = tile.in_dock
             print("Turn Ended")
 
         if symbol == arcade.key.D:
-            # draw functionality
+            self.deal_tile()
             pass
         # This sets all start of turn values back to 0
         # This is to "End your turn and move on to a "new turn" and is helpful for testing"
