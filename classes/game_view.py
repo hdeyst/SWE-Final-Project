@@ -60,6 +60,12 @@ class GameView(arcade.View):
             # peg.occupy_peg()
         self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
         peg.occupy_peg(self.tile_list[self.num_dealt])
+
+        # testing the get neighbor functions
+        left_neighbor = self.gameboard.get_left_peg_neighbor(peg)
+        right_neighbor = self.gameboard.get_right_peg_neighbor(peg)
+        print(f"{peg} \n\tleft neighbor: {left_neighbor} \n\tright neighbor: {right_neighbor}")
+
         self.num_dealt += 1
         self.in_hand += 1
 
@@ -133,7 +139,11 @@ class GameView(arcade.View):
             p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
 
             p.occupy_peg(primary_tile)
-            print(p)
+
+            # test get neighbor functions
+            left_neighbor = self.gameboard.get_left_peg_neighbor(p)
+            right_neighbor = self.gameboard.get_right_peg_neighbor(p)
+            print(f"{p} \n\tleft neighbor: {left_neighbor} \n\tright neighbor: {right_neighbor}")
 
             # Success, don't reset position of tiles
             reset_position = False

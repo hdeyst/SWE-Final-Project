@@ -33,11 +33,6 @@ class Grid:
                 self.peg_sprite_list.append(peg)
                 self.peg_sprites[row].append(peg)
 
-        print("peg_sprite_list: ")
-        print([peg.position for peg in self.peg_sprite_list])
-        print([convert_to_grid_coords(peg.center_x, peg.center_y) for peg in self.peg_sprite_list])
-
-
     def get_nearest_peg(self, tile):
         nearest_peg = arcade.get_closest_sprite(tile, self.peg_sprite_list)
         return nearest_peg[0]
