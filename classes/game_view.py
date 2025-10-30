@@ -106,25 +106,27 @@ class GameView(arcade.View):
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             for tile in self.tile_list:
+                #reset tile positions if any were moved
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                     # look through all pegs to find where tile was sitting (before we move it)
-                    # then set that peg to unocupied before we move it back.
+                    # then set that peg to unoccupied before we move it back.
                     # TODO: make this more efficient
-                    for peg in self.gameboard.grid.peg_sprite_list:
+                    for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.toggle_occupied()
+                            peg.empty_peg()
                             break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
                     # TODO: make this more efficient
                     # this is setting the place where the tile is moving to occupied.
-                    for peg in self.gameboard.grid.peg_sprite_list:
+                    for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.toggle_occupied()
+                            peg.occupy_peg(tile)
                             break
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
                     tile.start_of_turn_y = 0
+            self.deal_tile()
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
