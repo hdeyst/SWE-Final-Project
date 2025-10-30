@@ -1,6 +1,6 @@
 import arcade
 from classes.gridboard import Grid, Dock
-from utils import convert_to_grid_coords
+from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK
 
 class Gameboard:
     def __init__(self):
@@ -15,15 +15,20 @@ class Gameboard:
         for dp in self.dock.peg_sprite_list:
             self.all_pegs.append(dp)
 
-        # print out grid coords
-        for peg in self.all_pegs:
-            print(peg)
-
         # add peg coordinates to a dictionary. keys are the grid coords, values are the window coords
         for peg in self.all_pegs:
             self.coords_dict[convert_to_grid_coords(peg.center_x, peg.center_y)] = peg.position
-        for coord in self.coords_dict:
-            print(f"{coord}: {self.coords_dict[coord]}")
+
+        # print out grid coords
+        # for peg in self.all_pegs:
+        #     print(peg)
+
+        # for coord in self.coords_dict:
+        #     print(f"{coord}: {self.coords_dict[coord]}")
+
+    def draw(self):
+        self.grid.draw()
+        self.dock.draw()
 
     # use the coord dictionary to get peg neighbors
     def get_left_peg_neighbor(self, peg):
@@ -41,8 +46,9 @@ class Gameboard:
     def get_right_peg_neighbor(self, peg):
         x, y = convert_to_grid_coords(peg.center_x, peg.center_y)
 
-        # no right neighbor if at index 23
-        if x < 23:
+        # no right neighbor if at rightmost index
+        if ((peg.placement == "dock" and x < COLUMN_COUNT_DOCK-1) or
+                (peg.placement == "grid" and x < COLUMN_COUNT-1)):
             x += 1
             neighbor = self.coords_dict[(x, y)]
             pegs = arcade.get_sprites_at_point(neighbor, self.all_pegs)

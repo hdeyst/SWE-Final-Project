@@ -14,10 +14,6 @@ class GameView(arcade.View):
         # Set the background color of the window
         self.background_color = arcade.color.ASH_GREY
 
-        # create grid of gameboard and Dock object, linked to grid
-        # self.grid = Grid()
-        # self.dock = Dock()
-
         self.gameboard = Gameboard()
 
         # create list of tile sprites (which will use quinn's tiles)
@@ -30,8 +26,10 @@ class GameView(arcade.View):
         self.held_tiles = None
         self.held_tiles_original_position = None
 
-        self.pass_button = Button(50, 50, arcade.color.GREEN,
-                             27, 125, "Pass")
+        self.pass_button = Button(100, 100, arcade.color.GREEN,
+                                  x_pos=WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
+                                  y_pos=TILE_HEIGHT*2,
+                                  text="Pass")
 
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
@@ -54,10 +52,8 @@ class GameView(arcade.View):
             return False
         if self.in_hand < 24:
             peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
-            # peg.occupy_peg()
         else:
             peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
-            # peg.occupy_peg()
         self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
         peg.occupy_peg(self.tile_list[self.num_dealt])
 
@@ -74,21 +70,14 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
         for _ in range(STARTING_TILE_AMT):
             self.deal_tile()
-        # for _ in range(14):
-        #     self.hand.append(self.tile_list[-1])
-        #     self.tile_list.pop()
-        # for index, tile in enumerate(self.hand):
-        #     peg = self.gameboard.dock.peg_sprite_list[index]
-        #     self.hand[index].position = peg.center_x, peg.center_y
 
     # Draws the gameboard grid
     def on_draw(self):
         # We should always start by clearing the window pixels
         self.clear()
+        self.gameboard.draw()
 
         # Batch draw the grid sprites
-        # self.grid.peg_sprite_list.draw()
-        # self.dock.peg_sprite_list.draw()
         self.gameboard.all_pegs.draw()
 
         for peg in self.gameboard.all_pegs:
@@ -98,7 +87,7 @@ class GameView(arcade.View):
         self.tile_list.draw()
 
         # draw the pass button
-        #self.pass_button.draw()
+        self.pass_button.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -162,19 +151,20 @@ class GameView(arcade.View):
                 if pegs:
                     og_peg = pegs[-1]
                     og_peg.occupy_peg(card)
-                    print(og_peg)
+                    print(f"RE occuping peg {og_peg}")
 
         # empty out held tile list
         self.held_tiles = []
 
         # revert pass button color
-        self.pass_button.set_color(arcade.color.OLIVE)
+        self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
         #self.pass_button.passed = False
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
             tile.center_x += dx
             tile.center_y += dy
+        # print(f"{x}, {y}, {dx}, {dy}")
 
     def pull_to_top(self, tile: arcade.Sprite):
         """ Pull tile to top of rendering order (last to render, looks on-top) """
