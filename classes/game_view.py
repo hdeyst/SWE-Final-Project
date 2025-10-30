@@ -220,11 +220,6 @@ class GameView(arcade.View):
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
 
-    def end_game(self):
-        if self.in_hand == 0:
-            self.window.show_view(WinView())
-            self.__init__()
-
     def on_key_press(self, symbol: int, modifiers: int):
         # for now if user press' S reset tiles to O.G. Poss
         if symbol == arcade.key.S:
@@ -257,6 +252,8 @@ class GameView(arcade.View):
                 if tile.start_in_dock != tile.in_dock:
                     tile.start_in_dock = tile.in_dock
                     self.in_hand -= 1
+                if self.in_hand == 0:
+                    self.window.show_view(WinView())
             print("Turn Ended")
 
         if symbol == arcade.key.D:
@@ -265,7 +262,11 @@ class GameView(arcade.View):
 
         if symbol == arcade.key.W:
             self.in_hand = 0
-            self.end_game()
+            self.window.show_view(WinView())
+
+        if symbol == arcade.key.L:
+            self.in_hand = 1
+            self.window.show_view(LoseView())
 
 class WinView(arcade.View):
     def __init__(self):
@@ -282,6 +283,40 @@ class WinView(arcade.View):
                            text="Quit Game")
 
         self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
+                                  anchor_x="center", anchor_y="center")
+
+    def on_draw(self):
+        self.clear()
+        self.play_again.draw()
+        self.quit.draw()
+        self.text.draw()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        pos = [x, y]
+        if self.play_again.is_clicked(pos):
+            self.play_again.set_color(arcade.color.LIGHT_KHAKI)
+            game_view = GameView()
+            self.window.show_view(game_view)
+
+        if self.quit.is_clicked(pos):
+            self.quit.set_color(arcade.color.LIGHT_KHAKI)
+            arcade.exit()
+
+class LoseView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.background_color = arcade.color.BABY_PINK
+        self.play_again = Button(100, 200, arcade.color.BITTERSWEET,
+                                 x_pos= WINDOW_WIDTH / 4,
+                                 y_pos= WINDOW_HEIGHT / 4,
+                                 text="Play Again")
+
+        self.quit = Button(100, 200, arcade.color.BITTERSWEET,
+                           x_pos=WINDOW_WIDTH * 3/4,
+                           y_pos=WINDOW_HEIGHT / 4,
+                           text="Quit Game")
+
+        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
                                   anchor_x="center", anchor_y="center")
 
     def on_draw(self):
