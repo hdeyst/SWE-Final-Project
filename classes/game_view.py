@@ -14,10 +14,6 @@ class GameView(arcade.View):
         # Set the background color of the window
         self.background_color = arcade.color.ASH_GREY
 
-        # create grid of gameboard and Dock object, linked to grid
-        # self.grid = Grid()
-        # self.dock = Dock()
-
         self.gameboard = Gameboard()
 
         # create list of tile sprites (which will use quinn's tiles)
@@ -30,8 +26,10 @@ class GameView(arcade.View):
         self.held_tiles = None
         self.held_tiles_original_position = None
 
-        self.pass_button = Button(50, 50, arcade.color.GREEN,
-                             27, 125, "Pass")
+        self.pass_button = Button(100, 100, arcade.color.GREEN,
+                                  x_pos=WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
+                                  y_pos=TILE_HEIGHT*2,
+                                  text="Pass")
 
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
@@ -84,10 +82,9 @@ class GameView(arcade.View):
     def on_draw(self):
         # We should always start by clearing the window pixels
         self.clear()
+        self.gameboard.draw()
 
         # Batch draw the grid sprites
-        # self.grid.peg_sprite_list.draw()
-        # self.dock.peg_sprite_list.draw()
         self.gameboard.all_pegs.draw()
 
         for peg in self.gameboard.all_pegs:
@@ -97,7 +94,7 @@ class GameView(arcade.View):
         self.tile_list.draw()
 
         # draw the pass button
-        #self.pass_button.draw()
+        self.pass_button.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -105,22 +102,38 @@ class GameView(arcade.View):
         self.pick_up_tile(x, y)
 
         # indicate pass_button was selected
-        """pos = [x, y]
+        pos = [x, y]
         if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.GREEN)
-            #self.pass_button.pressed = True
+            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             for tile in self.tile_list:
-                print(tile.start_of_turn_x)
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    # look through all pegs to find where tile was sitting (before we move it)
+                    # then set that peg to unocupied before we move it back.
+                    # TODO: make this more efficient
+                    for peg in self.gameboard.grid.peg_sprite_list:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.toggle_occupied()
+                            break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
+                    # TODO: make this more efficient
+                    # this is setting the place where the tile is moving to occupied.
+                    for peg in self.gameboard.grid.peg_sprite_list:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.toggle_occupied()
+                            break
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
-                    tile.start_of_turn_y = 0"""
+                    tile.start_of_turn_y = 0
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
+        # revert pass button color
+        pos = [x, y]
+        if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.GREEN)
+
         if len(self.held_tiles) == 0:
             return
 
@@ -164,14 +177,10 @@ class GameView(arcade.View):
                 if pegs:
                     og_peg = pegs[-1]
                     og_peg.occupy_peg(card)
-                    print(og_peg)
+                    print(f"RE occuping peg {og_peg}")
 
         # empty out held tile list
         self.held_tiles = []
-
-        # revert pass button color
-        self.pass_button.set_color(arcade.color.OLIVE)
-        #self.pass_button.passed = False
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
