@@ -50,15 +50,15 @@ class GameView(arcade.View):
                 self.tile_list.append(tile)
 
     def deal_tile(self):
-        if len(self.tile_list) < 1 or self.in_hand > 47: #max that can fit in dock is 48
+        if len(self.tile_list) < 1 or self.in_hand >= COLUMN_COUNT_DOCK * 2:
             print("ERROR. Tile cannot be dealt")
             return False
 
         #checking if tile should be dealt to top or bottom row
-        if self.in_hand < 24:
-            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
+        if self.in_hand < 20:
+           peg = self.gameboard.dock.peg_sprite_list[self.in_hand - COLUMN_COUNT_DOCK]
         else:
-            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
+            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - (COLUMN_COUNT_DOCK * 3)]
 
         tile = self.tile_list[self.num_dealt]
 
