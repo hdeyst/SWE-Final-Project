@@ -122,7 +122,7 @@ class GameView(arcade.View):
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
-
+        # revert pass button color
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.GREEN)
@@ -171,12 +171,6 @@ class GameView(arcade.View):
 
         # empty out held tile list
         self.held_tiles = []
-
-        # revert pass button color
-        #pos = [x, y]
-        #if self.pass_button.is_clicked(pos):
-            #self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-        #self.pass_button.passed = False
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
