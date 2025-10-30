@@ -97,6 +97,7 @@ class GameView(arcade.View):
         # indicate pass_button was selected
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             for tile in self.tile_list:
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                     # look through all pegs to find where tile was sitting (before we move it)
@@ -121,6 +122,11 @@ class GameView(arcade.View):
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
+
+        pos = [x, y]
+        if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.GREEN)
+
         if len(self.held_tiles) == 0:
             return
 
@@ -167,7 +173,9 @@ class GameView(arcade.View):
         self.held_tiles = []
 
         # revert pass button color
-        self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
+        #pos = [x, y]
+        #if self.pass_button.is_clicked(pos):
+            #self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
         #self.pass_button.passed = False
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
