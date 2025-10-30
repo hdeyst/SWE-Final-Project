@@ -55,15 +55,15 @@ class GameView(arcade.View):
             return False
 
         found = False
-        for item in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
-            if not item.tile:
-                peg = item
+        for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
+            if not space.is_occupied():
+                peg = space
                 found = True
                 break
-        if not found:
-            for item in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
-                if not item.tile:
-                    peg = item
+        if not found: #continuing to second row
+            for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
+                if not space.is_occupied():
+                    peg = space
                     break
 
         tile = self.tile_list[self.num_dealt]
@@ -238,7 +238,9 @@ class GameView(arcade.View):
             for tile in self.tile_list:
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
-                tile.start_in_dock = tile.in_dock
+                if tile.start_in_dock != tile.in_dock:
+                    tile.start_in_dock = tile.in_dock
+                    self.in_hand -= 1
             print("Turn Ended")
 
         if symbol == arcade.key.D:
