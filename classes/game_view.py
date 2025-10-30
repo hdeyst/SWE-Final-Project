@@ -54,11 +54,17 @@ class GameView(arcade.View):
             print("ERROR. Tile cannot be dealt")
             return False
 
-        #checking if tile should be dealt to top or bottom row
-        if self.in_hand < 20:
-           peg = self.gameboard.dock.peg_sprite_list[self.in_hand - COLUMN_COUNT_DOCK]
-        else:
-            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - (COLUMN_COUNT_DOCK * 3)]
+        found = False
+        for item in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
+            if not item.tile:
+                peg = item
+                found = True
+                break
+        if not found:
+            for item in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
+                if not item.tile:
+                    peg = item
+                    break
 
         tile = self.tile_list[self.num_dealt]
 
@@ -67,17 +73,6 @@ class GameView(arcade.View):
 
         self.num_dealt += 1
         self.in_hand += 1
-
-    def shift_dock(self):
-        pos_unoccupied = 0
-
-        #finding index of first unoccupied peg
-        for peg in self.gameboard.dock.peg_sprite_list:
-            if peg.is_occupied():
-                pos_unoccupied += 1
-            else:
-                break
-
 
     def setup(self):
         self.build_deck(35, 55)
