@@ -3,6 +3,7 @@ import arcade
 from classes.gameboard import Gameboard
 from classes.gridboard import *
 from classes.tile import Tile
+from classes.collection import Collection
 import utils
 import random
 
@@ -79,12 +80,6 @@ class GameView(arcade.View):
         self.num_dealt += 1
         self.in_hand += 1
 
-    def setup(self):
-        self.build_deck(35, 55)
-        self.tile_list.shuffle()
-        for _ in range(STARTING_TILE_AMT):
-            self.deal_tile()
-
     # Draws the gameboard grid
     def on_draw(self):
         # We should always start by clearing the window pixels
@@ -110,8 +105,6 @@ class GameView(arcade.View):
 
         self.button_press(x, y)
 
-
-        self.deal_tile()
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -356,6 +349,7 @@ class GameView(arcade.View):
                     # elif len(move) != len(new_collection):
                 move_count += 1
                 count += 1
+            self.deal_tile()
 
             print(temp_collections)
             for collection in temp_collections:
