@@ -4,7 +4,6 @@ from gridboard import Grid, Dock
 from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK
 
 class Gameboard:
-    """Class for our board, combining the grid and dock"""
     def __init__(self):
         self.grid = Grid()
         self.dock = Dock()
@@ -24,13 +23,11 @@ class Gameboard:
 
 
     def draw(self):
-        """used to draw sprites in gameboard"""
         self.grid.draw()
         self.dock.draw()
 
     # use the coord dictionary to get peg neighbors
     def get_left_peg_neighbor(self, peg):
-        """returns peg to the left of input"""
         x, y = convert_to_grid_coords(peg.center_x, peg.center_y)
 
         # no left neighbor if at index 0
@@ -44,7 +41,6 @@ class Gameboard:
 
     # use the coord dictionary to get peg neighbors
     def get_right_peg_neighbor(self, peg):
-        """returns peg to the right of input"""
         x, y = convert_to_grid_coords(peg.center_x, peg.center_y)
 
         # no right neighbor if at rightmost index
