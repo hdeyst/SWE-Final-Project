@@ -30,6 +30,11 @@ class Tile(arcade.Sprite):
         self.start_of_turn_x = x
         self.start_of_turn_y = y
 
+    def get_color(self):
+        return self.color
+    def get_number(self):
+        return self.number
+
 if __name__ == "__main__":
     tile = Tile(f"../tiles/black_1.png", utils.TILE_SCALE)
 

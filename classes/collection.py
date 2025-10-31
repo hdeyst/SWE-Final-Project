@@ -5,17 +5,8 @@ from utils import LEFT_BOUND, RIGHT_BOUND
 
 
 class Collection:
-    def __init__(self, tile=None): #assuming a collection will be created whenever a tile is added to the board alone
-        self.tiles = [tile]
-        self.isSet = True
-        self.left_bound = LEFT_BOUND
-        self.right_bound = RIGHT_BOUND
-        if tile is not None:
-            for tile in self.tiles:
-                if tile.center_x < LEFT_BOUND and tile.center_x < self.left_bound:
-                    self.left_bound = tile.center_x
-                elif tile.center_x > RIGHT_BOUND and tile.center_x > self.right_bound:
-                    self.right_bound = tile.center_x
+    def __init__(self): #assuming a collection will be created whenever a tile is added to the board alone
+        self.tiles = []
 
     def add(self, tile):
         self.tiles.append(tile)
@@ -30,12 +21,10 @@ class Collection:
                     self.right_bound = tile.center_x
 
     def clear(self):
-        for e in self.tiles:
-            self.tiles.remove(e)
+        self.tiles.clear()
 
     def get_tiles(self):
         return self.tiles
-
 
     def get_bounds(self):
         return self.left_bound, self.right_bound
@@ -52,26 +41,26 @@ class Collection:
     def set(self): #3-4 same number, different colors
         self.isSet = True
         if len(self.tiles) == 3:
-            if self.tiles[0].color == self.tiles[1].color or self.tiles[0].color == self.tiles[2].color or self.tiles[1].color == self.tiles[2].color:
+            if self.tiles[0].get_color() == self.tiles[1].get_color() or self.tiles[0].get_color() == self.tiles[2].get_color() or self.tiles[1].get_color() == self.tiles[2].get_color():
                 return False
         elif len(self.tiles) == 4:
-            if self.tiles[0].color == self.tiles[1].color or self.tiles[0].color == self.tiles[2].color or self.tiles[0].color == self.tiles[3].color\
-                    or self.tiles[1].color == self.tiles[2].color or self.tiles[1].color == self.tiles[3].color or self.tiles[2].color == self.tiles[3].color:
+            if self.tiles[0].get_color() == self.tiles[1].get_color() or self.tiles[0].get_color() == self.tiles[2].get_color() or self.tiles[0].get_color() == self.tiles[3].get_color()\
+                    or self.tiles[1].get_color() == self.tiles[2].get_color() or self.tiles[1].get_color() == self.tiles[3].get_color() or self.tiles[2].get_color() == self.tiles[3].get_color():
                 return False
         else: #incorrect length for set
             return False
         for tile in self.tiles:
-            if tile.number != self.tiles[0].number:
+            if tile.get_number() != self.tiles[0].get_number():
                 return False
-        return self.isSet
+        return True
 
     def run(self): #3+ same color, increasing numbers
         if len(self.tiles) < 3:
             return False
         for index in range(len(self.tiles)):
-            if self.tiles[index].color != self.tiles[0].color:
+            if self.tiles[index].get_color() != self.tiles[0].get_color():
                 return False
-            if index > 0 and not self.tiles[index - 1].number < self.tiles[index].number:
+            if index > 0 and not self.tiles[index - 1].get_number() < self.tiles[index].get_number():
                 return False
         return True
 

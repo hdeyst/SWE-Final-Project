@@ -102,7 +102,7 @@ class GameView(arcade.View):
                 # set the start of turns back to 0 meaning "unchanged"
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
-        print("Turn Rebased")
+        print("Turn Rolled Back")
 
 
     def save_turn(self):
@@ -284,38 +284,43 @@ class GameView(arcade.View):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
 
             open_collection = False
+            reset = False
+            collection = Collection()
             # 4 cases, each peg is ONE of these...
             for peg in self.gameboard.all_pegs:
                 # Only looking at pegs in grid
                if peg.placement == "grid":
                     # if there is a tile ... and no current collection
                     if peg.is_occupied() and not open_collection:
-                        collection = Collection()
+                        #print("Tile, closed collection")
                         collection.add(peg.get_tile())
                         open_collection = True
 
                     # if there is a tile ... and a curr collection
-                    elif not peg.is_occupied() and open_collection:
+                    elif peg.is_occupied() and open_collection:
+                        #print("Tile, open collection")
                         # adds tile to the collection
-                        collection.add(peg.tile)
+                        collection.add(peg.get_tile())
 
                     # if there is NO tile ... and a curr collection
                     elif not peg.is_occupied() and open_collection:
+                        #print("No tile, open collection")
                         # close the collection
                         open_collection = False
-                        print("tiles in collection:")
-                        check = collection.get_tiles()
-                        for item in check:
-                            print(item)
                         if not collection.is_valid():
                             # if collection is invalid, bounce tiles
                             self.roll_back()
+                            reset = True
+                            collection.clear()
                             break
                         else:
-                            self.save_turn()
+                            collection.clear()
                     # No tile No collection (empty peg case)
                     else:
+                        #print("No tile, closed collection")
                         pass
+            if not reset:
+                self.save_turn()
 
 
             """
