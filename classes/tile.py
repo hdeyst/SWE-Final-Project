@@ -1,5 +1,5 @@
 import arcade
-from  ..utils import *
+from  utils import *
 class Tile(arcade.Sprite):
     """A single tile sprite."""
     color = ""

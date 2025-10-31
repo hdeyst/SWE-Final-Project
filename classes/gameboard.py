@@ -1,6 +1,6 @@
 import arcade
-from gridboard import Grid, Dock
-from ..utils import *
+from classes.gridboard import Grid, Dock
+from utils import *
 
 class Gameboard:
     def __init__(self):
