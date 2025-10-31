@@ -1,4 +1,7 @@
-from  utils import *
+"""a tile sprite which has a color, number, and reset/position functionality"""
+
+import arcade
+from utils import TILE_SCALE
 
 class Tile(arcade.Sprite):
     """A single tile sprite."""
@@ -10,6 +13,7 @@ class Tile(arcade.Sprite):
     peg = None
     in_dock = True
     start_in_dock = True #for reset functionality
+
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
         # tile = Tile(f"tiles/{color}_{j + 1}.png", utils.TILE_SCALE)
