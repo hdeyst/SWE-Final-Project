@@ -23,10 +23,9 @@ class GameView(arcade.View):
         self.held_tiles = None
         self.held_tiles_original_position = None
 
-        self.pass_button = Button(100, 100, arcade.color.GREEN,
-                                  x_pos=WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
-                                  y_pos=TILE_HEIGHT*2,
-                                  text="Pass")
+        self.pass_button = Button(100, arcade.color.GREEN,
+                                  [WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
+                                  TILE_HEIGHT*2],"Pass")
 
         self.build_deck(35, 55)
         self.tile_list.shuffle()
@@ -268,18 +267,16 @@ class WinView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = arcade.color.OLIVINE
-        self.play_again = Button(100, 200, arcade.color.LEMON_CHIFFON,
-                                 x_pos= WINDOW_WIDTH / 4,
-                                 y_pos= WINDOW_HEIGHT / 4,
-                                 text="Play Again")
+        self.play_again = Button(200, arcade.color.LEMON_CHIFFON,
+                                 [WINDOW_WIDTH / 4,
+                                 WINDOW_HEIGHT / 4],
+                                 "Play Again")
 
-        self.quit = Button(100, 200, arcade.color.LEMON_CHIFFON,
-                           x_pos=WINDOW_WIDTH * 3/4,
-                           y_pos=WINDOW_HEIGHT / 4,
-                           text="Quit Game")
+        self.quit = Button(200, arcade.color.LEMON_CHIFFON, [WINDOW_WIDTH * 3/4,
+                           WINDOW_HEIGHT / 4],"Quit Game")
 
-        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
-                                  anchor_x="center", anchor_y="center")
+        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
+                                75, anchor_x="center", anchor_y="center")
 
     def on_draw(self):
         self.clear()
@@ -302,18 +299,14 @@ class LoseView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = arcade.color.BABY_PINK
-        self.play_again = Button(100, 200, arcade.color.BITTERSWEET,
-                                 x_pos= WINDOW_WIDTH / 4,
-                                 y_pos= WINDOW_HEIGHT / 4,
-                                 text="Play Again")
+        self.play_again = Button(200, arcade.color.BITTERSWEET,
+                                [WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4],"Play Again")
 
-        self.quit = Button(100, 200, arcade.color.BITTERSWEET,
-                           x_pos=WINDOW_WIDTH * 3/4,
-                           y_pos=WINDOW_HEIGHT / 4,
-                           text="Quit Game")
+        self.quit = Button(200, arcade.color.BITTERSWEET,
+                           [WINDOW_WIDTH * 3, WINDOW_HEIGHT / 4], "Quit Game")
 
-        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
-                                  anchor_x="center", anchor_y="center")
+        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
+                                75, anchor_x="center", anchor_y="center")
 
     def on_draw(self):
         self.clear()
