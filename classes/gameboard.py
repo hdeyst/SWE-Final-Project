@@ -1,6 +1,8 @@
+from operator import truediv
+
 import arcade
 from classes.gridboard import Grid, Dock
-from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK
+from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK, TILE_WIDTH, INNER_MARGIN
 
 class Gameboard:
     def __init__(self):
@@ -54,3 +56,15 @@ class Gameboard:
             pegs = arcade.get_sprites_at_point(neighbor, self.all_pegs)
             if pegs[-1]:
                 return pegs[-1]
+
+    def get_right_neighbor(self, peg, tile):
+        if peg.center_x - (TILE_WIDTH + INNER_MARGIN) == tile.center_x and peg.center_y == tile.center_y:
+            return True
+        else:
+            return False
+
+    def get_left_neighbor(self, peg, tile):
+        if peg.center_x + (TILE_WIDTH + INNER_MARGIN) == tile.center_x and peg.center_y == tile.center_y:
+            return True
+        else:
+            return False

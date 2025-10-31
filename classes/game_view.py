@@ -3,6 +3,8 @@ import arcade
 from classes.gameboard import Gameboard
 from classes.gridboard import *
 from classes.tile import Tile
+from classes.collection import Collection
+
 import utils
 import random
 
@@ -109,9 +111,6 @@ class GameView(arcade.View):
         self.pick_up_tile(x, y)
 
         self.button_press(x, y)
-
-
-        self.deal_tile()
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -316,14 +315,16 @@ class GameView(arcade.View):
                     right_empty = False
                     # check to see if left and right adjacent pegs are filled
                     for peg in self.gameboard.grid.peg_sprite_list:
-                        if (peg.center_x - (
-                                TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
+                        #if (peg.center_x - (
+                        #        TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
+                        if (self.gameboard.get_left_neighbor(peg, tile)):
                             if peg.tile == None:
                                 if new_collection.get_length() < 1:  # dont know why this isnt working
                                     left_empty = True
 
-                        if (peg.center_x + (
-                                TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
+                        #if (peg.center_x + (
+                        #       TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
+                        if (self.gameboard.get_right_neighbor(peg, tile)):
                             if peg.tile == None:
                                 right_empty = True
 
