@@ -8,7 +8,6 @@ def main():
 
     # Create the GameView
     game = GameView()
-    game.setup()
 
     # Show GameView on screen
     window.show_view(game)

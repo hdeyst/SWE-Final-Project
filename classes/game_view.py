@@ -3,7 +3,6 @@ import arcade
 from classes.gameboard import Gameboard
 from classes.gridboard import *
 from classes.tile import Tile
-from classes.collection import Collection
 import utils
 import random
 
@@ -34,6 +33,11 @@ class GameView(arcade.View):
                                   y_pos=TILE_HEIGHT*2,
                                   text="Pass")
 
+        self.build_deck(35, 55)
+        self.tile_list.shuffle()
+        for _ in range(STARTING_TILE_AMT):
+            self.deal_tile()
+
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
         self.held_tiles = []
@@ -51,19 +55,26 @@ class GameView(arcade.View):
                 self.tile_list.append(tile)
 
     def deal_tile(self):
-        if len(self.tile_list) < 1 or self.in_hand > 47: #max that can fit in dock is 48
+        if len(self.tile_list) < 1 or self.in_hand >= COLUMN_COUNT_DOCK * 2:
+            print("ERROR. Tile cannot be dealt")
             return False
-        if self.in_hand < 24:
-            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 24] #start of dock is currently index -24?
-        else:
-            peg = self.gameboard.dock.peg_sprite_list[self.in_hand - 72]  #second row of dock starts at index - 48
-        self.tile_list[self.num_dealt].position = peg.center_x, peg.center_y
-        peg.occupy_peg(self.tile_list[self.num_dealt])
 
-        # testing the get neighbor functions
-        left_neighbor = self.gameboard.get_left_peg_neighbor(peg)
-        right_neighbor = self.gameboard.get_right_peg_neighbor(peg)
-        print(f"{peg} \n\tleft neighbor: {left_neighbor} \n\tright neighbor: {right_neighbor}")
+        found = False
+        for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
+            if not space.is_occupied():
+                peg = space
+                found = True
+                break
+        if not found: #continuing to second row
+            for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
+                if not space.is_occupied():
+                    peg = space
+                    break
+
+        tile = self.tile_list[self.num_dealt]
+
+        tile.position = peg.center_x, peg.center_y
+        peg.occupy_peg(tile)
 
         self.num_dealt += 1
         self.in_hand += 1
@@ -100,6 +111,9 @@ class GameView(arcade.View):
         self.button_press(x, y)
 
 
+        self.deal_tile()
+
+
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
         # revert pass button color
@@ -117,21 +131,24 @@ class GameView(arcade.View):
         if arcade.check_for_collision(self.held_tiles[0], peg) and not peg.tile:
             # For each held tile, move it to the pile we dropped on
             primary_tile = self.held_tiles[0]
-            # Move tiles to proper position
-            primary_tile.position = peg.center_x, peg.center_y
 
-            # There is a tile on the peg
-            p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
+            if peg.placement == "dock" and not primary_tile.start_in_dock:
+                reset_position = True
+            else:
+                if peg.placement == "grid" and primary_tile.in_dock:
+                    primary_tile.in_dock = False
 
-            p.occupy_peg(primary_tile)
+                # Move tiles to proper position
+                primary_tile.position = peg.center_x, peg.center_y
 
-            # test get neighbor functions
-            left_neighbor = self.gameboard.get_left_peg_neighbor(p)
-            right_neighbor = self.gameboard.get_right_peg_neighbor(p)
-            print(f"{p} \n\tleft neighbor: {left_neighbor} \n\tright neighbor: {right_neighbor}")
+                # There is a tile on the peg
+                p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
 
-            # Success, don't reset position of tiles
-            reset_position = False
+                p.occupy_peg(primary_tile)
+                print(p)
+
+                # Success, don't reset position of tiles
+                reset_position = False
 
         if arcade.check_for_collision(self.held_tiles[0], peg) and peg.tile:
             occupied_tile = peg.tile
@@ -195,19 +212,19 @@ class GameView(arcade.View):
             for tile in self.tile_list:
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                     # look through all pegs to find where tile was sitting (before we move it)
-                    # then set that peg to unocupied before we move it back.
+                    # then set that peg to unoccupied before we move it back.
                     # TODO: make this more efficient
-                    for peg in self.gameboard.grid.peg_sprite_list:
+                    for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.toggle_occupied()
+                            peg.empty_peg()
                             break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
                     # TODO: make this more efficient
                     # this is setting the place where the tile is moving to occupied.
-                    for peg in self.gameboard.grid.peg_sprite_list:
+                    for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.toggle_occupied()
+                            peg.occupy_peg(tile)
                             break
                     # set the start of turns back to 0 meaning "unchanged"
                     tile.start_of_turn_x = 0
@@ -218,10 +235,23 @@ class GameView(arcade.View):
             for tile in self.tile_list:
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
+                if tile.start_in_dock != tile.in_dock:
+                    tile.start_in_dock = tile.in_dock
+                    self.in_hand -= 1
+                if self.in_hand == 0:
+                    self.window.show_view(WinView())
             print("Turn Ended")
 
+        if symbol == arcade.key.W:
+            self.in_hand = 0
+            self.window.show_view(WinView())
+
+        if symbol == arcade.key.L:
+            self.in_hand = 1
+            self.window.show_view(LoseView())
+
         if symbol == arcade.key.D:
-            # draw functionality
+            self.deal_tile()
             pass
         # This sets all start of turn values back to 0
         # This is to "End your turn and move on to a "new turn" and is helpful for testing"
@@ -347,3 +377,74 @@ class GameView(arcade.View):
             if peg.tile != None:
                 if peg.tile in moved_tiles:
                     if peg.tile."""
+
+
+
+
+class WinView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.background_color = arcade.color.OLIVINE
+        self.play_again = Button(100, 200, arcade.color.LEMON_CHIFFON,
+                                 x_pos= WINDOW_WIDTH / 4,
+                                 y_pos= WINDOW_HEIGHT / 4,
+                                 text="Play Again")
+
+        self.quit = Button(100, 200, arcade.color.LEMON_CHIFFON,
+                           x_pos=WINDOW_WIDTH * 3/4,
+                           y_pos=WINDOW_HEIGHT / 4,
+                           text="Quit Game")
+
+        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
+                                  anchor_x="center", anchor_y="center")
+
+    def on_draw(self):
+        self.clear()
+        self.play_again.draw()
+        self.quit.draw()
+        self.text.draw()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        pos = [x, y]
+        if self.play_again.is_clicked(pos):
+            self.play_again.set_color(arcade.color.LIGHT_KHAKI)
+            game_view = GameView()
+            self.window.show_view(game_view)
+
+        if self.quit.is_clicked(pos):
+            self.quit.set_color(arcade.color.LIGHT_KHAKI)
+            arcade.exit()
+
+class LoseView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.background_color = arcade.color.BABY_PINK
+        self.play_again = Button(100, 200, arcade.color.BITTERSWEET,
+                                 x_pos= WINDOW_WIDTH / 4,
+                                 y_pos= WINDOW_HEIGHT / 4,
+                                 text="Play Again")
+
+        self.quit = Button(100, 200, arcade.color.BITTERSWEET,
+                           x_pos=WINDOW_WIDTH * 3/4,
+                           y_pos=WINDOW_HEIGHT / 4,
+                           text="Quit Game")
+
+        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
+                                  anchor_x="center", anchor_y="center")
+
+    def on_draw(self):
+        self.clear()
+        self.play_again.draw()
+        self.quit.draw()
+        self.text.draw()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        pos = [x, y]
+        if self.play_again.is_clicked(pos):
+            self.play_again.set_color(arcade.color.LIGHT_KHAKI)
+            game_view = GameView()
+            self.window.show_view(game_view)
+
+        if self.quit.is_clicked(pos):
+            self.quit.set_color(arcade.color.LIGHT_KHAKI)
+            arcade.exit()
