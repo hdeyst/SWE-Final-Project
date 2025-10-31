@@ -8,8 +8,8 @@ Defines 2 different types: Grid, and Dock
 """
 import arcade.color
 import math
-from utils import *
-from classes.peg import *
+from ..utils import *
+from peg import *
 
 class Grid:
     def __init__(self):

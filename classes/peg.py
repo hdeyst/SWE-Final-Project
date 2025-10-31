@@ -1,4 +1,5 @@
-from utils import *
+import arcade
+from ..utils import *
 
 class Peg(arcade.SpriteSolidColor):
 

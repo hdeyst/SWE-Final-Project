@@ -1,7 +1,5 @@
 import arcade
-import utils
-
-
+from  ..utils import *
 class Tile(arcade.Sprite):
     """A single tile sprite."""
     color = ""
@@ -31,6 +29,6 @@ class Tile(arcade.Sprite):
         self.start_of_turn_y = y
 
 if __name__ == "__main__":
-    tile = Tile(f"../tiles/black_1.png", utils.TILE_SCALE)
+    tile = Tile(f"../tiles/black_1.png", TILE_SCALE)
 
     print(tile)
