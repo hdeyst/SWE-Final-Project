@@ -70,3 +70,8 @@ def convert_to_grid_coords(x, y):
 
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
+
+
+# -- Collection Bounds ---
+LEFT_BOUND = 0
+RIGHT_BOUND = 100000
