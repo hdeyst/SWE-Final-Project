@@ -1,11 +1,10 @@
-import arcade
 from  utils import *
+
 class Tile(arcade.Sprite):
     """A single tile sprite."""
     color = ""
     number = 0
 
-    # TODO: can we just make this a tuple?
     start_of_turn_x = 0
     start_of_turn_y = 0
     peg = None
@@ -24,11 +23,12 @@ class Tile(arcade.Sprite):
     def __str__(self):
         return f"{self.color}{self.number}"
 
+    #sets start of turn positions (x and y) to input
     def set_start_of_turn_pos(self, x, y):
         self.start_of_turn_x = x
         self.start_of_turn_y = y
 
 if __name__ == "__main__":
-    tile = Tile(f"../tiles/black_1.png", TILE_SCALE)
+    tile = Tile("../tiles/black_1.png", TILE_SCALE)
 
     print(tile)

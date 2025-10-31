@@ -1,5 +1,4 @@
-import arcade
-from classes.gridboard import Grid, Dock
+from gridboard import Grid, Dock
 from utils import *
 
 class Gameboard:

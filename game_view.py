@@ -1,11 +1,7 @@
-import arcade
-
-from classes.gameboard import Gameboard
-from classes.gridboard import *
-from classes.tile import Tile
-from classes.end_screens import *
-import utils
-import random
+from utils import *
+from gameboard import Gameboard
+from gridboard import Button
+from tile import Tile
 
 class GameView(arcade.View):
     """A game view."""

@@ -6,10 +6,9 @@ Defines 2 different types: Grid, and Dock
 - Grid creates the actual grid section of the game board,
   consisting of a variety of peg objects
 """
-import arcade.color
 import math
 from utils import *
-from classes.peg import *
+from peg import Peg
 
 class Grid:
     def __init__(self):

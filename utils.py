@@ -1,6 +1,4 @@
 import arcade
-from arcade.examples.array_backed_grid_sprites_2 import COLUMN_COUNT
-from arcade.future.input.input_manager_example import WINDOW_WIDTH
 
 # --- Tile constants ---
 TILE_SCALE = .3
