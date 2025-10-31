@@ -330,11 +330,11 @@ class GameView(arcade.View):
 
                     # if one neighboring peg is vacant, check which collection it belongs to and add the tile to it
                     # accounts for if the
-                    if left_empty:
+                    if left_empty: #or move.center_x - (TILE_WIDTH + INNER_MARGIN) < OUTER_MARGIN:
                         if move_count < len(moved_tiles):  # fix maybe
                             if len(self.collections) == 0:
                                 new_collection.add(move, 0)
-                    elif right_empty:
+                    elif right_empty: #or move.center_x - (TILE_WIDTH + INNER_MARGIN) > WINDOW_WIDTH - OUTER_MARGIN:
                         if move_count > 0:  # fix maybe
                             if len(self.collections) == 0:
                                 new_collection.add(move, new_collection.get_length())
