@@ -94,7 +94,7 @@ class Button():
             arcade.draw_circle_filled(self.pos[0], self.pos[1], self.radius, self.color)
         else:
             arcade.draw_circle_filled(self.pos[0], self.pos[1], self.radius, self.pressed_color)
-        button_text = arcade.Text(self.text, self.pos[0], self.pos[0], arcade.color.BLACK, 11,
+        button_text = arcade.Text(self.text, self.pos[0], self.pos[1], arcade.color.BLACK, 11,
                              anchor_x="center", anchor_y="center")
         button_text.draw()
 
