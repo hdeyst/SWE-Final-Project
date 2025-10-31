@@ -1,14 +1,13 @@
 class Collection:
-    def __init__(self, tile): #assuming a collection will be created whenever a tile is added to the board alone
-        self.tiles = [tile]
+    def __init__(self): #assuming a collection will be created whenever a tile is added to the board alone
+        self.tiles = []
         self.isSet = True
 
-    def add(self, tile, index):
-        self.tiles.insert(index, tile) #ensuring the list will be in the same order as on the board
-                                       #could use positions to determine order if we want to make Tile less abstract?
+    def add(self, tile, ):
+        self.tiles.append(tile)
 
-    def remove(self, item):
-        self.tiles.remove(item)
+    def clear(self):
+        self.tiles.clear()
 
     def getValue(self):
         sum = 0
@@ -42,7 +41,7 @@ class Collection:
                 return False
         return True
 
-    def isValid(self):
+    def is_valid(self):
         if self.set() == True or self.run() == True:
             return True
         return False
