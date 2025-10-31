@@ -94,6 +94,7 @@ class GameView(arcade.View):
                 tile.center_x = tile.start_of_turn_x
                 tile.center_y = tile.start_of_turn_y
                 # TODO: make this more efficient
+
                 # this is setting the place where the tile is moving to occupied.
                 for peg in self.gameboard.all_pegs:
                     if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
@@ -221,7 +222,7 @@ class GameView(arcade.View):
             primary_tile = tiles[-1]
 
             if pegs:
-                associated_peg = pegs[-1]
+                associated_peg = self.gameboard.grid.get_nearest_peg(pegs[-1])
                 associated_peg.empty_peg()
                 print(associated_peg)
 
