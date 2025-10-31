@@ -17,13 +17,8 @@ class Collection:
                 elif tile.center_x > RIGHT_BOUND and tile.center_x > self.right_bound:
                     self.right_bound = tile.center_x
 
-    def add(self, tile, index):
-        self.tiles.append(tile) #ensuring the list will be in the same order as on the board
-                                       #could use positions to determine order if we want to make Tile less abstract?
-        if tile.center_x < LEFT_BOUND and tile.center_x < self.left_bound:
-            self.left_bound = tile.center_x
-        elif tile.center_x > RIGHT_BOUND and tile.center_x > self.right_bound:
-            self.right_bound = tile.center_x
+    def add(self, tile):
+        self.tiles.append(tile)
 
     def remove(self, item):
         self.tiles.remove(item)
@@ -80,7 +75,7 @@ class Collection:
                 return False
         return True
 
-    def isValid(self):
-        if self.set() == True or self.run() == True:
+    def is_valid(self):
+        if self.set() or self.run():
             return True
         return False
