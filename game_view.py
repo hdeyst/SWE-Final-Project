@@ -13,7 +13,7 @@ class GameView(arcade.View):
 
         self.gameboard = Gameboard()
 
-        # create list of tile sprites (which will use quinn's tiles)
+        # create list of all game tile sprites
         self.tile_list = arcade.SpriteList()
 
         #keeping track of how many tiles are in play/left in the deck
