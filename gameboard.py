@@ -6,8 +6,8 @@ from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_C
 
 class Gameboard:
     def __init__(self):
-        self.grid = Grid(COLUMN_COUNT, ROW_COUNT)
-        self.dock = Dock(COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+        self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
+        self.dock = Dock("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
         self.coords_dict = {}
 
         # make a mega list of all pegs from dock and grid

@@ -14,15 +14,15 @@ from utils import COLUMN_COUNT_DOCK
 from peg import Peg
 
 class Grid:
-    def __init__(self, columns, rows):
+    def __init__(self, placement, columns, rows):
         self.width = GRID_WIDTH
         self.height = GRID_HEIGHT
 
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
 
-        self.placement = "grid"
-        print(f"filling grid w/ pegs: {0}")
+        self.placement = placement
+        print(f"filling {placement} w/ pegs!")
         # create 2D array of pegs
         for row in range(rows):
             # add nested lists to represent grid rows
@@ -33,7 +33,11 @@ class Grid:
                 x = (col * (TILE_WIDTH + INNER_MARGIN) +
                      (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN)
                 y = (row * (TILE_HEIGHT + INNER_MARGIN) +
-                     (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN) + DOCK_OFFSET
+                     (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
+
+                # move grid up to make space for dock
+                if placement == "grid":
+                    y += DOCK_OFFSET
 
                 # create peg object
                 peg = Peg(
@@ -49,7 +53,7 @@ class Grid:
                 # add peg to the various sprite lists
                 self.peg_sprites[row].append(peg)
                 self.peg_sprite_list.append(peg)
-        print(f"grid filled!: {len(self.peg_sprites)}")
+        print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
 
     def draw(self):
         arcade.draw_rect_filled(
@@ -77,38 +81,10 @@ class Grid:
 
 
 class Dock(Grid):
-    def __init__(self, columns, rows):
-        super().__init__(columns, rows)
+    def __init__(self, placement, columns, rows):
+        super().__init__(placement, columns, rows)
         self.width = WINDOW_WIDTH
-
-        # dock inherits from grid, so gotta reset these params
-        self.placement = "dock"
-
-        self.peg_sprite_list = arcade.SpriteList()
-        self.peg_sprites = []
-        print(f"filling dock w/ pegs: {0}")
-        for row in range(rows):
-            self.peg_sprites.append([])
-            for column in range(columns):
-                x = column*(TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH/2 + INNER_MARGIN)+OUTER_MARGIN
-
-                y = row*(TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT/2 + INNER_MARGIN)+ OUTER_MARGIN
-
-                # create peg object
-                peg = Peg(
-                    TILE_WIDTH,
-                    TILE_HEIGHT,
-                    placement=self.placement,
-                    row=row,
-                    column=column
-                )
-                peg.position = (x, y)
-                print(peg.position)
-
-                self.peg_sprite_list.append(peg)
-                self.peg_sprites[row].append(peg)
-        print(f"dock filled!: {len(self.peg_sprites)}")
-
+        self.placement = placement
 
     def draw(self):
         arcade.draw_rect_filled(
