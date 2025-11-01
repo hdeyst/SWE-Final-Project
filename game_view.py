@@ -303,7 +303,7 @@ class LoseView(arcade.View):
                                 [WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4],"Play Again")
 
         self.quit = Button(100, arcade.color.BITTERSWEET,
-                           [WINDOW_WIDTH * 3, WINDOW_HEIGHT / 4], "Quit Game")
+                           [WINDOW_WIDTH * 3/4, WINDOW_HEIGHT / 4], "Quit Game")
 
         self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
                                 75, anchor_x="center", anchor_y="center")
