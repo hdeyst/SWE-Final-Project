@@ -8,7 +8,7 @@ class Game(arcade.View):
         super().__init__()
         self.background_color = arcade.color.ASH_GREY
         self.grid = Grid(COLUMN_COUNT, ROW_COUNT)
-        self.dock = Dock("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+        self.dock = Dock(COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
         print(self.grid)
         print()
         print(self.dock)

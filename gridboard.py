@@ -21,9 +21,8 @@ class Grid:
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
 
-        # dock inherits from grid, so don't hardcode "grid" here
         self.placement = "grid"
-
+        print(f"filling grid w/ pegs: {0}")
         # create 2D array of pegs
         for row in range(rows):
             # add nested lists to represent grid rows
@@ -50,6 +49,7 @@ class Grid:
                 # add peg to the various sprite lists
                 self.peg_sprites[row].append(peg)
                 self.peg_sprite_list.append(peg)
+        print(f"grid filled!: {len(self.peg_sprites)}")
 
     def draw(self):
         arcade.draw_rect_filled(
@@ -77,14 +77,16 @@ class Grid:
 
 
 class Dock(Grid):
-    def __init__(self, placement, columns, rows):
+    def __init__(self, columns, rows):
         super().__init__(columns, rows)
         self.width = WINDOW_WIDTH
+
+        # dock inherits from grid, so gotta reset these params
         self.placement = "dock"
 
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
-
+        print(f"filling dock w/ pegs: {0}")
         for row in range(rows):
             self.peg_sprites.append([])
             for column in range(columns):
@@ -92,17 +94,20 @@ class Dock(Grid):
 
                 y = row*(TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT/2 + INNER_MARGIN)+ OUTER_MARGIN
 
-                # create peg objects
-                peg = Peg(TILE_WIDTH, TILE_HEIGHT, placement=self.placement, row=row, column=column)
-                peg.set_center(x, y)
+                # create peg object
+                peg = Peg(
+                    TILE_WIDTH,
+                    TILE_HEIGHT,
+                    placement=self.placement,
+                    row=row,
+                    column=column
+                )
+                peg.position = (x, y)
+                print(peg.position)
 
                 self.peg_sprite_list.append(peg)
                 self.peg_sprites[row].append(peg)
-
-        for peg in self.peg_sprite_list:
-            print(peg)
-
-        print(self.peg_sprite_list)
+        print(f"dock filled!: {len(self.peg_sprites)}")
 
 
     def draw(self):
@@ -114,6 +119,8 @@ class Dock(Grid):
             color=arcade.color.ROSY_BROWN
         )
         self.peg_sprite_list.draw()
+
+
 
 class Button():
     def __init__(self, radius, color, pos, text=''):

@@ -34,7 +34,6 @@ class Grid2:
                     column=col
                 )
                 peg.position = (x, y)
-                print(peg.position)
 
                 # add peg to the various sprite lists
                 self.peg_sprites[row].append(peg)
