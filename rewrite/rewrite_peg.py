@@ -18,3 +18,4 @@ class Peg2(arcade.SpriteSolidColor):
         return (f"{self.placement} peg! "
                 f"coords: {self.row}, {self.column} "
                 f"tile: {self.tile}")
+
