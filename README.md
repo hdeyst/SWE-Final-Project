@@ -4,7 +4,7 @@ _____
 `python main.py`
 
 ### Testing:
-Included are various keybinds that are very helpful for testing:
+Included are various key binds that are very helpful for testing:
 - E: This acts as end turn and saves the tiles where they are on the board.
 - S: This acts as a step back or rebase, and sends the tiles back to where they were 1 "turn" before.
 - Q: This acts as the checker and checks if you made a valid move.
