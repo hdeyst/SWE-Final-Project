@@ -22,7 +22,7 @@ class Grid:
         self.peg_sprites = []
 
         self.placement = placement
-        print(f"filling {placement} w/ pegs!")
+        #print(f"filling {placement} w/ pegs!")
         # create 2D array of pegs
         for row in range(rows):
             # add nested lists to represent grid rows
@@ -48,12 +48,12 @@ class Grid:
                     column=col
                 )
                 peg.position = (x, y)
-                print(peg.position)
+                #print(peg.position)
 
                 # add peg to the various sprite lists
                 self.peg_sprites[row].append(peg)
                 self.peg_sprite_list.append(peg)
-        print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
+        #print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
 
     def draw(self):
         arcade.draw_rect_filled(
