@@ -2,6 +2,7 @@ from utils import *
 from gameboard import Gameboard
 from gridboard import Button
 from tile import Tile
+from collection import Collection
 
 class GameView(arcade.View):
     """A game view."""
@@ -32,6 +33,40 @@ class GameView(arcade.View):
         for _ in range(STARTING_TILE_AMT):
             self.deal_tile()
 
+    def save_turn(self):
+        for tile in self.tile_list:
+            tile.start_of_turn_x = 0
+            tile.start_of_turn_y = 0
+            if tile.start_in_dock != tile.in_dock:
+                tile.start_in_dock = tile.in_dock
+                self.in_hand -= 1
+            if self.in_hand == 0:
+                self.window.show_view(WinView())
+        print("Turn Saved")
+    def roll_back(self):
+        # for now if user press' S reset tiles to O.G. Poss
+        for tile in self.tile_list:
+            if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                # look through all pegs to find where tile was sitting (before we move it)
+                # then set that peg to unoccupied before we move it back.
+                # TODO: make this more efficient
+                for peg in self.gameboard.all_pegs:
+                    if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                        peg.empty_peg()
+                        break
+                tile.center_x = tile.start_of_turn_x
+                tile.center_y = tile.start_of_turn_y
+                # TODO: make this more efficient
+                # this is setting the place where the tile is moving to occupied.
+                for peg in self.gameboard.all_pegs:
+                    if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                        peg.occupy_peg(tile)
+                        break
+                # set the start of turns back to 0 meaning "unchanged"
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
+        print("Turn Rebased")
+
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
         self.held_tiles = []
@@ -47,6 +82,8 @@ class GameView(arcade.View):
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
                 self.tile_list.append(tile)
+
+
 
     def deal_tile(self):
         if len(self.tile_list) < 1 or self.in_hand >= COLUMN_COUNT_DOCK * 2:
@@ -215,41 +252,171 @@ class GameView(arcade.View):
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
 
-    def on_key_press(self, symbol: int, modifiers: int):
-        # for now if user press' S reset tiles to O.G. Poss
-        if symbol == arcade.key.S:
+    def button_press(self, x, y):
+        pos = [x, y]
+        if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
+
+            open_collection = False
+            reset = False
+            collection = Collection()
+            # 4 cases, each peg is ONE of these...
+            for peg in self.gameboard.all_pegs:
+                # Only looking at pegs in grid
+                if peg.placement == "grid":
+                    # if there is a tile ... and no current collection
+                    if peg.is_occupied() and not open_collection:
+                        # print("Tile, closed collection")
+                        collection.add(peg.get_tile())
+                        open_collection = True
+
+                    # if there is a tile ... and a curr collection
+                    elif peg.is_occupied() and open_collection:
+                        # print("Tile, open collection")
+                        # adds tile to the collection
+                        collection.add(peg.get_tile())
+
+                    # if there is NO tile ... and a curr collection
+                    elif not peg.is_occupied() and open_collection:
+                        # print("No tile, open collection")
+                        # close the collection
+                        open_collection = False
+                        if not collection.is_valid():
+                            # if collection is invalid, bounce tiles
+                            self.roll_back()
+                            reset = True
+                            collection.clear()
+                            break
+                        else:
+                            collection.clear()
+                    # No tile No collection (empty peg case)
+                    else:
+                        # print("No tile, closed collection")
+                        pass
+            if not reset:
+                self.save_turn()
+
+            """
             for tile in self.tile_list:
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
-                    # look through all pegs to find where tile was sitting (before we move it)
-                    # then set that peg to unoccupied before we move it back.
-                    # TODO: make this more efficient
-                    for peg in self.gameboard.all_pegs:
-                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.empty_peg()
-                            break
-                    tile.center_x = tile.start_of_turn_x
-                    tile.center_y = tile.start_of_turn_y
-                    # TODO: make this more efficient
-                    # this is setting the place where the tile is moving to occupied.
-                    for peg in self.gameboard.all_pegs:
-                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.occupy_peg(tile)
-                            break
-                    # set the start of turns back to 0 meaning "unchanged"
-                    tile.start_of_turn_x = 0
-                    tile.start_of_turn_y = 0
-            print("Turn Rebased")
+                    moved_tiles.append(tile)
+
+            # sort the moved tiles on x and y (in case of multiple moves in one turn)
+            moved_tiles.sort(key=lambda t: (t.center_y, t.center_x))
+
+            count = 0
+            separator = Tile(f"tiles/EXAMPLE_00.png", scale=TILE_SCALE)
+            moves = []
+            current = []
+            new_collection = Collection()
+            new_collection.clear()
+            temp_collection = Collection()
+            temp_collections = []
+
+            # to separate moves, insert an identifier in the list
+            for tile in moved_tiles:
+                if count == 0:
+                    pass
+                else: # need to account for if it is on the same line but not directly connected
+                    if tile.center_y != moved_tiles[count - 1].center_y and moved_tiles[count - 1] != separator:
+                        moved_tiles.insert(count, separator)
+                count += 1
+
+            # move separate moves into their own lists, contained in one mega list
+            for tile in moved_tiles:
+                if tile.__str__() == "EXAMPLE0":
+                    moves.append(current)
+                    current = []
+                else:
+                    current.append(tile)
+            if current:
+                moves.append(current)
+
+            right_empty = False
+            left_empty = False
+            move_count = 0
+            count = 0
+
+            # add each seperate move into its own collection
+            for move in moved_tiles:
+                if move.__str__() == "EXAMPLE0":
+                    #temp_collections.append(new_collection)
+                    new_collection.clear()
+                    move_count = 1
+                else:
+                    left_empty = False
+                    right_empty = False
+                    # check to see if left and right adjacent pegs are filled
+                    for peg in self.gameboard.grid.peg_sprite_list:
+                        #if (peg.center_x - (
+                        #        TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
+                        if (self.gameboard.get_left_neighbor(peg, tile)):
+                            if peg.tile == None:
+                                if new_collection.get_length() < 1:  # dont know why this isnt working
+                                    left_empty = True
+
+                        #if (peg.center_x + (
+                        #       TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
+                        if (self.gameboard.get_right_neighbor(peg, tile)):
+                            if peg.tile == None:
+                                right_empty = True
+
+                    # if one neighboring peg is vacant, check which collection it belongs to and add the tile to it
+                    # accounts for if the
+                    if left_empty: #or move.center_x - (TILE_WIDTH + INNER_MARGIN) < OUTER_MARGIN:
+                        if move_count < len(moved_tiles):  # fix maybe
+                            if len(self.collections) == 0:
+                                new_collection.add(move, 0)
+                    elif right_empty: #or move.center_x - (TILE_WIDTH + INNER_MARGIN) > WINDOW_WIDTH - OUTER_MARGIN:
+                        if move_count > 0:  # fix maybe
+                            if len(self.collections) == 0:
+                                new_collection.add(move, new_collection.get_length())
+
+                    # if collections is not empty, check if the current tile is adjacent to any other collection
+                    if len(self.collections) > 0:
+                        for collections in self.collections:
+                            near_bounds = collections.get_bounds()
+                            if near_bounds[0] == tile.center_x - (TILE_WIDTH + INNER_MARGIN):
+                                collections.add(tile)
+                                print(tile)
+                            elif near_bounds[1] == tile.center_x + (TILE_WIDTH + INNER_MARGIN):
+                                collections.add(tile)
+                                print(tile)
+                try:
+                    if moved_tiles[count + 1].__str__() == "EXAMPLE0":
+                        temp_collections.append(new_collection)
+                except(IndexError):
+                    temp_collections.append(new_collection)
+                    # elif len(move) != len(new_collection):
+                move_count += 1
+                count += 1
+
+            print(temp_collections)
+            for collection in temp_collections:
+                for tile in collection.get_tiles():
+                    print(tile)
+                print("\n")
+        """
+        """moved_tiles = []
+        pos = [x, y]
+        if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
+            for tile in self.tile_list:
+                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    moved_tiles.append(tile)
+
+        temp_collection = Collection()
+        temp_collections = []
+        for peg in self.gameboard.grid.peg_sprite_list:
+            if peg.tile != None:
+                if peg.tile in moved_tiles:
+                    if peg.tile."""
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        self.roll_back()
 
         if symbol == arcade.key.E:
-            for tile in self.tile_list:
-                tile.start_of_turn_x = 0
-                tile.start_of_turn_y = 0
-                if tile.start_in_dock != tile.in_dock:
-                    tile.start_in_dock = tile.in_dock
-                    self.in_hand -= 1
-                if self.in_hand == 0:
-                    self.window.show_view(WinView())
-            print("Turn Ended")
+            self.save_turn()
 
         if symbol == arcade.key.D:
             self.deal_tile()
