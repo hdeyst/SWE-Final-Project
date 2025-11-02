@@ -1,7 +1,8 @@
-from utils import *
+"""File holding Peg class"""
+import arcade
+from utils import PEG_COLORS, convert_to_grid_coords
 
 class Peg(arcade.SpriteSolidColor):
-
     def __init__(self, width, height, placement):
         super().__init__(width, height, color=PEG_COLORS[placement]["empty"])
 

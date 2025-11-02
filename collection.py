@@ -1,52 +1,14 @@
-import arcade
-import utils
-from classes.tile import Tile
-from utils import LEFT_BOUND, RIGHT_BOUND
-
-
 class Collection:
-    def __init__(self, tile=None): #assuming a collection will be created whenever a tile is added to the board alone
+    def __init__(self, tile): #assuming a collection will be created whenever a tile is added to the board alone
         self.tiles = [tile]
         self.isSet = True
-        self.left_bound = LEFT_BOUND
-        self.right_bound = RIGHT_BOUND
-        if tile is not None:
-            for tile in self.tiles:
-                if tile.center_x < LEFT_BOUND and tile.center_x < self.left_bound:
-                    self.left_bound = tile.center_x
-                elif tile.center_x > RIGHT_BOUND and tile.center_x > self.right_bound:
-                    self.right_bound = tile.center_x
 
     def add(self, tile, index):
-        self.tiles.append(tile) #ensuring the list will be in the same order as on the board
+        self.tiles.insert(index, tile) #ensuring the list will be in the same order as on the board
                                        #could use positions to determine order if we want to make Tile less abstract?
-        if tile.center_x < LEFT_BOUND and tile.center_x < self.left_bound:
-            self.left_bound = tile.center_x
-        elif tile.center_x > RIGHT_BOUND and tile.center_x > self.right_bound:
-            self.right_bound = tile.center_x
 
     def remove(self, item):
         self.tiles.remove(item)
-        if len(self.tiles) > 0:
-            for tile in self.tiles:
-                if tile.center_x < LEFT_BOUND and tile.center_x < self.left_bound:
-                    self.left_bound = tile.center_x
-                elif tile.center_x > RIGHT_BOUND and tile.center_x > self.right_bound:
-                    self.right_bound = tile.center_x
-
-    def clear(self):
-        for e in self.tiles:
-            self.tiles.remove(e)
-
-    def get_tiles(self):
-        return self.tiles
-
-
-    def get_bounds(self):
-        return self.left_bound, self.right_bound
-
-    def get_length(self):
-        return len(self.tiles)
 
     def getValue(self):
         sum = 0

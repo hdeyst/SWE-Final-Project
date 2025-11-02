@@ -1,5 +1,7 @@
-from utils import *
-from classes.game_view import GameView
+"""file to run game through"""
+import arcade
+from utils import WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT
+from game_view import GameView
 
 def main():
     """ Main function """

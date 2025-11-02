@@ -1,8 +1,7 @@
-from operator import truediv
-
+"""File holding Gameboard class"""
 import arcade
-from classes.gridboard import Grid, Dock
-from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK, TILE_WIDTH, INNER_MARGIN
+from gridboard import Grid, Dock
+from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK
 
 class Gameboard:
     def __init__(self):
@@ -17,16 +16,11 @@ class Gameboard:
         for dp in self.dock.peg_sprite_list:
             self.all_pegs.append(dp)
 
-        # add peg coordinates to a dictionary. keys are the grid coords, values are the window coords
+        # add peg coordinates to a dictionary. keys are the grid coords, values
+        # are the window coords
         for peg in self.all_pegs:
             self.coords_dict[convert_to_grid_coords(peg.center_x, peg.center_y)] = peg.position
 
-        # print out grid coords
-        # for peg in self.all_pegs:
-        #     print(peg)
-
-        # for coord in self.coords_dict:
-        #     print(f"{coord}: {self.coords_dict[coord]}")
 
     def draw(self):
         self.grid.draw()
@@ -43,6 +37,7 @@ class Gameboard:
             pegs = arcade.get_sprites_at_point(neighbor, self.all_pegs)
             if pegs[-1]:
                 return pegs[-1]
+        return False
 
     # use the coord dictionary to get peg neighbors
     def get_right_peg_neighbor(self, peg):
@@ -56,15 +51,4 @@ class Gameboard:
             pegs = arcade.get_sprites_at_point(neighbor, self.all_pegs)
             if pegs[-1]:
                 return pegs[-1]
-
-    def get_right_neighbor(self, peg, tile):
-        if peg.center_x - (TILE_WIDTH + INNER_MARGIN) == tile.center_x and peg.center_y == tile.center_y:
-            return True
-        else:
-            return False
-
-    def get_left_neighbor(self, peg, tile):
-        if peg.center_x + (TILE_WIDTH + INNER_MARGIN) == tile.center_x and peg.center_y == tile.center_y:
-            return True
-        else:
-            return False
+        return False

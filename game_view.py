@@ -1,12 +1,7 @@
-import arcade
-
-from classes.gameboard import Gameboard
-from classes.gridboard import *
-from classes.tile import Tile
-from classes.collection import Collection
-
-import utils
-import random
+from utils import *
+from gameboard import Gameboard
+from gridboard import Button
+from tile import Tile
 
 class GameView(arcade.View):
     """A game view."""
@@ -28,12 +23,9 @@ class GameView(arcade.View):
         self.held_tiles = None
         self.held_tiles_original_position = None
 
-        self.collections = []
-
-        self.pass_button = Button(100, 100, arcade.color.GREEN,
-                                  x_pos=WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
-                                  y_pos=TILE_HEIGHT*2,
-                                  text="Pass")
+        self.pass_button = Button(50, arcade.color.GREEN,
+                                  [WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
+                                  TILE_HEIGHT*2],"Pass")
 
         self.build_deck(35, 55)
         self.tile_list.shuffle()
@@ -81,11 +73,6 @@ class GameView(arcade.View):
         self.num_dealt += 1
         self.in_hand += 1
 
-    def setup(self):
-        self.build_deck(35, 55)
-        self.tile_list.shuffle()
-        for _ in range(STARTING_TILE_AMT):
-            self.deal_tile()
 
     # Draws the gameboard grid
     def on_draw(self):
@@ -110,7 +97,32 @@ class GameView(arcade.View):
         # get any tiles that might be selected
         self.pick_up_tile(x, y)
 
-        self.button_press(x, y)
+        # indicate pass_button was selected
+        pos = [x, y]
+        if self.pass_button.is_clicked(pos):
+            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
+            for tile in self.tile_list:
+                #reset tile positions if any were moved
+                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                    # look through all pegs to find where tile was sitting (before we move it)
+                    # then set that peg to unoccupied before we move it back.
+                    # TODO: make this more efficient
+                    for peg in self.gameboard.all_pegs:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.empty_peg()
+                            break
+                    tile.center_x = tile.start_of_turn_x
+                    tile.center_y = tile.start_of_turn_y
+                    # TODO: make this more efficient
+                    # this is setting the place where the tile is moving to occupied.
+                    for peg in self.gameboard.all_pegs:
+                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
+                            peg.occupy_peg(tile)
+                            break
+                    # set the start of turns back to 0 meaning "unchanged"
+                    tile.start_of_turn_x = 0
+                    tile.start_of_turn_y = 0
+            self.deal_tile()
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -172,7 +184,6 @@ class GameView(arcade.View):
         for tile in self.held_tiles:
             tile.center_x += dx
             tile.center_y += dy
-        # print(f"{x}, {y}, {dx}, {dy}")
 
     def pull_to_top(self, tile: arcade.Sprite):
         """ Pull tile to top of rendering order (last to render, looks on-top) """
@@ -203,7 +214,6 @@ class GameView(arcade.View):
                 # print(primary_tile.center_x)
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
-
 
     def on_key_press(self, symbol: int, modifiers: int):
         # for now if user press' S reset tiles to O.G. Poss
@@ -241,6 +251,10 @@ class GameView(arcade.View):
                     self.window.show_view(WinView())
             print("Turn Ended")
 
+        if symbol == arcade.key.D:
+            self.deal_tile()
+            pass
+
         if symbol == arcade.key.W:
             self.in_hand = 0
             self.window.show_view(WinView())
@@ -249,155 +263,20 @@ class GameView(arcade.View):
             self.in_hand = 1
             self.window.show_view(LoseView())
 
-        if symbol == arcade.key.D:
-            self.deal_tile()
-            pass
-        # This sets all start of turn values back to 0
-        # This is to "End your turn and move on to a "new turn" and is helpful for testing"
-
-    def button_press(self, x, y):
-
-        moved_tiles = []
-        left_empty = True
-        right_empty = True
-
-        valid_move = False
-        pos = [x, y]
-        if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            for tile in self.tile_list:
-                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
-                    moved_tiles.append(tile)
-
-            # sort the moved tiles on x and y (in case of multiple moves in one turn)
-            moved_tiles.sort(key=lambda t: (t.center_y, t.center_x))
-
-            count = 0
-            separator = Tile(f"tiles/EXAMPLE_00.png", scale=TILE_SCALE)
-            moves = []
-            current = []
-            new_collection = Collection()
-            new_collection.clear()
-            temp_collection = Collection()
-            temp_collections = []
-
-            # to separate moves, insert an identifier in the list
-            for tile in moved_tiles:
-                if count == 0:
-                    pass
-                else: # need to account for if it is on the same line but not directly connected
-                    if tile.center_y != moved_tiles[count - 1].center_y and moved_tiles[count - 1] != separator:
-                        moved_tiles.insert(count, separator)
-                count += 1
-
-            # move separate moves into their own lists, contained in one mega list
-            for tile in moved_tiles:
-                if tile.__str__() == "EXAMPLE0":
-                    moves.append(current)
-                    current = []
-                else:
-                    current.append(tile)
-            if current:
-                moves.append(current)
-
-            right_empty = False
-            left_empty = False
-            move_count = 0
-            count = 0
-            # add each seperate move into its own collection
-            for move in moved_tiles:
-                if move.__str__() == "EXAMPLE0":
-                    #temp_collections.append(new_collection)
-                    new_collection.clear()
-                    move_count = 1
-                else:
-                    left_empty = False
-                    right_empty = False
-                    # check to see if left and right adjacent pegs are filled
-                    for peg in self.gameboard.grid.peg_sprite_list:
-                        #if (peg.center_x - (
-                        #        TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
-                        if (self.gameboard.get_left_neighbor(peg, tile)):
-                            if peg.tile == None:
-                                if new_collection.get_length() < 1:  # dont know why this isnt working
-                                    left_empty = True
-
-                        #if (peg.center_x + (
-                        #       TILE_WIDTH + INNER_MARGIN)) == tile.center_x and peg.center_y == tile.center_y:
-                        if (self.gameboard.get_right_neighbor(peg, tile)):
-                            if peg.tile == None:
-                                right_empty = True
-
-                    # if one neighboring peg is vacant, check which collection it belongs to and add the tile to it
-                    # accounts for if the
-                    if left_empty: #or move.center_x - (TILE_WIDTH + INNER_MARGIN) < OUTER_MARGIN:
-                        if move_count < len(moved_tiles):  # fix maybe
-                            if len(self.collections) == 0:
-                                new_collection.add(move, 0)
-                    elif right_empty: #or move.center_x - (TILE_WIDTH + INNER_MARGIN) > WINDOW_WIDTH - OUTER_MARGIN:
-                        if move_count > 0:  # fix maybe
-                            if len(self.collections) == 0:
-                                new_collection.add(move, new_collection.get_length())
-
-                    # if collections is not empty, check if the current tile is adjacent to any other collection
-                    if len(self.collections) > 0:
-                        for collections in self.collections:
-                            near_bounds = collections.get_bounds()
-                            if near_bounds[0] == tile.center_x - (TILE_WIDTH + INNER_MARGIN):
-                                collections.add(tile)
-                                print(tile)
-                            elif near_bounds[1] == tile.center_x + (TILE_WIDTH + INNER_MARGIN):
-                                collections.add(tile)
-                                print(tile)
-                try:
-                    if moved_tiles[count + 1].__str__() == "EXAMPLE0":
-                        temp_collections.append(new_collection)
-                except(IndexError):
-                    temp_collections.append(new_collection)
-                    # elif len(move) != len(new_collection):
-                move_count += 1
-                count += 1
-
-            print(temp_collections)
-            for collection in temp_collections:
-                for tile in collection.get_tiles():
-                    print(tile)
-                print("\n")
-
-        """moved_tiles = []
-        pos = [x, y]
-        if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            for tile in self.tile_list:
-                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
-                    moved_tiles.append(tile)
-            
-        temp_collection = Collection()
-        temp_collections = []
-        for peg in self.gameboard.grid.peg_sprite_list:
-            if peg.tile != None:
-                if peg.tile in moved_tiles:
-                    if peg.tile."""
-
-
-
-
 class WinView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = arcade.color.OLIVINE
-        self.play_again = Button(100, 200, arcade.color.LEMON_CHIFFON,
-                                 x_pos= WINDOW_WIDTH / 4,
-                                 y_pos= WINDOW_HEIGHT / 4,
-                                 text="Play Again")
+        self.play_again = Button(100, arcade.color.LEMON_CHIFFON,
+                                 [WINDOW_WIDTH / 4,
+                                 WINDOW_HEIGHT / 4],
+                                 "Play Again")
 
-        self.quit = Button(100, 200, arcade.color.LEMON_CHIFFON,
-                           x_pos=WINDOW_WIDTH * 3/4,
-                           y_pos=WINDOW_HEIGHT / 4,
-                           text="Quit Game")
+        self.quit = Button(100, arcade.color.LEMON_CHIFFON, [WINDOW_WIDTH * 3/4,
+                           WINDOW_HEIGHT / 4],"Quit Game")
 
-        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
-                                  anchor_x="center", anchor_y="center")
+        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
+                                75, anchor_x="center", anchor_y="center")
 
     def on_draw(self):
         self.clear()
@@ -420,18 +299,14 @@ class LoseView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = arcade.color.BABY_PINK
-        self.play_again = Button(100, 200, arcade.color.BITTERSWEET,
-                                 x_pos= WINDOW_WIDTH / 4,
-                                 y_pos= WINDOW_HEIGHT / 4,
-                                 text="Play Again")
+        self.play_again = Button(100, arcade.color.BITTERSWEET,
+                                [WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4],"Play Again")
 
-        self.quit = Button(100, 200, arcade.color.BITTERSWEET,
-                           x_pos=WINDOW_WIDTH * 3/4,
-                           y_pos=WINDOW_HEIGHT / 4,
-                           text="Quit Game")
+        self.quit = Button(100, arcade.color.BITTERSWEET,
+                           [WINDOW_WIDTH * 3/4, WINDOW_HEIGHT / 4], "Quit Game")
 
-        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK, 75,
-                                  anchor_x="center", anchor_y="center")
+        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
+                                75, anchor_x="center", anchor_y="center")
 
     def on_draw(self):
         self.clear()
