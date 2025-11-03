@@ -1,4 +1,7 @@
-from utils import *
+"""File containing GameView, WinView, and LoseView, the three screens of the game"""
+import arcade
+from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT
+from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
 from gameboard import Gameboard
 from gridboard import Button
 from tile import Tile
@@ -17,9 +20,8 @@ class GameView(arcade.View):
         # create list of all game tile sprites
         self.tile_list = arcade.SpriteList()
 
-        #keeping track of how many tiles are in play/left in the deck
-        self.num_dealt = 0
-        self.in_hand = 0
+        #num dealt is index 0, num in hand is index 1 (needed less instance variables?)
+        self.used_tiles = [0,0]
 
         self.held_tiles = None
         self.held_tiles_original_position = None
@@ -39,8 +41,8 @@ class GameView(arcade.View):
             tile.start_of_turn_y = 0
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
-                self.in_hand -= 1
-            if self.in_hand == 0:
+                self.used_tiles[1] -= 1
+            if self.used_tiles[1] == 0:
                 self.window.show_view(WinView())
         print("Turn Saved")
 
@@ -50,14 +52,12 @@ class GameView(arcade.View):
             if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                 # look through all pegs to find where tile was sitting (before we move it)
                 # then set that peg to unoccupied before we move it back.
-                # TODO: make this more efficient
                 for peg in self.gameboard.all_pegs:
                     if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
                         peg.empty_peg()
                         break
                 tile.center_x = tile.start_of_turn_x
                 tile.center_y = tile.start_of_turn_y
-                # TODO: make this more efficient
                 # this is setting the place where the tile is moving to occupied.
                 for peg in self.gameboard.all_pegs:
                     if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
@@ -87,7 +87,7 @@ class GameView(arcade.View):
 
 
     def deal_tile(self):
-        if len(self.tile_list) < 1 or self.in_hand >= COLUMN_COUNT_DOCK * 2:
+        if len(self.tile_list) < 1 or self.used_tiles[1] >= COLUMN_COUNT_DOCK * 2:
             print("ERROR. Tile cannot be dealt")
             return False
 
@@ -103,14 +103,15 @@ class GameView(arcade.View):
                     peg = space
                     break
 
-        tile = self.tile_list[self.num_dealt]
+        tile = self.tile_list[self.used_tiles[0]]
 
         tile.position = peg.center_x, peg.center_y
         peg.occupy_peg(tile)
 
-        self.num_dealt += 1
-        self.in_hand += 1
+        self.used_tiles[0] += 1
+        self.used_tiles[1] += 1
 
+        return True
 
     # Draws the gameboard grid
     def on_draw(self):
@@ -144,14 +145,12 @@ class GameView(arcade.View):
                 if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                     # look through all pegs to find where tile was sitting (before we move it)
                     # then set that peg to unoccupied before we move it back.
-                    # TODO: make this more efficient
                     for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
                             peg.empty_peg()
                             break
                     tile.center_x = tile.start_of_turn_x
                     tile.center_y = tile.start_of_turn_y
-                    # TODO: make this more efficient
                     # this is setting the place where the tile is moving to occupied.
                     for peg in self.gameboard.all_pegs:
                         if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
@@ -166,14 +165,13 @@ class GameView(arcade.View):
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
         # revert pass button color
-        pos = [x, y]
-        if self.pass_button.is_clicked(pos):
+        if self.pass_button.is_clicked([x, y]):
             self.pass_button.set_color(arcade.color.GREEN)
 
         if len(self.held_tiles) == 0:
             return
 
-        peg, distance = arcade.get_closest_sprite(self.held_tiles[0], self.gameboard.all_pegs)
+        peg, _ = arcade.get_closest_sprite(self.held_tiles[0], self.gameboard.all_pegs)
         reset_position = True
 
         # See if we are in contact with the closest pile
@@ -198,9 +196,6 @@ class GameView(arcade.View):
 
                 # Success, don't reset position of tiles
                 reset_position = False
-
-        if arcade.check_for_collision(self.held_tiles[0], peg) and peg.tile:
-            occupied_tile = peg.tile
 
         if reset_position:
             # Where-ever we were dropped, it wasn't valid. Reset each tile's position
@@ -252,118 +247,73 @@ class GameView(arcade.View):
                 # print(primary_tile.center_x)
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
+
+    def check_valid_collections(self):
+        open_collection = False
+        reset = False
+        collection = Collection()
+        # 4 cases, each peg is ONE of these...
+        for row in self.gameboard.grid.peg_sprites:
+            collection = Collection()
+            open_collection = False
+            for peg in row:
+                # same collection logic here
+                # Only looking at pegs in grid
+                if peg.placement == "grid":
+                    # if there is a tile ... and no current collection
+                    if peg.is_occupied() and not open_collection:
+                        print("Tile, closed collection")
+                        collection.add(peg.get_tile())
+                        open_collection = True
+
+                    # if there is a tile ... and a curr collection
+                    elif peg.is_occupied() and open_collection:
+                        # print("Tile, open collection")
+                        # adds tile to the collection
+                        collection.add(peg.get_tile())
+
+                    # if there is NO tile ... and a curr collection
+                    elif not peg.is_occupied() and open_collection:
+                        # print("No tile, open collection")
+                        # close the collection
+                        open_collection = False
+                        if not collection.is_valid():
+                            # if collection is invalid, bounce tiles
+                            self.roll_back()
+                            reset = True
+                            collection.clear()
+                        else:
+                            collection.clear()
+        if not reset:
+            self.save_turn()
+
     def button_press(self, x, y):
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            print("button press")
-
-            open_collection = False
-            reset = False
-            collection = Collection()
-            # 4 cases, each peg is ONE of these...
-            for row in self.gameboard.grid.peg_sprites:
-                collection = Collection()
-                open_collection = False
-                for peg in row:
-                # same collection logic here
-                    # Only looking at pegs in grid
-                    if peg.placement == "grid":
-                        # if there is a tile ... and no current collection
-                        if peg.is_occupied() and not open_collection:
-                            print("Tile, closed collection")
-                            collection.add(peg.get_tile())
-                            open_collection = True
-
-                        # if there is a tile ... and a curr collection
-                        elif peg.is_occupied() and open_collection:
-                            # print("Tile, open collection")
-                            # adds tile to the collection
-                            collection.add(peg.get_tile())
-
-                        # if there is NO tile ... and a curr collection
-                        elif not peg.is_occupied() and open_collection:
-                            # print("No tile, open collection")
-                            # close the collection
-                            open_collection = False
-                            if not collection.is_valid():
-                                # if collection is invalid, bounce tiles
-                                self.roll_back()
-                                reset = True
-                                collection.clear()
-                            else:
-                                collection.clear()
-                        # No tile No collection (empty peg case)
-                        else:
-                            # print("No tile, closed collection")
-                            pass
-            if not reset:
-                self.save_turn()
+            self.check_valid_collections()
 
     def on_key_press(self, symbol: int, modifiers: int):
 
         if symbol == arcade.key.S:
             self.roll_back()
 
-        if symbol == arcade.key.E:
+        elif symbol == arcade.key.E:
             self.save_turn()
 
-        if symbol == arcade.key.D:
+        elif symbol == arcade.key.D:
             self.deal_tile()
-            pass
 
-        if symbol == arcade.key.W:
-            self.in_hand = 0
+        elif symbol == arcade.key.W:
+            self.used_tiles[1] = 0
             self.window.show_view(WinView())
 
-        if symbol == arcade.key.L:
-            self.in_hand = 1
+        elif symbol == arcade.key.L:
+            self.used_tiles[1] = 1
             self.window.show_view(LoseView())
 
-        if symbol == arcade.key.Q:
-            print("button press")
-
-            open_collection = False
-            reset = False
-            collection = Collection()
-            # 4 cases, each peg is ONE of these...
-            for row in self.gameboard.grid.peg_sprites:
-                collection = Collection()
-                open_collection = False
-                for peg in row:
-                    # same collection logic here
-                    # Only looking at pegs in grid
-                    if peg.placement == "grid":
-                        # if there is a tile ... and no current collection
-                        if peg.is_occupied() and not open_collection:
-                            print("Tile, closed collection")
-                            collection.add(peg.get_tile())
-                            open_collection = True
-
-                        # if there is a tile ... and a curr collection
-                        elif peg.is_occupied() and open_collection:
-                            # print("Tile, open collection")
-                            # adds tile to the collection
-                            collection.add(peg.get_tile())
-
-                        # if there is NO tile ... and a curr collection
-                        elif not peg.is_occupied() and open_collection:
-                            # print("No tile, open collection")
-                            # close the collection
-                            open_collection = False
-                            if not collection.is_valid():
-                                # if collection is invalid, bounce tiles
-                                self.roll_back()
-                                reset = True
-                                collection.clear()
-                            else:
-                                collection.clear()
-                        # No tile No collection (empty peg case)
-                        else:
-                            # print("No tile, closed collection")
-                            pass
-            if not reset:
-                self.save_turn()
+        elif symbol == arcade.key.Q:
+            self.check_valid_collections()
 
 class WinView(arcade.View):
     def __init__(self):
@@ -377,8 +327,8 @@ class WinView(arcade.View):
         self.quit = Button(100, arcade.color.LEMON_CHIFFON, [WINDOW_WIDTH * 3/4,
                            WINDOW_HEIGHT / 4],"Quit Game")
 
-        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
-                                75, anchor_x="center", anchor_y="center")
+        self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4,
+                                arcade.color.BLACK,75, anchor_x="center", anchor_y="center")
 
     def on_draw(self):
         self.clear()
@@ -407,8 +357,8 @@ class LoseView(arcade.View):
         self.quit = Button(100, arcade.color.BITTERSWEET,
                            [WINDOW_WIDTH * 3/4, WINDOW_HEIGHT / 4], "Quit Game")
 
-        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4, arcade.color.BLACK,
-                                75, anchor_x="center", anchor_y="center")
+        self.text = arcade.Text("You Lost!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4,
+                                arcade.color.BLACK,75, anchor_x="center", anchor_y="center")
 
     def on_draw(self):
         self.clear()
