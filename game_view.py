@@ -75,9 +75,17 @@ class GameView(arcade.View):
 
         for color in COLORS:
             for j in range(13):
-                tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
 
+                tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
                 # Stacked tile placement, places all tiles in the corner stacked on one another
+                tile.center_x = deck_x_pos
+                tile.center_y = deck_y_pos
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
+                self.tile_list.append(tile)
+
+                tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
+                # Creating 2nd Tile for each
                 tile.center_x = deck_x_pos
                 tile.center_y = deck_y_pos
                 tile.start_of_turn_x = 0
