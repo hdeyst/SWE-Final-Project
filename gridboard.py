@@ -44,8 +44,7 @@ class Grid:
                     TILE_WIDTH,
                     TILE_HEIGHT,
                     placement=self.placement,
-                    row=row,
-                    column=col
+                    position=[row, col]
                 )
                 peg.position = (x, y)
                 #print(peg.position)
@@ -96,6 +95,8 @@ class Dock(Grid):
         )
         self.peg_sprite_list.draw()
 
+    def get_sprites(self):
+        return self.peg_sprite_list
 
 
 class Button():
