@@ -1,12 +1,13 @@
 """File holding Gameboard class"""
 import arcade
 from gridboard import Grid, Dock
-from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK
+from utils import convert_to_grid_coords, COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK
+
 
 class Gameboard:
     def __init__(self):
-        self.grid = Grid()
-        self.dock = Dock()
+        self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
+        self.dock = Dock("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
         self.coords_dict = {}
 
         # make a mega list of all pegs from dock and grid

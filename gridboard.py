@@ -14,32 +14,46 @@ from utils import COLUMN_COUNT_DOCK
 from peg import Peg
 
 class Grid:
-    def __init__(self):
+    def __init__(self, placement, columns, rows):
         self.width = GRID_WIDTH
         self.height = GRID_HEIGHT
 
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
 
-        # Create a list of solid-color sprites to represent each grid location
-        for row in range(ROW_COUNT):
+        self.placement = placement
+        #print(f"filling {placement} w/ pegs!")
+        # create 2D array of pegs
+        for row in range(rows):
+            # add nested lists to represent grid rows
             self.peg_sprites.append([])
-            for column in range(COLUMN_COUNT):
-                x = (column * (TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH / 2 + INNER_MARGIN) +
-                     OUTER_MARGIN)
-                y = DOCK_OFFSET + (row * (TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT / 2 +
-                                                        INNER_MARGIN) + OUTER_MARGIN)
 
-                # create peg objects
-                peg = Peg(TILE_WIDTH, TILE_HEIGHT, placement="grid")
-                peg.set_center(x, y)
+            for col in range(columns):
+                # get the center coords for each peg
+                x = (col * (TILE_WIDTH + INNER_MARGIN) +
+                     (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN)
+                y = (row * (TILE_HEIGHT + INNER_MARGIN) +
+                     (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
 
-                self.peg_sprite_list.append(peg)
+                # move grid up to make space for dock
+                if placement == "grid":
+                    y += DOCK_OFFSET
+
+                # create peg object
+                peg = Peg(
+                    TILE_WIDTH,
+                    TILE_HEIGHT,
+                    placement=self.placement,
+                    row=row,
+                    column=col
+                )
+                peg.position = (x, y)
+                #print(peg.position)
+
+                # add peg to the various sprite lists
                 self.peg_sprites[row].append(peg)
-
-    def get_nearest_peg(self, tile):
-        nearest_peg = arcade.get_closest_sprite(tile, self.peg_sprite_list)
-        return nearest_peg[0]
+                self.peg_sprite_list.append(peg)
+        #print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
 
     def draw(self):
         arcade.draw_rect_filled(
@@ -50,26 +64,27 @@ class Grid:
                         ),
             color=arcade.color.SHADOW_BLUE
         )
+        self.peg_sprite_list.draw()
+
+    def __str__(self):
+        representation = ""
+        for row in self.peg_sprites:
+            for peg in row:
+                if peg.tile:
+                    representation += "[t] "
+                else:
+                    representation += "[ ] "
+            representation += "\n"
+        return representation
+
+
+
 
 class Dock(Grid):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, placement, columns, rows):
+        super().__init__(placement, columns, rows)
         self.width = WINDOW_WIDTH
-
-        for row in range(ROW_COUNT_DOCK):
-            self.peg_sprites.append([])
-            for column in range(COLUMN_COUNT_DOCK):
-                x = column*(TILE_WIDTH + INNER_MARGIN) + (TILE_WIDTH/2 + INNER_MARGIN)+OUTER_MARGIN
-
-                y = row*(TILE_HEIGHT + INNER_MARGIN) + (TILE_HEIGHT/2 + INNER_MARGIN)+ OUTER_MARGIN
-
-                # create peg objects
-                peg = Peg(TILE_WIDTH, TILE_HEIGHT, placement="dock")
-
-                peg.set_center(x, y)
-
-                self.peg_sprite_list.append(peg)
-                self.peg_sprites[row].append(peg)
+        self.placement = placement
 
     def draw(self):
         arcade.draw_rect_filled(
@@ -79,6 +94,9 @@ class Dock(Grid):
                         height= ROW_COUNT_DOCK * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN),
             color=arcade.color.ROSY_BROWN
         )
+        self.peg_sprite_list.draw()
+
+
 
 class Button():
     def __init__(self, radius, color, pos, text=''):
