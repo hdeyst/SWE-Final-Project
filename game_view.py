@@ -30,7 +30,7 @@ class GameView(arcade.View):
                                   [WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
                                   TILE_HEIGHT*2],"Pass")
 
-        self.build_deck(35, 55)
+        self.build_deck(-10, -10)
         self.tile_list.shuffle()
         for _ in range(STARTING_TILE_AMT):
             self.deal_tile()
