@@ -1,6 +1,6 @@
 """File containing GameView, WinView, and LoseView, the three screens of the game"""
 import arcade
-from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT
+from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
 from gameboard import Gameboard
 from gridboard import Button
@@ -34,6 +34,9 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
         for _ in range(STARTING_TILE_AMT):
             self.deal_tile()
+
+        # flag to show instructions
+        self.show_instructions = False
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -138,6 +141,9 @@ class GameView(arcade.View):
 
         # draw the pass button
         self.pass_button.draw()
+
+        if self.show_instructions:
+            self.draw_instructions_screen()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -301,6 +307,20 @@ class GameView(arcade.View):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.check_valid_collections()
 
+    def draw_instructions_screen(self):
+        background = arcade.XYWH(self.center_x, self.center_y, 500, 300)
+
+        # color is "MIDNIGHT_GREEN" but the fourth value is transparency
+        arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
+        arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
+
+        start_y = self.center_y + 150
+        for i, line in enumerate(INSTRUCTIONS):
+            start_y -= 30
+            arcade.draw_text(line, self.center_x - 220, start_y, color=arcade.color.WHITE)
+
+
+
     def on_key_press(self, symbol: int, modifiers: int):
 
         if symbol == arcade.key.S:
@@ -322,6 +342,10 @@ class GameView(arcade.View):
 
         elif symbol == arcade.key.Q:
             self.check_valid_collections()
+
+        # press H to toggle help/instructions
+        elif symbol == arcade.key.H:
+            self.show_instructions = not self.show_instructions
 
 class WinView(arcade.View):
     def __init__(self):

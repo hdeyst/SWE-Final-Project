@@ -66,6 +66,13 @@ def convert_to_grid_coords(x, y):
 STARTING_TILE_AMT = 14
 
 
-# -- Collection Bounds ---
+# --- Collection Bounds ---
 LEFT_BOUND = 0
 RIGHT_BOUND = 100000
+
+# --- Instruction Values ---
+INSTRUCTIONS = ["INSTRUCTIONS",
+                "Goal: empty your dock first!",
+                "Rules: ...",
+                "Placing tiles: ...",
+                "Passing: ..."]
