@@ -64,6 +64,7 @@ def convert_to_grid_coords(x, y):
 
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
+NUM_PLAYERS = 1
 
 
 # --- Collection Bounds ---
@@ -80,3 +81,13 @@ INSTRUCTIONS = ["INSTRUCTIONS",
                 "\tThe number 1 is always played as the lowest number, it cannot follow the number 13.",
                 "Placing tiles: ...",
                 "Passing: ..."]
+
+KEY_BINDINGS = {
+    "D": "Draw tile",
+    "E": "End turn",
+    "H": "Help screen",
+    "L": "Lose screen",
+    "Q": "Check moves",
+    "S": "Revert changes",
+    "W": "Win screen"
+}

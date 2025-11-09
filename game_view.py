@@ -1,7 +1,8 @@
 """File containing GameView, WinView, and LoseView, the three screens of the game"""
 import arcade
+
 from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
-from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
+from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, KEY_BINDINGS
 from gameboard import Gameboard
 from gridboard import Button
 from tile import Tile
@@ -37,6 +38,7 @@ class GameView(arcade.View):
 
         # flag to show instructions
         self.show_instructions = False
+        self.show_key_bindings = True
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -144,6 +146,26 @@ class GameView(arcade.View):
 
         if self.show_instructions:
             self.draw_instructions_screen()
+
+        if self.show_key_bindings:
+            prev_len = 0
+            lbl = arcade.Text(
+                "Hotkeys: ",
+                x= OUTER_MARGIN + prev_len,
+                y= WINDOW_HEIGHT-30,
+                color=arcade.color.BLACK
+            )
+            lbl.draw()
+            prev_len += 175
+            for key in KEY_BINDINGS:
+                txt = arcade.Text(
+                    f"{key}: {KEY_BINDINGS[key]}\t",
+                    x=prev_len,
+                    y= WINDOW_HEIGHT-30,
+                    color=arcade.color.BLACK,
+                )
+                prev_len += 175
+                txt.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -317,8 +339,8 @@ class GameView(arcade.View):
         start_y = self.center_y + 200
         for i, line in enumerate(INSTRUCTIONS):
             start_y -= 30
-            arcade.draw_text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
-
+            txt = arcade.Text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
+            txt.draw()
 
 
     def on_key_press(self, symbol: int, modifiers: int):
