@@ -72,7 +72,11 @@ RIGHT_BOUND = 100000
 
 # --- Instruction Values ---
 INSTRUCTIONS = ["INSTRUCTIONS",
-                "Goal: empty your dock first!",
-                "Rules: ...",
+                "Goal: ",
+                "\tTo be the first player to play all the tiles from your rack by forming them into sets",
+                "Sets: ",
+                "\tA group is a set of either three or four tiles of the same number in different colors.",
+                "\tA run is a set of three or more consecutive numbers all in the same color.",
+                "\tThe number 1 is always played as the lowest number, it cannot follow the number 13.",
                 "Placing tiles: ...",
                 "Passing: ..."]

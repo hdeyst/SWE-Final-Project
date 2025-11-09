@@ -308,16 +308,16 @@ class GameView(arcade.View):
             self.check_valid_collections()
 
     def draw_instructions_screen(self):
-        background = arcade.XYWH(self.center_x, self.center_y, 500, 300)
+        background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
 
         # color is "MIDNIGHT_GREEN" but the fourth value is transparency
         arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
         arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
 
-        start_y = self.center_y + 150
+        start_y = self.center_y + 200
         for i, line in enumerate(INSTRUCTIONS):
             start_y -= 30
-            arcade.draw_text(line, self.center_x - 220, start_y, color=arcade.color.WHITE)
+            arcade.draw_text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
 
 
 
