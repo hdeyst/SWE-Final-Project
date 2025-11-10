@@ -21,7 +21,7 @@ DECK_HEIGHT = 75
 COLUMN_COUNT = 31
 ROW_COUNT = 10
 
-COLUMN_COUNT_DOCK = 20
+COLUMN_COUNT_DOCK = 27
 ROW_COUNT_DOCK = 2
 
 DOCK_LENGTH = COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN)
@@ -64,8 +64,31 @@ def convert_to_grid_coords(x, y):
 
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
+NUM_PLAYERS = 1
 
 
-# -- Collection Bounds ---
+# --- Collection Bounds ---
 LEFT_BOUND = 0
 RIGHT_BOUND = 100000
+
+# --- Instruction Values ---
+INSTRUCTIONS = ["INSTRUCTIONS",
+                "Goal: ",
+                "\tTo be the first player to play all the tiles from your rack by forming them into sets",
+                "Sets: ",
+                "\tA group is a set of either three or four tiles of the same number in different colors.",
+                "\tA run is a set of three or more consecutive numbers all in the same color.",
+                "\tThe number 1 is always played as the lowest number, it cannot follow the number 13.",
+                "Placing tiles: ...",
+                "Passing: ..."]
+
+KEY_BINDINGS = {
+    "D": "Draw tile",
+    "E": "End turn",
+    "H": "Help screen",
+    "K": "Show cheatsheet",
+    "L": "Lose screen",
+    "Q": "Check moves",
+    "S": "Revert changes",
+    "W": "Win screen"
+}
