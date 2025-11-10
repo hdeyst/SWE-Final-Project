@@ -86,6 +86,7 @@ KEY_BINDINGS = {
     "D": "Draw tile",
     "E": "End turn",
     "H": "Help screen",
+    "K": "Show cheatsheet",
     "L": "Lose screen",
     "Q": "Check moves",
     "S": "Revert changes",

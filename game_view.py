@@ -148,24 +148,34 @@ class GameView(arcade.View):
             self.draw_instructions_screen()
 
         if self.show_key_bindings:
-            prev_len = 0
+            cheat_sheet_width = WINDOW_WIDTH - OUTER_MARGIN * 2
+            section = cheat_sheet_width / (len(KEY_BINDINGS) + 1) # allow space for label
+            text_offset_val = OUTER_MARGIN
             lbl = arcade.Text(
                 "Hotkeys: ",
-                x= OUTER_MARGIN + prev_len,
+                x= text_offset_val,
                 y= WINDOW_HEIGHT-30,
                 color=arcade.color.BLACK
             )
             lbl.draw()
-            prev_len += 175
+            text_offset_val += section
             for key in KEY_BINDINGS:
                 txt = arcade.Text(
                     f"{key}: {KEY_BINDINGS[key]}\t",
-                    x=prev_len,
+                    x=text_offset_val,
                     y= WINDOW_HEIGHT-30,
                     color=arcade.color.BLACK,
                 )
-                prev_len += 175
+                text_offset_val += section
                 txt.draw()
+        else:
+            lbl = arcade.Text(
+                "Press 'K' to toggle cheatsheet",
+                x=OUTER_MARGIN,
+                y=WINDOW_HEIGHT - 30,
+                color=arcade.color.BLACK
+            )
+            lbl.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -368,6 +378,10 @@ class GameView(arcade.View):
         # press H to toggle help/instructions
         elif symbol == arcade.key.H:
             self.show_instructions = not self.show_instructions
+
+        # press K to toggle key binding cheat sheet
+        elif symbol == arcade.key.K:
+            self.show_key_bindings = not self.show_key_bindings
 
 class WinView(arcade.View):
     def __init__(self):
