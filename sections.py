@@ -6,6 +6,7 @@ class Cheatsheet(arcade.Section):
         super().__init__(left, bottom, width, height, name=name)
         self.section_size = width / (len(KEY_BINDINGS) + 1)
         self.show_keybinds = True
+        self.font_size = 12
         print(f"left: {left}, bottom: {bottom}, width: {width}, height: {height}")
 
     def on_draw(self):
@@ -18,19 +19,21 @@ class Cheatsheet(arcade.Section):
                 color=arcade.color.AIR_SUPERIORITY_BLUE.replace(a=150)
             )
             lbl = arcade.Text(
-                "Hotkeys: ",
+                "Hotkey Cheatsheet: ",
                 x=self.left + INNER_MARGIN,
                 y= self.bottom + self.height / 2 - INNER_MARGIN,
                 color=arcade.color.BLACK,
+                font_size=self.font_size
             )
             lbl.draw()
-            text_offset_val = self.left + self.section_size + INNER_MARGIN
+            text_offset_val = self.left + self.section_size + INNER_MARGIN*2
             for key in KEY_BINDINGS:
                 txt = arcade.Text(
                     f"{key}: {KEY_BINDINGS[key]}\t",
                     x=text_offset_val,
                     y=self.bottom + self.height/2 - INNER_MARGIN,
                     color=arcade.color.BLACK,
+                    font_size=self.font_size
                 )
                 text_offset_val += self.section_size
                 txt.draw()
@@ -47,6 +50,7 @@ class Cheatsheet(arcade.Section):
                 x=self.left + INNER_MARGIN,
                 y=self.bottom + self.height / 2 - INNER_MARGIN,
                 color=arcade.color.BLACK,
+                font_size=self.font_size
             )
             lbl.draw()
 
