@@ -428,8 +428,9 @@ class StartView(arcade.View):
             self.start.set_color(arcade.color.LIGHT_KHAKI)
             game_view = GameView()
             self.window.show_view(game_view)
-
-        if self.rules.is_clicked(pos):
+        if self.show_instructions:
+            self.show_instructions = False
+        elif self.rules.is_clicked(pos):
             self.show_instructions = not self.show_instructions
             if self.show_instructions:
                 self.draw_instructions_screen()
