@@ -1,6 +1,6 @@
 """File containing GameView, WinView, and LoseView, the three screens of the game"""
 import arcade
-
+import arcade.gui
 from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, KEY_BINDINGS
 from gameboard import Gameboard
@@ -39,6 +39,7 @@ class GameView(arcade.View):
         # flag to show instructions
         self.show_instructions = False
         self.show_key_bindings = True
+
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -170,7 +171,7 @@ class GameView(arcade.View):
                 txt.draw()
         else:
             lbl = arcade.Text(
-                "Press 'K' to toggle cheatsheet",
+                "Press 'K' to toggle hotkeys",
                 x=OUTER_MARGIN,
                 y=WINDOW_HEIGHT - 30,
                 color=arcade.color.BLACK
