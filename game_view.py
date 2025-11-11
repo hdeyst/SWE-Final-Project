@@ -1,7 +1,10 @@
 """File containing GameView, WinView, and LoseView, the three screens of the game"""
 import arcade
 import arcade.gui
-from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
+
+from sections import Cheatsheet
+from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS, CHEATSHEET_BOTTOM, \
+    CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, KEY_BINDINGS
 from gameboard import Gameboard
 from gridboard import Button
@@ -40,6 +43,21 @@ class GameView(arcade.View):
         self.show_instructions = False
         self.show_key_bindings = True
 
+        self.cheatsheet = Cheatsheet(
+            left=OUTER_MARGIN,
+            bottom=CHEATSHEET_BOTTOM,
+            width=CHEATSHEET_WIDTH,
+            height=CHEATSHEET_HEIGHT,
+            name="Cheatsheet"
+        )
+        self.sm = arcade.SectionManager(self)
+        self.sm.add_section(self.cheatsheet)
+
+    def on_show_view(self):
+        self.sm.enable()
+
+    def on_hide_view(self):
+        self.sm.disable()
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -148,35 +166,6 @@ class GameView(arcade.View):
         if self.show_instructions:
             self.draw_instructions_screen()
 
-        if self.show_key_bindings:
-            cheat_sheet_width = WINDOW_WIDTH - OUTER_MARGIN * 2
-            section = cheat_sheet_width / (len(KEY_BINDINGS) + 1) # allow space for label
-            text_offset_val = OUTER_MARGIN
-            lbl = arcade.Text(
-                "Hotkeys: ",
-                x= text_offset_val,
-                y= WINDOW_HEIGHT-30,
-                color=arcade.color.BLACK
-            )
-            lbl.draw()
-            text_offset_val += section
-            for key in KEY_BINDINGS:
-                txt = arcade.Text(
-                    f"{key}: {KEY_BINDINGS[key]}\t",
-                    x=text_offset_val,
-                    y= WINDOW_HEIGHT-30,
-                    color=arcade.color.BLACK,
-                )
-                text_offset_val += section
-                txt.draw()
-        else:
-            lbl = arcade.Text(
-                "Press 'K' to toggle hotkeys",
-                x=OUTER_MARGIN,
-                y=WINDOW_HEIGHT - 30,
-                color=arcade.color.BLACK
-            )
-            lbl.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -382,7 +371,8 @@ class GameView(arcade.View):
 
         # press K to toggle key binding cheat sheet
         elif symbol == arcade.key.K:
-            self.show_key_bindings = not self.show_key_bindings
+            self.cheatsheet.visible = not self.cheatsheet.visible
+            self.show_key_bindings = self.cheatsheet.visible
 
 class WinView(arcade.View):
     def __init__(self):
