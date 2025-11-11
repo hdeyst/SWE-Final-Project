@@ -385,15 +385,19 @@ class StartView(arcade.View):
         self.start = Button(100, arcade.color.LEMON_CHIFFON,
                                  [WINDOW_WIDTH / 4,
                                   WINDOW_HEIGHT / 4],
-                                 "Start Game!")
+                                 "Start Game!") #TODO should we add fonts
 
         self.rules = Button(100, arcade.color.LEMON_CHIFFON, [WINDOW_WIDTH * 3 / 4,
                                                              WINDOW_HEIGHT / 4], "Rules")
 
-        self.text = arcade.Text("Welcome to Rummikub!", WINDOW_WIDTH / 2, WINDOW_HEIGHT * 3 / 4,
-                                arcade.color.BLACK, 75, anchor_x="center", anchor_y="center")
+        arcade.load_font("misc/belwebold.otf")
+        self.text = arcade.Text("Welcome to", WINDOW_WIDTH / 2, WINDOW_HEIGHT * 3 / 4,
+                                arcade.color.WHITE, 65, anchor_x="center", anchor_y="center",
+                                font_name="Belwe Bold")
 
         self.show_instructions = False
+        self.texture = arcade.load_texture("./misc/rummikub.png", )
+        self.logo_sprite = arcade.Sprite(self.texture, scale=.9)
 
     def on_draw(self):
         self.clear()
@@ -402,6 +406,9 @@ class StartView(arcade.View):
         self.text.draw()
         if self.show_instructions:
             self.draw_instructions_screen()
+        arcade.draw_sprite(self.logo_sprite)
+        self.logo_sprite.center_y = WINDOW_HEIGHT - 350
+        self.logo_sprite.center_x = WINDOW_WIDTH / 2
 
     def draw_instructions_screen(self):
         background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
