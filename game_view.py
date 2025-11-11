@@ -369,10 +369,6 @@ class GameView(arcade.View):
         elif symbol == arcade.key.H:
             self.show_instructions = not self.show_instructions
 
-        # press K to toggle key binding cheat sheet
-        elif symbol == arcade.key.K:
-            self.cheatsheet.visible = not self.cheatsheet.visible
-            self.show_key_bindings = self.cheatsheet.visible
 
 class StartView(arcade.View):
     def __init__(self):
