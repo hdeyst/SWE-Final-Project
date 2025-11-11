@@ -434,3 +434,14 @@ class LoseView(arcade.View):
         self.play_again.draw()
         self.quit.draw()
         self.text.draw()
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        pos = [x, y]
+        if self.quit.is_clicked(pos):
+            arcade.exit()
+        #TODO: should we save scores? any other data we would want saved?
+        if self.play_again.is_clicked(pos):
+            self.play_again.set_color(arcade.color.LIGHT_KHAKI)
+            game_view = GameView()
+            self.window.show_view(game_view)
+
