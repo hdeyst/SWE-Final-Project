@@ -1,12 +1,13 @@
 """File containing GameView, WinView, and LoseView, the three screens of the game"""
 import arcade
-
+import arcade.gui
 from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, KEY_BINDINGS
 from gameboard import Gameboard
 from gridboard import Button
 from tile import Tile
 from collection import Collection
+from start_screen import StartScreen
 
 class GameView(arcade.View):
     """A game view."""
@@ -39,6 +40,34 @@ class GameView(arcade.View):
         # flag to show instructions
         self.show_instructions = False
         self.show_key_bindings = True
+
+        # start screen vars
+        self.manager = arcade.gui.UIManager()
+
+        begin_button = arcade.gui.UIFlatButton(text="START", width=150)
+        @begin_button.event("on_click")
+        def on_click_switch_button(event):
+            # Passing the main view into menu view as an argument.
+            start = StartScreen(self)
+            self.window.show_view(start)
+
+        # Use the anchor to position the button on the screen.
+        self.anchor = self.manager.add(arcade.gui.UIAnchorLayout())
+        self.anchor.add(
+            anchor_x="center_x",
+            anchor_y="center_y",
+            child=begin_button,
+        )
+
+    def on_hide_view(self):
+        # Disable the UIManager when the view is hidden.
+        self.manager.disable()
+
+    def on_show_view(self):
+        """This is run once when we switch to this view"""
+        arcade.set_background_color(arcade.color.ASH_GREY)
+        # Enable the UIManager when the view is shown.
+        self.manager.enable()
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -170,7 +199,7 @@ class GameView(arcade.View):
                 txt.draw()
         else:
             lbl = arcade.Text(
-                "Press 'K' to toggle cheatsheet",
+                "Press 'K' to toggle hotkeys",
                 x=OUTER_MARGIN,
                 y=WINDOW_HEIGHT - 30,
                 color=arcade.color.BLACK
