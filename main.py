@@ -1,7 +1,8 @@
 """file to run game through"""
 import arcade
 from utils import WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT
-from game_view import GameView
+from game_view import GameView, StartView
+
 
 def main():
     """ Main function """
@@ -11,8 +12,10 @@ def main():
     # Create the GameView
     game = GameView()
 
+    start = StartView()
     # Show GameView on screen
-    window.show_view(game)
+    window.show_view(start)
+    #window.show_view(game)
 
     # Start the arcade game loop
     arcade.run()
