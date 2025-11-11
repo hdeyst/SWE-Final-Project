@@ -1,13 +1,14 @@
 import arcade
-from utils import *
+from utils import KEY_BINDINGS, INNER_MARGIN, MINIMIZED_CS_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH
+
 
 class Cheatsheet(arcade.Section):
-    def __init__(self, left, bottom, width, height, name, accept_keyboard_keys={arcade.key.K}):
-        super().__init__(left, bottom, width, height, name=name)
+    def __init__(self, left, bottom, width, height):
+        super().__init__(left, bottom, width, height)
         self.section_size = width / (len(KEY_BINDINGS) + 1)
         self.show_keybinds = True
-        self.font_size = 12
-        print(f"left: {left}, bottom: {bottom}, width: {width}, height: {height}")
+        self.font_size = 10
+        self.name = "Cheatsheet"
 
     def on_draw(self):
         if self.show_keybinds:
@@ -16,7 +17,7 @@ class Cheatsheet(arcade.Section):
                 bottom=self.bottom,
                 width=self.width,
                 height=self.height,
-                color=arcade.color.AIR_SUPERIORITY_BLUE.replace(a=150)
+                color=arcade.color.AIR_FORCE_BLUE.replace(a=100)
             )
             lbl = arcade.Text(
                 "Hotkey Cheatsheet: ",
@@ -43,7 +44,7 @@ class Cheatsheet(arcade.Section):
                 bottom=self.bottom,
                 width=MINIMIZED_CS_WIDTH,
                 height=self.height,
-                color=arcade.color.AIR_SUPERIORITY_BLUE.replace(a=150)
+                color=arcade.color.AIR_FORCE_BLUE.replace(a=100)
             )
             lbl = arcade.Text(
                 "Press 'K' to toggle cheatsheet",
@@ -53,10 +54,6 @@ class Cheatsheet(arcade.Section):
                 font_size=self.font_size
             )
             lbl.draw()
-
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        print(f"{x},{y},{button},{modifiers}")
-        print("clicked in cheatsheet")
 
     # press K to toggle key binding cheat sheet
     def on_key_press(self, symbol: int, modifiers: int):

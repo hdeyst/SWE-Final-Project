@@ -43,15 +43,21 @@ class GameView(arcade.View):
         self.show_instructions = False
         self.show_key_bindings = True
 
+        # declare cheatsheet object
         self.cheatsheet = Cheatsheet(
             left=OUTER_MARGIN,
             bottom=CHEATSHEET_BOTTOM,
             width=CHEATSHEET_WIDTH,
             height=CHEATSHEET_HEIGHT,
-            name="Cheatsheet"
         )
         self.sm = arcade.SectionManager(self)
         self.sm.add_section(self.cheatsheet)
+
+        # create the logo
+        self.texture = arcade.load_texture("./misc/rummikub.png",)
+        self.logo_sprite = arcade.Sprite(self.texture, scale=.2)
+        self.logo_sprite.center_y = WINDOW_HEIGHT - 25
+        self.logo_sprite.center_x = WINDOW_WIDTH / 2
 
     def on_show_view(self):
         self.sm.enable()
@@ -165,6 +171,8 @@ class GameView(arcade.View):
 
         if self.show_instructions:
             self.draw_instructions_screen()
+
+        arcade.draw_sprite(self.logo_sprite)
 
 
 
