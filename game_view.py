@@ -117,7 +117,7 @@ class GameView(arcade.View):
 
         tile = Tile(f"tiles/red_wild.png", scale = TILE_SCALE)
         self.tile_list.append(tile)
-        tile = Tile(f"tiles/red_wild.png", scale=TILE_SCALE)
+        tile = Tile(f"tiles/black_wild.png", scale=TILE_SCALE)
         self.tile_list.append(tile)
 
 
