@@ -114,6 +114,11 @@ class GameView(arcade.View):
                 tile.start_of_turn_y = 0
                 self.tile_list.append(tile)
 
+        tile = Tile(f"tiles/red_wild.png", scale = TILE_SCALE)
+        self.tile_list.append(tile)
+        tile = Tile(f"tiles/red_wild.png", scale=TILE_SCALE)
+        self.tile_list.append(tile)
+
 
 
     def deal_tile(self):
