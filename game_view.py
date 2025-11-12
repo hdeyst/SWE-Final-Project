@@ -313,6 +313,19 @@ class GameView(arcade.View):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.check_valid_collections()
 
+    def draw_instructions_screen(self):
+        background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
+
+        # color is "MIDNIGHT_GREEN" but the fourth value is transparency
+        arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
+        arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
+
+        start_y = self.center_y + 200
+        for i, line in enumerate(INSTRUCTIONS):
+            start_y -= 30
+            txt = arcade.Text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
+            txt.draw()
+
     def on_key_press(self, symbol: int, modifiers: int):
 
         if symbol == arcade.key.S:
@@ -415,17 +428,6 @@ class WinView(arcade.View):
 
         self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4,
                                 arcade.color.BLACK,75, anchor_x="center", anchor_y="center")
-
-        def on_mouse_press(self, x, y, button, modifiers):
-            pos = [x, y]
-            if self.play_again.is_clicked(pos):
-                self.play_again.set_color(arcade.color.LIGHT_KHAKI)
-                game_view = GameView()
-                self.window.show_view(game_view)
-
-            if self.quit.is_clicked(pos):
-                self.quit.set_color(arcade.color.LIGHT_KHAKI)
-                arcade.exit()
 
     def on_draw(self):
         self.clear()
