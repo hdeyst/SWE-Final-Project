@@ -28,6 +28,7 @@ class Tile(arcade.Sprite):
             self.number = int(number_split[0])
         except ValueError:
             self.wild = number_split[0]
+            self.color = "Wild"
             is_wild = True
 
     def __str__(self):
@@ -37,6 +38,9 @@ class Tile(arcade.Sprite):
     def set_start_of_turn_pos(self, x, y):
         self.start_of_turn_x = x
         self.start_of_turn_y = y
+
+    def set_number(self, number):
+        self.number = number
 
 if __name__ == "__main__":
     tile = Tile("../tiles/black_1.png", TILE_SCALE)
