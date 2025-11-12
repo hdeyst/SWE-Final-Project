@@ -107,6 +107,7 @@ class Button():
         self.text = text
         self.radius = radius
         self.pressed = False
+        self.font_size = 12
 
         arcade.load_font("./misc/belwebold.otf")
 
@@ -120,7 +121,7 @@ class Button():
             self.pos[0],
             self.pos[1],
             arcade.color.BLACK,
-            11,
+            font_size=self.font_size,
             anchor_x="center",
             anchor_y="center",
             font_name="Belwe Bold",

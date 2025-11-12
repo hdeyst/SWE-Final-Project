@@ -1,5 +1,5 @@
 import arcade
-from utils import KEY_BINDINGS, INNER_MARGIN, MINIMIZED_CS_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH
+from utils import KEY_BINDINGS, INNER_MARGIN, MINIMIZED_CS_WIDTH
 
 
 class Cheatsheet:
