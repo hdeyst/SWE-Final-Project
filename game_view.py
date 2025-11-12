@@ -184,25 +184,7 @@ class GameView(arcade.View):
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            for tile in self.tile_list:
-                #reset tile positions if any were moved
-                if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
-                    # look through all pegs to find where tile was sitting (before we move it)
-                    # then set that peg to unoccupied before we move it back.
-                    for peg in self.gameboard.all_pegs:
-                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.empty_peg()
-                            break
-                    tile.center_x = tile.start_of_turn_x
-                    tile.center_y = tile.start_of_turn_y
-                    # this is setting the place where the tile is moving to occupied.
-                    for peg in self.gameboard.all_pegs:
-                        if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
-                            peg.occupy_peg(tile)
-                            break
-                    # set the start of turns back to 0 meaning "unchanged"
-                    tile.start_of_turn_x = 0
-                    tile.start_of_turn_y = 0
+            self.roll_back()
             self.deal_tile()
 
 
@@ -336,20 +318,6 @@ class GameView(arcade.View):
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.check_valid_collections()
-
-    def draw_instructions_screen(self):
-        background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
-
-        # color is "MIDNIGHT_GREEN" but the fourth value is transparency
-        arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
-        arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
-
-        start_y = self.center_y + 200
-        for i, line in enumerate(INSTRUCTIONS):
-            start_y -= 30
-            txt = arcade.Text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
-            txt.draw()
-
 
     def on_key_press(self, symbol: int, modifiers: int):
 
