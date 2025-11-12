@@ -5,7 +5,7 @@ import arcade.gui
 from cheatsheet import Cheatsheet
 from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS, CHEATSHEET_BOTTOM, \
     CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT
-from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, KEY_BINDINGS
+from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
 from gameboard import Gameboard
 from gridboard import Button
 from tile import Tile
@@ -19,20 +19,30 @@ class GameView(arcade.View):
         # Set the background color of the window
         self.background_color = arcade.color.ASH_GREY
 
+        # initialize game components
         self.gameboard = Gameboard()
 
-        # create list of all game tile sprites
+        self.pass_button = Button(
+            50,
+            arcade.color.GREEN,
+            [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2],
+            "Pass"
+        )
+
+        self.cheatsheet = Cheatsheet(
+            left=OUTER_MARGIN,
+            bottom=CHEATSHEET_BOTTOM,
+            width=CHEATSHEET_WIDTH,
+            height=CHEATSHEET_HEIGHT,
+        )
+
+        # Initialize tiles
         self.tile_list = arcade.SpriteList()
 
-        #num dealt is index 0, num in hand is index 1 (needed less instance variables?)
-        self.used_tiles = [0,0]
+        self.used_tiles = [0, 0] # [num dealt, num in hand]
 
         self.held_tiles = None
         self.held_tiles_original_position = None
-
-        self.pass_button = Button(50, arcade.color.GREEN,
-                                  [WINDOW_WIDTH-OUTER_MARGIN*2-INNER_MARGIN*2,
-                                  TILE_HEIGHT*2],"Pass")
 
         self.build_deck(-10, -10)
         self.tile_list.shuffle()
@@ -41,15 +51,6 @@ class GameView(arcade.View):
 
         # flag to show instructions
         self.show_instructions = False
-        self.show_key_bindings = True
-
-        # declare cheatsheet object
-        self.cheatsheet = Cheatsheet(
-            left=OUTER_MARGIN,
-            bottom=CHEATSHEET_BOTTOM,
-            width=CHEATSHEET_WIDTH,
-            height=CHEATSHEET_HEIGHT,
-        )
 
         # create the logo
         self.texture = arcade.load_texture("./misc/rummikub.png",)

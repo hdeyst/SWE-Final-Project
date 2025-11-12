@@ -5,7 +5,7 @@ from utils import KEY_BINDINGS, INNER_MARGIN, MINIMIZED_CS_WIDTH, WINDOW_HEIGHT,
 class Cheatsheet:
     def __init__(self, left, bottom, width, height):
         self.section_size = width / (len(KEY_BINDINGS) + 1)
-        self.show_keybinds = True
+        self.show_keybinds = False
         self.font_size = 10
         self.name = "Cheatsheet"
 
