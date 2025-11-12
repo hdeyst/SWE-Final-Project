@@ -39,13 +39,13 @@ class Collection:
                 return False
         return self.is_set
 
-    def run(self): #3+ same color, increasing numbers
+    def run(self): #3+ same color, increasing numbers by 1
         if len(self.tiles) < 3:
             return False
         for index, name in enumerate(self.tiles):
             if name.color != self.tiles[0].color:
                 return False
-            if index > 0 and not self.tiles[index - 1].number < name.number:
+            if index > 0 and not self.tiles[index - 1].number + 1 == name.number:
                 return False
         return True
 
