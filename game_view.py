@@ -402,13 +402,13 @@ class StartView(arcade.View):
     def on_draw(self):
         self.clear()
         self.start.draw()
+        arcade.draw_sprite(self.logo_sprite)
+        self.logo_sprite.center_y = WINDOW_HEIGHT - 350
+        self.logo_sprite.center_x = WINDOW_WIDTH / 2
         self.rules.draw()
         self.text.draw()
         if self.show_instructions:
             self.draw_instructions_screen()
-        arcade.draw_sprite(self.logo_sprite)
-        self.logo_sprite.center_y = WINDOW_HEIGHT - 350
-        self.logo_sprite.center_x = WINDOW_WIDTH / 2
 
     def draw_instructions_screen(self):
         background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
