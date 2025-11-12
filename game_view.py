@@ -432,17 +432,6 @@ class WinView(arcade.View):
         self.text = arcade.Text("You Won!", WINDOW_WIDTH /2, WINDOW_HEIGHT * 3/4,
                                 arcade.color.BLACK,75, anchor_x="center", anchor_y="center")
 
-        def on_mouse_press(self, x, y, button, modifiers):
-            pos = [x, y]
-            if self.play_again.is_clicked(pos):
-                self.play_again.set_color(arcade.color.LIGHT_KHAKI)
-                game_view = GameView()
-                self.window.show_view(game_view)
-
-            if self.quit.is_clicked(pos):
-                self.quit.set_color(arcade.color.LIGHT_KHAKI)
-                arcade.exit()
-
     def on_draw(self):
         self.clear()
         self.play_again.draw()
