@@ -28,6 +28,7 @@ class GameView(arcade.View):
             [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2],
             "Pass"
         )
+        self.pass_button.font_size = 14
 
         self.cheatsheet = Cheatsheet(
             left=OUTER_MARGIN,
@@ -51,12 +52,6 @@ class GameView(arcade.View):
 
         # flag to show instructions
         self.show_instructions = False
-
-        # create the logo
-        self.texture = arcade.load_texture("./misc/rummikub.png",)
-        self.logo_sprite = arcade.Sprite(self.texture, scale=.2)
-        self.logo_sprite.center_y = WINDOW_HEIGHT - 25
-        self.logo_sprite.center_x = WINDOW_WIDTH / 2
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -169,8 +164,6 @@ class GameView(arcade.View):
 
         if self.show_instructions:
             self.draw_instructions_screen()
-
-        arcade.draw_sprite(self.logo_sprite)
 
         self.cheatsheet.draw()
 
