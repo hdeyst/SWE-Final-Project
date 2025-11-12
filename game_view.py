@@ -57,12 +57,6 @@ class GameView(arcade.View):
         self.logo_sprite.center_y = WINDOW_HEIGHT - 25
         self.logo_sprite.center_x = WINDOW_WIDTH / 2
 
-    def on_show_view(self):
-        self.sm.enable()
-
-    def on_hide_view(self):
-        self.sm.disable()
-
     def save_turn(self):
         for tile in self.tile_list:
             tile.start_of_turn_x = 0
