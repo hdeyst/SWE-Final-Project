@@ -2,15 +2,20 @@ import arcade
 from utils import KEY_BINDINGS, INNER_MARGIN, MINIMIZED_CS_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH
 
 
-class Cheatsheet(arcade.Section):
+class Cheatsheet:
     def __init__(self, left, bottom, width, height):
-        super().__init__(left, bottom, width, height)
         self.section_size = width / (len(KEY_BINDINGS) + 1)
         self.show_keybinds = True
         self.font_size = 10
         self.name = "Cheatsheet"
 
-    def on_draw(self):
+        # initialize dimensions
+        self.left = left
+        self.bottom = bottom
+        self.width = width
+        self.height = height
+
+    def draw(self):
         if self.show_keybinds:
             arcade.draw_lbwh_rectangle_filled(
                 left=self.left,
@@ -54,11 +59,3 @@ class Cheatsheet(arcade.Section):
                 font_size=self.font_size,
             )
             lbl.draw()
-
-    # press K to toggle key binding cheat sheet
-    def on_key_press(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.K:
-            self.show_keybinds = not self.show_keybinds
-        else:
-            # let the game_view handle all other inputs
-            self.view.on_key_press(symbol, modifiers)

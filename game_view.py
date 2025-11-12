@@ -2,7 +2,7 @@
 import arcade
 import arcade.gui
 
-from sections import Cheatsheet
+from cheatsheet import Cheatsheet
 from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS, CHEATSHEET_BOTTOM, \
     CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, KEY_BINDINGS
@@ -50,8 +50,6 @@ class GameView(arcade.View):
             width=CHEATSHEET_WIDTH,
             height=CHEATSHEET_HEIGHT,
         )
-        self.sm = arcade.SectionManager(self)
-        self.sm.add_section(self.cheatsheet)
 
         # create the logo
         self.texture = arcade.load_texture("./misc/rummikub.png",)
@@ -173,6 +171,8 @@ class GameView(arcade.View):
             self.draw_instructions_screen()
 
         arcade.draw_sprite(self.logo_sprite)
+
+        self.cheatsheet.draw()
 
 
 
@@ -344,6 +344,9 @@ class GameView(arcade.View):
         # press H to toggle help/instructions
         elif symbol == arcade.key.H:
             self.show_instructions = not self.show_instructions
+
+        elif symbol == arcade.key.K:
+            self.cheatsheet.show_keybinds = not self.cheatsheet.show_keybinds
 
 
 class StartView(arcade.View):
