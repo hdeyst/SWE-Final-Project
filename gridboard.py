@@ -1,10 +1,10 @@
 """
-Defines 2 different types: Grid, and Dock
-- Pegs are sprites representing the positions that a tile
-  can be on the grid
-- Tiles have color and value fields, represent game pieces
+Defines 3 different types: Grid, Dock, and Button
 - Grid creates the actual grid section of the game board,
   consisting of a variety of peg objects
+- Dock extends Grid, and is the player's personal collection
+  of tiles
+- Button creates a custom button object to aid interactability
 """
 import math
 import arcade
@@ -108,13 +108,23 @@ class Button():
         self.radius = radius
         self.pressed = False
 
+        arcade.load_font("./misc/belwebold.otf")
+
     def draw(self):
         if not self.pressed:
             arcade.draw_circle_filled(self.pos[0], self.pos[1], self.radius, self.color)
         else:
             arcade.draw_circle_filled(self.pos[0], self.pos[1], self.radius, self.pressed_color)
-        button_text = arcade.Text(self.text, self.pos[0], self.pos[1], arcade.color.BLACK, 11,
-                             anchor_x="center", anchor_y="center")
+        button_text = arcade.Text(
+            self.text,
+            self.pos[0],
+            self.pos[1],
+            arcade.color.BLACK,
+            11,
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Belwe Bold",
+        )
         button_text.draw()
 
     def is_clicked(self, pos):

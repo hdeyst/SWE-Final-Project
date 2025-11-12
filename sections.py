@@ -17,14 +17,14 @@ class Cheatsheet(arcade.Section):
                 bottom=self.bottom,
                 width=self.width,
                 height=self.height,
-                color=arcade.color.AIR_FORCE_BLUE.replace(a=100)
+                color=arcade.color.AIR_FORCE_BLUE.replace(a=100),
             )
             lbl = arcade.Text(
                 "Hotkey Cheatsheet: ",
                 x=self.left + INNER_MARGIN,
                 y= self.bottom + self.height / 2 - INNER_MARGIN,
                 color=arcade.color.BLACK,
-                font_size=self.font_size
+                font_size=self.font_size,
             )
             lbl.draw()
             text_offset_val = self.left + self.section_size + INNER_MARGIN*2
@@ -34,7 +34,7 @@ class Cheatsheet(arcade.Section):
                     x=text_offset_val,
                     y=self.bottom + self.height/2 - INNER_MARGIN,
                     color=arcade.color.BLACK,
-                    font_size=self.font_size
+                    font_size=self.font_size,
                 )
                 text_offset_val += self.section_size
                 txt.draw()
@@ -51,7 +51,7 @@ class Cheatsheet(arcade.Section):
                 x=self.left + INNER_MARGIN,
                 y=self.bottom + self.height / 2 - INNER_MARGIN,
                 color=arcade.color.BLACK,
-                font_size=self.font_size
+                font_size=self.font_size,
             )
             lbl.draw()
 
