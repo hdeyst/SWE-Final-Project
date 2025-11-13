@@ -28,7 +28,7 @@ class Cheatsheet:
                 "Hotkey Cheatsheet: ",
                 x=self.left + INNER_MARGIN,
                 y= self.bottom + self.height / 2 - INNER_MARGIN,
-                color=arcade.color.BLACK,
+                color=arcade.color.SMOKY_BLACK,
                 font_size=self.font_size,
             )
             lbl.draw()
@@ -38,7 +38,7 @@ class Cheatsheet:
                     f"{key}: {KEY_BINDINGS[key]}\t",
                     x=text_offset_val,
                     y=self.bottom + self.height/2 - INNER_MARGIN,
-                    color=arcade.color.BLACK,
+                    color=arcade.color.SMOKY_BLACK,
                     font_size=self.font_size,
                 )
                 text_offset_val += self.section_size
@@ -55,7 +55,7 @@ class Cheatsheet:
                 "Press 'K' to toggle cheatsheet",
                 x=self.left + INNER_MARGIN,
                 y=self.bottom + self.height / 2 - INNER_MARGIN,
-                color=arcade.color.BLACK,
+                color=arcade.color.SMOKY_BLACK,
                 font_size=self.font_size,
             )
             lbl.draw()

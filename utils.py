@@ -85,12 +85,12 @@ INSTRUCTIONS = ["INSTRUCTIONS",
 
 KEY_BINDINGS = {
     "D": "Draw tile",
-    "E": "End turn",
+    "S": "Save turn",
     "H": "Help screen",
     "K": "Show hotkeys",
     "L": "Lose screen",
     "Q": "Check moves",
-    "S": "Revert changes",
+    "U": "Undo changes",
     "W": "Win screen"
 }
 

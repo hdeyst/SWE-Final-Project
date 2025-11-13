@@ -328,10 +328,10 @@ class GameView(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int):
 
-        if symbol == arcade.key.S:
+        if symbol == arcade.key.U:
             self.roll_back()
 
-        elif symbol == arcade.key.E:
+        elif symbol == arcade.key.S:
             self.save_turn()
 
         elif symbol == arcade.key.D:
