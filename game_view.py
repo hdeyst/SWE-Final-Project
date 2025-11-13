@@ -2,12 +2,10 @@
 import arcade
 import arcade.gui
 
-from cheatsheet import Cheatsheet
-from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS, CHEATSHEET_BOTTOM, \
-    CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT
+from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
 from gameboard import Gameboard
-from gridboard import Button
+from game_components import Button
 from tile import Tile
 from collection import Collection
 
@@ -29,13 +27,6 @@ class GameView(arcade.View):
             "Pass"
         )
         self.pass_button.font_size = 14
-
-        self.cheatsheet = Cheatsheet(
-            left=OUTER_MARGIN,
-            bottom=CHEATSHEET_BOTTOM,
-            width=CHEATSHEET_WIDTH,
-            height=CHEATSHEET_HEIGHT,
-        )
 
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
@@ -165,9 +156,6 @@ class GameView(arcade.View):
 
         if self.show_instructions:
             self.draw_instructions_screen()
-
-        self.cheatsheet.draw()
-
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -353,7 +341,7 @@ class GameView(arcade.View):
             self.show_instructions = not self.show_instructions
 
         elif symbol == arcade.key.K:
-            self.cheatsheet.show_keybinds = not self.cheatsheet.show_keybinds
+            self.gameboard.cheatsheet.show_keybinds = not self.gameboard.cheatsheet.show_keybinds
 
 
 class StartView(arcade.View):
