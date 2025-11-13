@@ -85,6 +85,13 @@ class Dock(Grid):
         super().__init__(placement, columns, rows)
         self.width = WINDOW_WIDTH
         self.placement = placement
+        self.num_tiles = 0
+        self.num_pegs = 0
+
+    # default constructor for players
+    def __init__(self):
+        super().__init__(placement="dock", columns=COLUMN_COUNT_DOCK, rows=ROW_COUNT_DOCK)
+
 
     def draw(self):
         arcade.draw_rect_filled(

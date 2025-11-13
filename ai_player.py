@@ -10,3 +10,10 @@ Functions:
     - "Check can lay down?"
 
 """
+import arcade
+from game_components import Dock
+
+class Player:
+    def __init__(self):
+        # a player needs a dock ?
+        self.dock = Dock()
