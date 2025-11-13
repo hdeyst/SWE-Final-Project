@@ -47,7 +47,7 @@ class Collection:
                 return False
         else: #incorrect length for set
             return False
-        for i, tile in enumerate(self.tiles): #get index of the non wild tile
+        for i, tile in enumerate(self.tiles): #get index of the non-wild tile
             if tile.is_wild:
                 pass
             else:
@@ -66,7 +66,7 @@ class Collection:
         if len(self.tiles) < 3:
             return False
 
-        for i, tile in enumerate(self.tiles): #get index of the non wild tile
+        for i, tile in enumerate(self.tiles): #get index of the non-wild tile
             if tile.is_wild:
                 pass
             else:
