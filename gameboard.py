@@ -2,7 +2,8 @@
 import arcade
 from game_components import Grid, Dock, Cheatsheet
 from utils import (COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK,
-                   WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, CHEATSHEET_BOTTOM, CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT)
+                   WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, CHEATSHEET_BOTTOM,
+                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT)
 
 
 class Gameboard:
@@ -37,5 +38,3 @@ class Gameboard:
         arcade.draw_sprite(self.logo_sprite)
 
         self.cheatsheet.draw()
-
-

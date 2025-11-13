@@ -139,10 +139,9 @@ class Button():
 
 class Cheatsheet:
     def __init__(self, left, bottom, width, height):
-        self.section_size = width / (len(KEY_BINDINGS) + 1)
+        self.section_size = width / len(KEY_BINDINGS)
         self.show_keybinds = False
         self.font_size = 10
-        self.name = "Cheatsheet"
 
         # initialize dimensions
         self.left = left
@@ -152,45 +151,49 @@ class Cheatsheet:
 
     def draw(self):
         if self.show_keybinds:
-            arcade.draw_lbwh_rectangle_filled(
-                left=self.left,
-                bottom=self.bottom,
-                width=self.width,
-                height=self.height,
-                color=arcade.color.AIR_FORCE_BLUE.replace(a=100),
-            )
-            lbl = arcade.Text(
-                "Hotkey Cheatsheet: ",
-                x=self.left + INNER_MARGIN,
-                y= self.bottom + self.height / 2 - INNER_MARGIN,
-                color=arcade.color.SMOKY_BLACK,
-                font_size=self.font_size,
-            )
-            lbl.draw()
-            text_offset_val = self.left + self.section_size + INNER_MARGIN*2
-            for key in KEY_BINDINGS:
-                txt = arcade.Text(
-                    f"{key}: {KEY_BINDINGS[key]}\t",
-                    x=text_offset_val,
-                    y=self.bottom + self.height/2 - INNER_MARGIN,
-                    color=arcade.color.SMOKY_BLACK,
-                    font_size=self.font_size,
-                )
-                text_offset_val += self.section_size
-                txt.draw()
+            self.expand_cheatsheet()
         else:
-            arcade.draw_lbwh_rectangle_filled(
-                left=self.left,
-                bottom=self.bottom,
-                width=MINIMIZED_CS_WIDTH,
-                height=self.height,
-                color=arcade.color.AIR_FORCE_BLUE.replace(a=100)
-            )
-            lbl = arcade.Text(
-                "Press 'K' to toggle cheatsheet",
-                x=self.left + INNER_MARGIN,
+            self.minimize_cheatsheet()
+
+    def expand_cheatsheet(self):
+        # background rectangle
+        arcade.draw_lbwh_rectangle_filled(
+            left=self.left,
+            bottom=self.bottom,
+            width=self.width,
+            height=self.height,
+            color=arcade.color.AIR_FORCE_BLUE.replace(a=100),
+        )
+
+        # draw each key binding & its meaning
+        text_offset_val = self.left + INNER_MARGIN
+        for key in KEY_BINDINGS:
+            txt = arcade.Text(
+                f"{key}: {KEY_BINDINGS[key]}\t",
+                x=text_offset_val,
                 y=self.bottom + self.height / 2 - INNER_MARGIN,
                 color=arcade.color.SMOKY_BLACK,
                 font_size=self.font_size,
             )
-            lbl.draw()
+            text_offset_val += self.section_size
+            txt.draw()
+
+    def minimize_cheatsheet(self):
+        # background rectangle
+        arcade.draw_lbwh_rectangle_filled(
+            left=self.left,
+            bottom=self.bottom,
+            width=MINIMIZED_CS_WIDTH,
+            height=self.height,
+            color=arcade.color.AIR_FORCE_BLUE.replace(a=100)
+        )
+
+        # tell user how to view hotkey legend
+        lbl = arcade.Text(
+            "Press 'K' to toggle legend",
+            x=self.left + INNER_MARGIN,
+            y=self.bottom + self.height / 2 - INNER_MARGIN,
+            color=arcade.color.SMOKY_BLACK,
+            font_size=self.font_size,
+        )
+        lbl.draw()
