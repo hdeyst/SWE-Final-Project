@@ -27,9 +27,8 @@ class Tile(arcade.Sprite):
         try:
             self.number = int(number_split[0])
         except ValueError:
-            self.wild = number_split[0]
-            self.color = "Wild"
-            is_wild = True
+            self.color = color_split[1] + number_split[0]
+            self.is_wild = True
 
     def __str__(self):
         return f"{self.color}{self.number}"

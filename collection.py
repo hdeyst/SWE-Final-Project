@@ -4,12 +4,23 @@ class Collection:
     def __init__(self):
         self.tiles = []
         self.is_set = True
+        self.contains_wild = False
 
     def add(self, tile):
         self.tiles.append(tile)
+        self.has_wild()
 
     def remove(self, item):
         self.tiles.remove(item)
+        self.has_wild()
+
+    def has_wild(self):
+        for tile in self.tiles:
+            if tile.is_wild:
+                self.contains_wild = True
+        if self.contains_wild:
+            return True
+        return False
 
     def get_value(self):
         total = 0
@@ -20,6 +31,7 @@ class Collection:
         self.tiles.clear()
 
     def set(self): #3-4 same number, different colors
+        index = 0
         self.is_set = True
         if len(self.tiles) == 3:
             if (self.tiles[0].color == self.tiles[1].color or
@@ -34,19 +46,35 @@ class Collection:
                 return False
         else: #incorrect length for set
             return False
+        for i, tile in enumerate(self.tiles):
+            if tile.is_wild:
+                pass
+            else:
+                index = i
         for tile in self.tiles:
-            if tile.number != self.tiles[0].number:
-                return False
+            if tile.number != self.tiles[index].number:
+                if tile.is_wild:
+                    pass
+                else:
+                    return False
+
         return self.is_set
 
     def run(self): #3+ same color, increasing numbers by 1
         if len(self.tiles) < 3:
             return False
+
         for index, name in enumerate(self.tiles):
             if name.color != self.tiles[0].color:
-                return False
+                if name.is_wild:
+                    pass
+                else:
+                    return False
             if index > 0 and not self.tiles[index - 1].number + 1 == name.number:
-                return False
+                if name.is_wild:
+                    pass
+                else:
+                    return False
         return True
 
     def is_valid(self):

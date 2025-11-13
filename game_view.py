@@ -117,6 +117,7 @@ class GameView(arcade.View):
 
 
 
+
     def deal_tile(self):
         if len(self.tile_list) < 1 or self.used_tiles[1] >= COLUMN_COUNT_DOCK * 2:
             print("ERROR. Tile cannot be dealt")
