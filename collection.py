@@ -27,6 +27,7 @@ class Collection:
         for tile in self.tiles:
             total += tile.number
         return total
+
     def clear(self):
         self.tiles.clear()
 
@@ -46,12 +47,12 @@ class Collection:
                 return False
         else: #incorrect length for set
             return False
-        for i, tile in enumerate(self.tiles):
+        for i, tile in enumerate(self.tiles): #get index of the non wild tile
             if tile.is_wild:
                 pass
             else:
                 index = i
-        for tile in self.tiles:
+        for tile in self.tiles: #check that all tiles have the same number
             if tile.number != self.tiles[index].number:
                 if tile.is_wild:
                     pass
@@ -61,17 +62,24 @@ class Collection:
         return self.is_set
 
     def run(self): #3+ same color, increasing numbers by 1
+        index = 0
         if len(self.tiles) < 3:
             return False
 
-        for index, name in enumerate(self.tiles):
-            if name.color != self.tiles[0].color:
+        for i, tile in enumerate(self.tiles): #get index of the non wild tile
+            if tile.is_wild:
+                pass
+            else:
+                index = i
+
+        for i, name in enumerate(self.tiles): # check that all tiles have the same color
+            if name.color != self.tiles[index].color:
                 if name.is_wild:
                     pass
                 else:
                     return False
-            if index > 0 and not self.tiles[index - 1].number + 1 == name.number:
-                if name.is_wild:
+            if i > 0 and not self.tiles[i - 1].number + 1 == name.number:
+                if name.is_wild or self.tiles[i - 1].is_wild:
                     pass
                 else:
                     return False
