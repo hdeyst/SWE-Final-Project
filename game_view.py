@@ -2,7 +2,8 @@
 import arcade
 import arcade.gui
 
-from utils import WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN, TILE_HEIGHT, INSTRUCTIONS
+from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
+                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
 from gameboard import Gameboard
 from game_components import Button
@@ -31,10 +32,11 @@ class GameView(arcade.View):
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
 
+        # TODO: is num in hand the player's tile count in their dock?
         self.used_tiles = [0, 0] # [num dealt, num in hand]
 
-        self.held_tiles = None
-        self.held_tiles_original_position = None
+        self.held_tiles = []
+        self.held_tiles_original_position = []
 
         self.build_deck(-10, -10)
         self.tile_list.shuffle()
@@ -55,8 +57,8 @@ class GameView(arcade.View):
                 self.window.show_view(WinView())
         print("Turn Saved")
 
+    # Resets the position of tiles to their placement one turn before
     def roll_back(self):
-        # for now if user press' S reset tiles to O.G. Poss
         for tile in self.tile_list:
             if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                 # look through all pegs to find where tile was sitting (before we move it)
@@ -67,6 +69,7 @@ class GameView(arcade.View):
                         break
                 tile.center_x = tile.start_of_turn_x
                 tile.center_y = tile.start_of_turn_y
+
                 # this is setting the place where the tile is moving to occupied.
                 for peg in self.gameboard.all_pegs:
                     if peg.center_x == tile.center_x and peg.center_y == tile.center_y:
@@ -79,41 +82,33 @@ class GameView(arcade.View):
 
     # creates all possible tiles and puts them in a deck
     def build_deck(self, deck_x_pos, deck_y_pos):
-        self.held_tiles = []
-        self.held_tiles_original_position = []
-
         for color in COLORS:
-            for j in range(13):
+            for j in range(NUM_TILE_VALUES):
+                # there are two of each type of tile in the deck
+                for _ in range(2):
 
-                tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
-                # Stacked tile placement, places all tiles in the corner stacked on one another
-                tile.center_x = deck_x_pos
-                tile.center_y = deck_y_pos
-                tile.start_of_turn_x = 0
-                tile.start_of_turn_y = 0
-                self.tile_list.append(tile)
+                    tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
+                    # Stacked tile placement, places all tiles in the corner stacked on one another
+                    tile.center_x = deck_x_pos
+                    tile.center_y = deck_y_pos
+                    tile.start_of_turn_x = 0
+                    tile.start_of_turn_y = 0
+                    self.tile_list.append(tile)
 
-                tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
-                # Creating 2nd Tile for each
-                tile.center_x = deck_x_pos
-                tile.center_y = deck_y_pos
-                tile.start_of_turn_x = 0
-                tile.start_of_turn_y = 0
-                self.tile_list.append(tile)
-
-        tile = Tile(f"tiles/red_wild.png", scale = TILE_SCALE)
+        tile = Tile("tiles/red_wild.png", scale = TILE_SCALE)
         self.tile_list.append(tile)
-        tile = Tile(f"tiles/black_wild.png", scale=TILE_SCALE)
+        tile = Tile("tiles/black_wild.png", scale=TILE_SCALE)
         self.tile_list.append(tile)
 
 
 
-
+    # TODO: alter this so that the ai can also draw tiles into *their* dock
     def deal_tile(self):
         if len(self.tile_list) < 1 or self.used_tiles[1] >= COLUMN_COUNT_DOCK * 2:
             print("ERROR. Tile cannot be dealt")
             return False
 
+        peg = None
         found = False
         for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
             if not space.is_occupied():
@@ -155,7 +150,7 @@ class GameView(arcade.View):
         self.pass_button.draw()
 
         if self.show_instructions:
-            self.draw_instructions_screen()
+            draw_instructions_screen(self)
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -301,19 +296,6 @@ class GameView(arcade.View):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.check_valid_collections()
 
-    def draw_instructions_screen(self):
-        background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
-
-        # color is "MIDNIGHT_GREEN" but the fourth value is transparency
-        arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
-        arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
-
-        start_y = self.center_y + 200
-        for i, line in enumerate(INSTRUCTIONS):
-            start_y -= 30
-            txt = arcade.Text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
-            txt.draw()
-
     def on_key_press(self, symbol: int, modifiers: int):
 
         if symbol == arcade.key.U:
@@ -374,20 +356,8 @@ class StartView(arcade.View):
         self.rules.draw()
         self.text.draw()
         if self.show_instructions:
-            self.draw_instructions_screen()
+            draw_instructions_screen(self)
 
-    def draw_instructions_screen(self):
-        background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
-
-        # color is "MIDNIGHT_GREEN" but the fourth value is transparency
-        arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
-        arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
-
-        start_y = self.center_y + 200
-        for i, line in enumerate(INSTRUCTIONS):
-            start_y -= 30
-            txt = arcade.Text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
-            txt.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
         pos = [x, y]
@@ -400,7 +370,7 @@ class StartView(arcade.View):
         elif self.rules.is_clicked(pos):
             self.show_instructions = not self.show_instructions
             if self.show_instructions:
-                self.draw_instructions_screen()
+                draw_instructions_screen(self)
 
 class WinView(arcade.View):
     def __init__(self):
@@ -462,4 +432,3 @@ class LoseView(arcade.View):
             self.play_again.set_color(arcade.color.LIGHT_KHAKI)
             game_view = GameView()
             self.window.show_view(game_view)
-

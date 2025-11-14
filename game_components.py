@@ -89,8 +89,8 @@ class Dock(Grid):
         self.num_pegs = 0
 
     # default constructor for players
-    def __init__(self):
-        super().__init__(placement="dock", columns=COLUMN_COUNT_DOCK, rows=ROW_COUNT_DOCK)
+    # def __init__(self):
+    #     super().__init__(placement="dock", columns=COLUMN_COUNT_DOCK, rows=ROW_COUNT_DOCK)
 
 
     def draw(self):

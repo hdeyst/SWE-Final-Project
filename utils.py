@@ -12,6 +12,7 @@ COLORS = {
     "yellow": arcade.color.YELLOW,
     "black": arcade.color.BLACK,
 }
+NUM_TILE_VALUES = 13
 
 # --- Board Constants ---
 INNER_MARGIN = 5
@@ -52,17 +53,6 @@ PEG_COLORS = {
 }
 PLACEMENTS = ["grid", "dock"]
 
-
-""" Helper functions """
-
-# --- Coordinate Converter ---
-def convert_to_grid_coords(x, y):
-    # Convert the clicked mouse position into grid coordinates
-    column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
-    row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
-
-    return column, row
-
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
 NUM_PLAYERS = 1
@@ -99,3 +89,28 @@ CHEATSHEET_BOTTOM = DOCK_OFFSET + 20
 CHEATSHEET_WIDTH = WINDOW_WIDTH - OUTER_MARGIN * 2 + INNER_MARGIN
 CHEATSHEET_HEIGHT = 25
 MINIMIZED_CS_WIDTH = 160
+
+
+""" ================== Helper functions ================== """
+
+# --- Coordinate Converter ---
+def convert_to_grid_coords(x, y):
+    # Convert the clicked mouse position into grid coordinates
+    column = int((x - OUTER_MARGIN) // (TILE_WIDTH + INNER_MARGIN))
+    row = int((y - OUTER_MARGIN) // (TILE_HEIGHT + INNER_MARGIN))
+
+    return column, row
+
+# --- Instructions Screen ---
+def draw_instructions_screen(self):
+    background = arcade.XYWH(self.center_x, self.center_y, 700, 400)
+
+    # color is "MIDNIGHT_GREEN" but the fourth value is transparency
+    arcade.draw_rect_filled(rect=background, color=(0, 73, 83, 220))
+    arcade.draw_rect_outline(rect=background, color=arcade.color.WHITE, border_width=2)
+
+    start_y = self.center_y + 200
+    for i, line in enumerate(INSTRUCTIONS):
+        start_y -= 30
+        txt = arcade.Text(line, self.center_x - 320, start_y, color=arcade.color.WHITE)
+        txt.draw()
