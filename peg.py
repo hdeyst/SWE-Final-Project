@@ -6,7 +6,7 @@ class Peg(arcade.SpriteSolidColor):
     def __init__(self, width, height, placement, position):
         super().__init__(width, height, color=PEG_COLORS[placement]["empty"])
 
-        # field for if a peg has a tile, should also work for checking if occupied
+        # is the peg occupied by a tile
         self.tile = None
 
         # peg must be either on grid or on dock
