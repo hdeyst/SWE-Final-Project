@@ -1,62 +1,39 @@
 from utils import *
-from peg import *
-# from game_components import *
+from game_components import Grid
 
-class Grid2:
-    def __init__(self, placement, columns, rows):
-        self.width = GRID_WIDTH
-        self.height = GRID_HEIGHT
 
-        self.placement = placement
+class GameScratch:
+    def __init__(self):
+        self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
+        self.player_hands = []
 
-        self.peg_sprites = []
+        # create docks for each player
+        for _ in range(NUM_AI_PLAYERS):
+            self.player_hands.append(
+                Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+            )
 
-        # create 2D array of pegs
-        for row in range(rows):
-            # add nested lists to represent grid rows
-            self.peg_sprites.append([])
+        self.all_pegs = arcade.SpriteList()
+        for gp in self.grid.peg_sprite_list:
+            self.all_pegs.append(gp)
 
-            for col in range(columns):
-                # get the center coords for each peg
-                x = (col * (TILE_WIDTH + INNER_MARGIN) +
-                     (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN)
-                y = (row * (TILE_HEIGHT + INNER_MARGIN) +
-                     (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
+        for ph in self.player_hands:
+            for dp in ph.peg_sprite_list:
+                self.all_pegs.append(dp)
 
-                # move grid up to make space for dock
-                if placement == "grid":
-                    y += DOCK_OFFSET
 
-                # create peg object
-                peg = Peg(
-                    TILE_WIDTH,
-                    TILE_HEIGHT,
-                    placement=self.placement,
-                    position=[row, col]
-                )
-                peg.position = (x, y)
-                # print(peg.position)
-
-                # add peg to the various sprite lists
-                self.peg_sprites[row].append(peg)
-
-    def __str__(self):
-        representation = ""
-        for row in self.peg_sprites:
-            for peg in row:
-                if peg.tile:
-                    representation += "[t] "
-                else:
-                    representation += "[ ] "
-            representation += "\n"
-        return representation
 
 
 
 if __name__ == "__main__":
-    g = Grid2("grid", COLUMN_COUNT, ROW_COUNT)
-    d = Grid2("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+    game = GameScratch()
 
-    print(g)
-    print(d)
+    print(game.grid)
+    for i, hand in enumerate(game.player_hands):
+        print(f"player {i+1}")
+        print(hand)
+
+    for p in game.all_pegs:
+        print(p)
+    # print(game.player_hands)
 

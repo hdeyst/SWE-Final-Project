@@ -51,11 +51,11 @@ PEG_COLORS = {
         "empty": arcade.color.COPPER
     }
 }
-PLACEMENTS = ["grid", "dock"]
+PLACEMENTS = ["grid", "dock", "ai_dock"]
 
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
-NUM_PLAYERS = 1
+NUM_AI_PLAYERS = 1
 
 
 # --- Collection Bounds ---

@@ -23,7 +23,7 @@ class Grid:
         self.peg_sprites = []
 
         self.placement = placement
-        #print(f"filling {placement} w/ pegs!")
+
         # create 2D array of pegs
         for row in range(rows):
             # add nested lists to represent grid rows
@@ -48,34 +48,42 @@ class Grid:
                     position=[row, col]
                 )
                 peg.position = (x, y)
-                #print(peg.position)
 
                 # add peg to the various sprite lists
                 self.peg_sprites[row].append(peg)
                 self.peg_sprite_list.append(peg)
-        #print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
 
     def draw(self):
-        # draw background boxes depending on placement
+        # draw background boxes & their pegs depending on placement
         if self.placement == "dock":
             arcade.draw_rect_filled(
-                arcade.LBWH(left=OUTER_MARGIN,
-                            bottom=OUTER_MARGIN,
-                            width=COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                            height=ROW_COUNT_DOCK * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN),
+                arcade.LBWH(
+                    left=OUTER_MARGIN,
+                    bottom=OUTER_MARGIN,
+                    width=COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+                    height=ROW_COUNT_DOCK * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
+                ),
                 color=arcade.color.ROSY_BROWN
             )
+            self.peg_sprite_list.draw()
 
         if self.placement == "grid":
             arcade.draw_rect_filled(
-                arcade.LBWH(left=OUTER_MARGIN,
-                            bottom=DOCK_OFFSET + OUTER_MARGIN,
-                            width=COLUMN_COUNT * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                            height=ROW_COUNT * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
-                            ),
+                arcade.LBWH(
+                    left=OUTER_MARGIN,
+                    bottom=DOCK_OFFSET + OUTER_MARGIN,
+                    width=COLUMN_COUNT * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+                    height=ROW_COUNT * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
+                ),
                 color=arcade.color.SHADOW_BLUE
             )
-        self.peg_sprite_list.draw()
+            self.peg_sprite_list.draw()
+
+        # TODO: this is not a necessary if block, but i think it helps readability
+        # if the placement is in the computer player's dock, no need to display it
+        if self.placement == "ai_dock":
+            pass
+
 
     def __str__(self):
         representation = ""
