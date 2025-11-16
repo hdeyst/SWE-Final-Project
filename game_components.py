@@ -56,14 +56,25 @@ class Grid:
         #print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
 
     def draw(self):
-        arcade.draw_rect_filled(
-            arcade.LBWH(left=OUTER_MARGIN,
-                        bottom=DOCK_OFFSET + OUTER_MARGIN,
-                        width=COLUMN_COUNT * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                        height=ROW_COUNT * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
-                        ),
-            color=arcade.color.SHADOW_BLUE
-        )
+        # draw background boxes depending on placement
+        if self.placement == "dock":
+            arcade.draw_rect_filled(
+                arcade.LBWH(left=OUTER_MARGIN,
+                            bottom=OUTER_MARGIN,
+                            width=COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+                            height=ROW_COUNT_DOCK * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN),
+                color=arcade.color.ROSY_BROWN
+            )
+
+        if self.placement == "grid":
+            arcade.draw_rect_filled(
+                arcade.LBWH(left=OUTER_MARGIN,
+                            bottom=DOCK_OFFSET + OUTER_MARGIN,
+                            width=COLUMN_COUNT * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+                            height=ROW_COUNT * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
+                            ),
+                color=arcade.color.SHADOW_BLUE
+            )
         self.peg_sprite_list.draw()
 
     def __str__(self):
@@ -76,32 +87,6 @@ class Grid:
                     representation += "[ ] "
             representation += "\n"
         return representation
-
-
-
-
-class Dock(Grid):
-    def __init__(self, placement, columns, rows):
-        super().__init__(placement, columns, rows)
-        self.width = WINDOW_WIDTH
-        self.placement = placement
-        self.num_tiles = 0
-        self.num_pegs = 0
-
-    # default constructor for players
-    # def __init__(self):
-    #     super().__init__(placement="dock", columns=COLUMN_COUNT_DOCK, rows=ROW_COUNT_DOCK)
-
-
-    def draw(self):
-        arcade.draw_rect_filled(
-            arcade.LBWH(left=OUTER_MARGIN,
-                        bottom=OUTER_MARGIN,
-                        width=COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                        height= ROW_COUNT_DOCK * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN),
-            color=arcade.color.ROSY_BROWN
-        )
-        self.peg_sprite_list.draw()
 
     def get_sprites(self):
         return self.peg_sprite_list

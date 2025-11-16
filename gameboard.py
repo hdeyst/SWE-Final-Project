@@ -1,6 +1,6 @@
 """File holding Gameboard class"""
 import arcade
-from game_components import Grid, Dock, Cheatsheet
+from game_components import Grid, Cheatsheet
 from utils import (COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK,
                    WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, CHEATSHEET_BOTTOM,
                    CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT)
@@ -9,7 +9,7 @@ from utils import (COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK,
 class Gameboard:
     def __init__(self):
         self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
-        self.dock = Dock("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+        self.dock = Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
 
         # make a mega list of all pegs from dock and grid
         self.all_pegs = arcade.SpriteList()
