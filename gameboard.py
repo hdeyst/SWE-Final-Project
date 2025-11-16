@@ -3,20 +3,30 @@ import arcade
 from game_components import Grid, Cheatsheet
 from utils import (COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK,
                    WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, CHEATSHEET_BOTTOM,
-                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT)
-
+                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT, NUM_AI_PLAYERS)
 
 class Gameboard:
     def __init__(self):
         self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
-        self.dock = Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+        self.user_dock = Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
 
-        # make a mega list of all pegs from dock and grid
+        # a list of ALL players hands - helpful for game loop maybe?
+        self.player_hands = []
+        self.player_hands.append(self.user_dock)
+
+        # create docks for each ai player
+        for _ in range(NUM_AI_PLAYERS):
+            self.player_hands.append(
+                Grid("ai_dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+            )
+
         self.all_pegs = arcade.SpriteList()
         for gp in self.grid.peg_sprite_list:
             self.all_pegs.append(gp)
-        for dp in self.dock.peg_sprite_list:
-            self.all_pegs.append(dp)
+
+        for ph in self.player_hands:
+            for dp in ph.peg_sprite_list:
+                self.all_pegs.append(dp)
 
         self.cheatsheet = Cheatsheet(
             left=OUTER_MARGIN,
@@ -33,7 +43,7 @@ class Gameboard:
 
     def draw(self):
         self.grid.draw()
-        self.dock.draw()
+        self.user_dock.draw()
 
         arcade.draw_sprite(self.logo_sprite)
 

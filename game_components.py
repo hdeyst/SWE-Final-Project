@@ -1,9 +1,7 @@
 """
-Defines 3 different types: Grid, Dock, and Button
+Defines 2 different types: Grid, and Button
 - Grid creates the actual grid section of the game board,
   consisting of a variety of peg objects
-- Dock extends Grid, and is the player's personal collection
-  of tiles
 - Button creates a custom button object to aid interactability
 """
 import math

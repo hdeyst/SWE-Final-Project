@@ -103,6 +103,9 @@ class GameView(arcade.View):
 
 
     # TODO: alter this so that the ai can also draw tiles into *their* dock
+    # I think that accessing all the player hands will let us accomplish this
+    # like in the game loop, we would have a current player and use that instead
+    # of user_dock
     def deal_tile(self):
         if len(self.tile_list) < 1 or self.used_tiles[1] >= COLUMN_COUNT_DOCK * 2:
             print("ERROR. Tile cannot be dealt")
@@ -110,13 +113,13 @@ class GameView(arcade.View):
 
         peg = None
         found = False
-        for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
+        for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
             if not space.is_occupied():
                 peg = space
                 found = True
                 break
         if not found: #continuing to second row
-            for space in self.gameboard.dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
+            for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
                 if not space.is_occupied():
                     peg = space
                     break
