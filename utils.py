@@ -49,6 +49,10 @@ PEG_COLORS = {
     "dock": {
         "occupied": arcade.color.PALE_COPPER,
         "empty": arcade.color.COPPER
+    },
+    "ai_dock": {
+        "occupied": arcade.color.TRANSPARENT_BLACK,
+        "empty": arcade.color.TRANSPARENT_BLACK
     }
 }
 PLACEMENTS = ["grid", "dock", "ai_dock"]

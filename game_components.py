@@ -47,9 +47,12 @@ class Grid:
                     placement=self.placement,
                     position=[row, col]
                 )
-                peg.position = (x, y)
+                if placement == "ai_dock":
+                    peg.position = (-1, -1)
+                else:
+                    peg.position = (x, y)
 
-                # add peg to the various sprite lists
+                # add peg to the sprite lists
                 self.peg_sprites[row].append(peg)
                 self.peg_sprite_list.append(peg)
 

@@ -5,12 +5,16 @@ from game_components import Grid
 class GameScratch:
     def __init__(self):
         self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
+        self.user_dock = Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+
+        # a list of ALL players hands - helpful for game loop maybe?
         self.player_hands = []
+        self.player_hands.append(self.user_dock)
 
         # create docks for each player
         for _ in range(NUM_AI_PLAYERS):
             self.player_hands.append(
-                Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
+                Grid("ai_dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
             )
 
         self.all_pegs = arcade.SpriteList()
