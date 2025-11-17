@@ -18,6 +18,9 @@ class GameView(arcade.View):
         # Set the background color of the window
         self.background_color = arcade.color.ASH_GREY
 
+        #initialize timer for turns
+        self.time = 0
+
         # initialize game components
         self.gameboard = Gameboard()
 
@@ -33,7 +36,8 @@ class GameView(arcade.View):
         self.tile_list = arcade.SpriteList()
 
         # TODO: is num in hand the player's tile count in their dock?
-        self.used_tiles = [0, 0] # [num dealt, num in hand]
+        self.num_dealt = 0
+        self.num_in_hand = 0
 
         self.held_tiles = []
         self.held_tiles_original_position = []
@@ -52,10 +56,26 @@ class GameView(arcade.View):
             tile.start_of_turn_y = 0
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
-                self.used_tiles[1] -= 1
-            if self.used_tiles[1] == 0:
+                self.num_in_hand -= 1
+            if self.num_in_hand == 0:
                 self.window.show_view(WinView())
         print("Turn Saved")
+
+    def end_turn(self):
+        played = False
+        for tile in self.tile_list:
+            if tile.start_of_turn_x != 0:
+                played = True
+                break
+
+        if played and self.check_valid_collections():
+            self.save_turn()
+        elif played and not self.check_valid_collections():
+            self.roll_back()
+            self.deal_tile()
+        else:
+            self.deal_tile()
+
 
     # Resets the position of tiles to their placement one turn before
     def roll_back(self):
@@ -100,11 +120,9 @@ class GameView(arcade.View):
         tile = Tile("tiles/black_wild.png", scale=TILE_SCALE)
         self.tile_list.append(tile)
 
-
-
     # TODO: alter this so that the ai can also draw tiles into *their* dock
     def deal_tile(self):
-        if len(self.tile_list) < 1 or self.used_tiles[1] >= COLUMN_COUNT_DOCK * 2:
+        if len(self.tile_list) < 1 or self.num_in_hand >= COLUMN_COUNT_DOCK * 2:
             print("ERROR. Tile cannot be dealt")
             return False
 
@@ -121,13 +139,13 @@ class GameView(arcade.View):
                     peg = space
                     break
 
-        tile = self.tile_list[self.used_tiles[0]]
+        tile = self.tile_list[self.num_dealt]
 
         tile.position = peg.center_x, peg.center_y
         peg.occupy_peg(tile)
 
-        self.used_tiles[0] += 1
-        self.used_tiles[1] += 1
+        self.num_dealt += 1
+        self.num_in_hand += 1
 
         return True
 
@@ -161,8 +179,7 @@ class GameView(arcade.View):
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            self.roll_back()
-            self.deal_tile()
+            self.end_turn()
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -221,6 +238,11 @@ class GameView(arcade.View):
             tile.center_x += dx
             tile.center_y += dy
 
+    def on_update(self, delta_time):
+        self.time += delta_time
+        if self.time >= 30:
+            self.time = 0
+
     def pull_to_top(self, tile: arcade.Sprite):
         """ Pull tile to top of rendering order (last to render, looks on-top) """
         self.tile_list.remove(tile)
@@ -253,6 +275,7 @@ class GameView(arcade.View):
 
     def check_valid_collections(self):
         open_collection = False
+        empty = True
         reset = False
         collection = Collection()
         # 4 cases, each peg is ONE of these...
@@ -268,6 +291,7 @@ class GameView(arcade.View):
                         print("Tile, closed collection")
                         collection.add(peg.get_tile())
                         open_collection = True
+                        empty = False
 
                     # if there is a tile ... and a curr collection
                     elif peg.is_occupied() and open_collection:
@@ -282,13 +306,10 @@ class GameView(arcade.View):
                         open_collection = False
                         if not collection.is_valid():
                             # if collection is invalid, bounce tiles
-                            self.roll_back()
-                            reset = True
-                            collection.clear()
+                            return False
                         else:
                             collection.clear()
-        if not reset:
-            self.save_turn()
+        return True
 
     def button_press(self, x, y):
         pos = [x, y]
@@ -308,11 +329,11 @@ class GameView(arcade.View):
             self.deal_tile()
 
         elif symbol == arcade.key.W:
-            self.used_tiles[1] = 0
+            self.num_in_hand = 0
             self.window.show_view(WinView())
 
         elif symbol == arcade.key.L:
-            self.used_tiles[1] = 1
+            self.num_in_hand = 1
             self.window.show_view(LoseView())
 
         elif symbol == arcade.key.Q:

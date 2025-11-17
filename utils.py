@@ -56,6 +56,7 @@ PLACEMENTS = ["grid", "dock"]
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
 NUM_PLAYERS = 1
+TURN_TIME = 30
 
 
 # --- Collection Bounds ---
