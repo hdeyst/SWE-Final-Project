@@ -267,6 +267,7 @@ class GameView(arcade.View):
         )
         if self.time <= 0:
             self.end_turn()
+            #ai turn goes here?
             self.time = 30
 
     def pull_to_top(self, tile: arcade.Sprite):
@@ -337,14 +338,7 @@ class GameView(arcade.View):
                             collection.clear()
         return True
 
-    def button_press(self, x, y):
-        pos = [x, y]
-        if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            self.check_valid_collections()
-
     def on_key_press(self, symbol: int, modifiers: int):
-
         if symbol == arcade.key.U:
             self.roll_back()
 
