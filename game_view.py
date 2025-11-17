@@ -16,6 +16,7 @@ class GameView(arcade.View):
         super().__init__()
 
         # Set the background color of the window
+        self.timer_text = None
         self.background_color = arcade.color.ASH_GREY
 
         #initialize timer for turns
@@ -28,7 +29,17 @@ class GameView(arcade.View):
             50,
             arcade.color.GREEN,
             [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2],
-            "Pass"
+            ""
+        )
+        self.button_text = arcade.Text(
+            "Pass",
+            WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2,
+            TILE_HEIGHT * 2.1,
+            arcade.color.BLACK,
+            16,
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Belwe Bold",
         )
         self.pass_button.font_size = 14
 
@@ -166,6 +177,10 @@ class GameView(arcade.View):
 
         # draw the pass button
         self.pass_button.draw()
+        self.button_text.draw()
+
+        #draw the timer
+        self.timer_text.draw()
 
         if self.show_instructions:
             draw_instructions_screen(self)
@@ -239,9 +254,20 @@ class GameView(arcade.View):
             tile.center_y += dy
 
     def on_update(self, delta_time):
-        self.time += delta_time
-        if self.time >= 30:
-            self.time = 0
+        self.time -= delta_time
+        self.timer_text = arcade.Text(
+            f"{self.time: .0f}",
+            WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2,
+            TILE_HEIGHT * 1.7,
+            arcade.color.BLACK,
+            12,
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Belwe Bold",
+        )
+        if self.time <= 0:
+            self.end_turn()
+            self.time = 30
 
     def pull_to_top(self, tile: arcade.Sprite):
         """ Pull tile to top of rendering order (last to render, looks on-top) """
