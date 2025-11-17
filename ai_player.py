@@ -33,8 +33,6 @@ class Player:
         self.hand.sort(key=lambda tile: tile.number)
         self.hand.sort(key=lambda tile: tile.color)
 
-    def find_collection(self):
-        collections = []
 
 
 
@@ -56,14 +54,13 @@ if __name__ == "__main__":
     black5 = Tile(f"tiles/black_5.png", scale = TILE_SCALE)
 
     player = Player()
+    player.deal(yellow3)
+    player.deal(black5)
     player.deal(red2)
+    player.deal(yellow2)
+    player.deal(black2)
     player.deal(red3)
     player.deal(red4)
-    player.deal(yellow2)
-    player.deal(yellow3)
-    player.deal(black2)
-    player.deal(black5)
-    player.hand.shuffle()
 
     print(player)
     player.sort_sets()
