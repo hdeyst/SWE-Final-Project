@@ -10,25 +10,12 @@ class Gameboard:
         self.grid = Grid("grid", COLUMN_COUNT, ROW_COUNT)
         self.user_dock = Grid("dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
 
-        # a list of ai players hands - helpful for game loop maybe?
-        self.ai_player_hands = []
-
-        # create docks for each ai player
-        for _ in range(NUM_AI_PLAYERS):
-            self.ai_player_hands.append(
-                Grid("ai_dock", COLUMN_COUNT_DOCK, ROW_COUNT_DOCK)
-            )
-
         self.all_pegs = arcade.SpriteList()
         for gp in self.grid.peg_sprite_list:
             self.all_pegs.append(gp)
 
         for user_dp in self.user_dock.peg_sprite_list:
             self.all_pegs.append(user_dp)
-
-        for ai_ph in self.ai_player_hands:
-            for dp in ai_ph.peg_sprite_list:
-                self.all_pegs.append(dp)
 
         self.cheatsheet = Cheatsheet(
             left=OUTER_MARGIN,
@@ -43,12 +30,13 @@ class Gameboard:
         self.logo_sprite.center_y = WINDOW_HEIGHT - 25
         self.logo_sprite.center_x = WINDOW_WIDTH / 2
 
+        # TODO: create marker that displays the number of tiles
+        #  each ai player has in their hand
+
+
     def draw(self):
         self.grid.draw()
         self.user_dock.draw()
-
-        for hand in self.ai_player_hands:
-            hand.draw()
 
         arcade.draw_sprite(self.logo_sprite)
 

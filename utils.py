@@ -23,7 +23,7 @@ COLUMN_COUNT = 31
 ROW_COUNT = 10
 
 # TODO: change this back to 27 for real game
-COLUMN_COUNT_DOCK = 14
+COLUMN_COUNT_DOCK = 27
 ROW_COUNT_DOCK = 2
 
 DOCK_LENGTH = COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN)
@@ -52,8 +52,8 @@ PEG_COLORS = {
         "empty": arcade.color.COPPER
     },
     "ai_dock": {
-        "occupied": arcade.color.AUROMETALSAURUS,
-        "empty": arcade.color.ARSENIC
+        "occupied": arcade.color.TRANSPARENT_BLACK,
+        "empty": arcade.color.TRANSPARENT_BLACK
     }
 }
 PLACEMENTS = ["grid", "dock", "ai_dock"]

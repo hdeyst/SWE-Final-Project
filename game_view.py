@@ -32,28 +32,47 @@ class GameView(arcade.View):
         self.tile_list = arcade.SpriteList()
 
         # TODO: is num in hand the player's tile count in their dock?
-        self.used_tiles = [0, 0] # [num dealt, num in hand]
+        self.used_tiles = [0, 0, 0] # [num dealt, num in hand, num in ai hands]
 
         self.held_tiles = []
         self.held_tiles_original_position = []
 
         self.build_deck(-10, -10)
         self.tile_list.shuffle()
-        for _ in range(STARTING_TILE_AMT):
-            self.deal_tile(self.gameboard.user_dock)
 
-            for hand in self.gameboard.ai_player_hands:
-                self.deal_tile(hand)
+        # keep list of ai players
+        self.ai_player = Player()
+
+
+        # give each player 14 initial tiles
+        for _ in range(STARTING_TILE_AMT):
+            # fill user dock
+            self.deal_tile_user()
+
+            self.deal_tile_to_ai(self.ai_player)
 
         # flag to show instructions
         self.show_instructions = False
 
-        # keep list of all players
-        self.players = []
 
-        # add 1 for user
-        for player in range(NUM_AI_PLAYERS + 1):
-            self.players.append(Player())
+
+    def print_player_info(self):
+        print("ai dock hand: ")
+        if self.ai_player.hand:
+            print(self.ai_player)
+
+        print("\nuser hand: ")
+        if self.held_tiles:
+            output = ""
+            for tile in self.held_tiles[:-1]:
+                output += f"{tile}, "
+            output += f"{self.held_tiles[-1]}, "
+            print(output)
+
+        print(f"tiles left in deck: {len(self.tile_list) - self.used_tiles[0]}")
+
+        print(f"num ai player tiles: {self.used_tiles[2]}\n"
+              f"num user tiles: {self.used_tiles[1]}\n")
 
 
     def save_turn(self):
@@ -117,20 +136,20 @@ class GameView(arcade.View):
     # I think that accessing all the player hands will let us accomplish this
     # like in the game loop, we would have a current player and use that instead
     # of user_dock
-    def deal_tile(self, player_dock):
-        if len(self.tile_list) < 1 or player_dock.get_num_available_tiles():
+    def deal_tile_user(self):
+        if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs():
             print("ERROR. Tile cannot be dealt")
             return False
 
         peg = None
         found = False
-        for space in player_dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
+        for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
             if not space.is_occupied():
                 peg = space
                 found = True
                 break
         if not found: #continuing to second row
-            for space in player_dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
+            for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
                 if not space.is_occupied():
                     peg = space
                     break
@@ -143,7 +162,25 @@ class GameView(arcade.View):
         self.used_tiles[0] += 1
         self.used_tiles[1] += 1
 
+        self.print_player_info()
+
         return True
+
+    def deal_tile_to_ai(self, player):
+        if len(self.tile_list) < 1 or len(player.hand) == player.hand_capacity:
+            print("ERROR. Tile cannot be dealt")
+            return False
+
+        tile = self.tile_list[self.used_tiles[0]]
+        player.deal(tile)
+
+        self.used_tiles[0] += 1
+        # add to count in ai hands
+        self.used_tiles[2] += 1
+
+        self.print_player_info()
+        return True
+
 
     # Draws the gameboard grid
     def on_draw(self):
@@ -177,7 +214,7 @@ class GameView(arcade.View):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.roll_back()
             # TODO: this should be able to change depending on user
-            self.deal_tile(self.gameboard.user_dock)
+            self.deal_tile_user()
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -321,7 +358,7 @@ class GameView(arcade.View):
 
         # TODO: this needs to be able to change based on who's turn it is
         elif symbol == arcade.key.D:
-            self.deal_tile(self.gameboard.user_dock)
+            self.deal_tile_user()
 
         elif symbol == arcade.key.W:
             self.used_tiles[1] = 0

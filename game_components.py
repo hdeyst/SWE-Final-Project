@@ -23,6 +23,9 @@ class Grid:
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
 
+        self.tile_sprite_list = arcade.SpriteList()
+        self.tile_sprites = []
+
         self.placement = placement
 
         left = OUTER_MARGIN * 2 + self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN
@@ -90,17 +93,17 @@ class Grid:
 
         # TODO: delete this once done, just here for development
         # if the placement is in the computer player's dock, no need to display it
-        if self.placement == "ai_dock":
-            arcade.draw_rect_filled(
-                arcade.LBWH(
-                    left=OUTER_MARGIN*2 + self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                    bottom=OUTER_MARGIN,
-                    width=self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                    height=self.rows * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
-                ),
-                color=arcade.color.EERIE_BLACK
-            )
-            self.peg_sprite_list.draw()
+        # if self.placement == "ai_dock":
+        #     arcade.draw_rect_filled(
+        #         arcade.LBWH(
+        #             left=OUTER_MARGIN*2 + self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+        #             bottom=OUTER_MARGIN,
+        #             width=self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+        #             height=self.rows * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
+        #         ),
+        #         color=arcade.color.EERIE_BLACK
+        #     )
+        #     self.peg_sprite_list.draw()
 
 
     def __str__(self):
@@ -117,7 +120,7 @@ class Grid:
     def get_sprites(self):
         return self.peg_sprite_list
 
-    def get_num_available_tiles(self):
+    def get_num_available_pegs(self):
         total = len(self.peg_sprite_list)
         for p in self.peg_sprite_list:
             if p.tile:

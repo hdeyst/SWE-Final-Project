@@ -13,12 +13,13 @@ Functions:
 import arcade
 from tile import Tile
 from arcade import SpriteList
-from utils import TILE_SCALE
+from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
 
 
 class Player:
     def __init__(self):
         self.hand = SpriteList()
+        self.hand_capacity = COLUMN_COUNT_DOCK * ROW_COUNT_DOCK
         self.is_turn = False
         self.initial_melt = False
 
@@ -33,8 +34,8 @@ class Player:
         self.hand.sort(key=lambda tile: tile.number)
         self.hand.sort(key=lambda tile: tile.color)
 
-
-
+    def place_tile(self):
+        pass
 
     def __repr__(self):
         """representation of player's hand for testing"""
