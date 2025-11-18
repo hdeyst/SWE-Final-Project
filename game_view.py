@@ -3,19 +3,18 @@ import arcade
 import arcade.gui
 
 from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
-                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen)
+                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, NUM_AI_PLAYERS)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK
 from gameboard import Gameboard
 from game_components import Button
 from tile import Tile
 from collection import Collection
+from ai_player import Player
 
 class GameView(arcade.View):
     """A game view."""
     def __init__(self):
         super().__init__()
-
-        # Set the background color of the window
         self.background_color = arcade.color.ASH_GREY
 
         # initialize game components
@@ -41,10 +40,21 @@ class GameView(arcade.View):
         self.build_deck(-10, -10)
         self.tile_list.shuffle()
         for _ in range(STARTING_TILE_AMT):
-            self.deal_tile()
+            self.deal_tile(self.gameboard.user_dock)
+
+            for hand in self.gameboard.ai_player_hands:
+                self.deal_tile(hand)
 
         # flag to show instructions
         self.show_instructions = False
+
+        # keep list of all players
+        self.players = []
+
+        # add 1 for user
+        for player in range(NUM_AI_PLAYERS + 1):
+            self.players.append(Player())
+
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -95,6 +105,7 @@ class GameView(arcade.View):
                     tile.start_of_turn_y = 0
                     self.tile_list.append(tile)
 
+        # add wild cards to the deck
         tile = Tile("tiles/red_wild.png", scale = TILE_SCALE)
         self.tile_list.append(tile)
         tile = Tile("tiles/black_wild.png", scale=TILE_SCALE)
@@ -106,20 +117,20 @@ class GameView(arcade.View):
     # I think that accessing all the player hands will let us accomplish this
     # like in the game loop, we would have a current player and use that instead
     # of user_dock
-    def deal_tile(self):
-        if len(self.tile_list) < 1 or self.used_tiles[1] >= COLUMN_COUNT_DOCK * 2:
+    def deal_tile(self, player_dock):
+        if len(self.tile_list) < 1 or player_dock.get_num_available_tiles():
             print("ERROR. Tile cannot be dealt")
             return False
 
         peg = None
         found = False
-        for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
+        for space in player_dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
             if not space.is_occupied():
                 peg = space
                 found = True
                 break
         if not found: #continuing to second row
-            for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
+            for space in player_dock.peg_sprite_list[-COLUMN_COUNT_DOCK * 2:]:
                 if not space.is_occupied():
                     peg = space
                     break
@@ -165,7 +176,8 @@ class GameView(arcade.View):
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.roll_back()
-            self.deal_tile()
+            # TODO: this should be able to change depending on user
+            self.deal_tile(self.gameboard.user_dock)
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -307,8 +319,9 @@ class GameView(arcade.View):
         elif symbol == arcade.key.S:
             self.save_turn()
 
+        # TODO: this needs to be able to change based on who's turn it is
         elif symbol == arcade.key.D:
-            self.deal_tile()
+            self.deal_tile(self.gameboard.user_dock)
 
         elif symbol == arcade.key.W:
             self.used_tiles[1] = 0

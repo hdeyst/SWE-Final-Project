@@ -80,7 +80,6 @@ class Grid:
             )
             self.peg_sprite_list.draw()
 
-        # TODO: this is not a necessary if block, but i think it helps readability
         # if the placement is in the computer player's dock, no need to display it
         if self.placement == "ai_dock":
             pass
@@ -99,6 +98,12 @@ class Grid:
 
     def get_sprites(self):
         return self.peg_sprite_list
+
+    def get_num_available_tiles(self):
+        total = len(self.peg_sprite_list)
+        for p in self.peg_sprite_list:
+            if p.tile:
+                total -= 1
 
 
 class Button():
