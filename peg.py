@@ -32,16 +32,20 @@ class Peg(arcade.SpriteSolidColor):
 
             if self.placement == "grid":
                 self.color = PEG_COLORS["grid"]["occupied"]
-            else:
+            elif self.placement == "dock":
                 self.color = PEG_COLORS["dock"]["occupied"]
+            else:
+                self.color = PEG_COLORS["ai_dock"]["occupied"]
 
 
     def empty_peg(self):
         self.tile = None
         if self.placement == "grid":
             self.color = PEG_COLORS["grid"]["empty"]
-        else:
+        elif self.placement == "dock":
             self.color = PEG_COLORS["dock"]["empty"]
+        else :
+            self.color = PEG_COLORS["ai_dock"]["empty"]
 
     def set_center(self, x, y):
         self.center_x = x

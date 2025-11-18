@@ -47,6 +47,9 @@ class Gameboard:
         self.grid.draw()
         self.user_dock.draw()
 
+        for hand in self.ai_player_hands:
+            hand.draw()
+
         arcade.draw_sprite(self.logo_sprite)
 
         self.cheatsheet.draw()
