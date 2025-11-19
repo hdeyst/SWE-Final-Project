@@ -25,7 +25,6 @@ class Player:
         self.is_turn = False
         self.initial_melt = False
 
-        # self.collections = {}
 
     def deal(self, tile):
         self.hand.append(tile)
@@ -38,6 +37,8 @@ class Player:
         self.hand.sort(key=lambda tile: tile.number)
         self.hand.sort(key=lambda tile: tile.color)
 
+    # makes a new dictionary sp that when new tiles are added,
+    # it can be refreshed w/ that in mind
     def create_collections(self):
         collections = {}
 
@@ -54,17 +55,16 @@ class Player:
                     all_sets[tile.number].append(tile)
 
             for s in all_sets:
-                c = Collection()
+                col = Collection()
                 # add all the tiles in initial set to a collection
                 for tile in all_sets[s]:
-                    c.add(tile)
+                    col.add(tile)
                 # add valid collections to dict
-                if c.is_valid():
-                    collections[c] = c.get_value()
+                if col.is_valid():
+                    collections[col] = col.get_value()
 
-        # this misses a few runs, b/c it organizes on color
-        # if all the colors do not create one set, but there is
-        # a subset w/in, then it won't be recognized :o
+        # TODO: if all the colors do not create one set, but there is
+        #  a subset w/in, then it won't be recognized
         def find_runs():
             self.sort_runs()
 
@@ -76,13 +76,13 @@ class Player:
                     all_vals[tile.color].append(tile)
 
             for r in all_vals:
-                c = Collection()
+                col = Collection()
                 # add all the tiles in initial run to a collection
                 for tile in all_vals[r]:
-                    c.add(tile)
+                    col.add(tile)
                 # add valid collections to dict
-                if c.is_valid():
-                    collections[c] = c.get_value()
+                if col.is_valid():
+                    collections[col] = col.get_value()
 
         # put it all together
         find_sets()
@@ -90,11 +90,10 @@ class Player:
         return collections
 
 
-
     def get_best_collection(self):
-        pass
-
-
+        cols = self.create_collections()
+        best_coll = max(cols, key=cols.get)
+        return best_coll
 
 
     def __repr__(self):
@@ -133,3 +132,5 @@ if __name__ == "__main__":
     print(f"all collections:")
     for c in colls:
         print(f"{c}: {colls[c]}")
+
+    print(f"best collection: {player.get_best_collection()}")

@@ -31,6 +31,14 @@ class Collection:
     def clear(self):
         self.tiles.clear()
 
+    def is_valid(self):
+        if self.set() or self.run():
+            return True
+        return False
+
+    def get_num_tiles(self):
+        return len(self.tiles)
+
     def set(self): #3-4 same number, different colors
         index = 0
         self.is_set = True
@@ -84,11 +92,6 @@ class Collection:
                 else:
                     return False
         return True
-
-    def is_valid(self):
-        if self.set() or self.run():
-            return True
-        return False
 
     def __str__(self):
         rep = ""
