@@ -49,13 +49,17 @@ PEG_COLORS = {
     "dock": {
         "occupied": arcade.color.PALE_COPPER,
         "empty": arcade.color.COPPER
+    },
+    "ai_dock": {
+        "occupied": arcade.color.TRANSPARENT_BLACK,
+        "empty": arcade.color.TRANSPARENT_BLACK
     }
 }
-PLACEMENTS = ["grid", "dock"]
+PLACEMENTS = ["grid", "dock", "ai_dock"]
 
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
-NUM_PLAYERS = 1
+NUM_AI_PLAYERS = 1
 TURN_TIME = 30
 
 

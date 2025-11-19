@@ -31,7 +31,19 @@ class Collection:
     def clear(self):
         self.tiles.clear()
 
-    def set(self): #3-4 same number, different colors
+    def is_valid(self):
+        if self.set() or self.run():
+            return True
+        return False
+
+    def get_num_tiles(self):
+        return len(self.tiles)
+
+    def get_tiles(self):
+        return self.tiles
+
+    # 3-4 tiles of the same number, different colors
+    def set(self):
         index = 0
         self.is_set = True
         if len(self.tiles) == 3:
@@ -61,7 +73,8 @@ class Collection:
 
         return self.is_set
 
-    def run(self): #3+ same color, increasing numbers by 1
+    # 3+tiles of the same color, increasing numbers by 1
+    def run(self):
         index = 0
         if len(self.tiles) < 3:
             return False
@@ -85,7 +98,8 @@ class Collection:
                     return False
         return True
 
-    def is_valid(self):
-        if self.set() or self.run():
-            return True
-        return False
+    def __str__(self):
+        rep = ""
+        for tile in self.tiles:
+            rep = rep + str(tile) + ", "
+        return rep

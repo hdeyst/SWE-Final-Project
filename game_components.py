@@ -1,9 +1,7 @@
 """
-Defines 3 different types: Grid, Dock, and Button
+Defines 2 different types: Grid, and Button
 - Grid creates the actual grid section of the game board,
   consisting of a variety of peg objects
-- Dock extends Grid, and is the player's personal collection
-  of tiles
 - Button creates a custom button object to aid interactability
 """
 import math
@@ -19,11 +17,17 @@ class Grid:
         self.width = GRID_WIDTH
         self.height = GRID_HEIGHT
 
+        self.columns = columns
+        self.rows = rows
+
         self.peg_sprite_list = arcade.SpriteList()
         self.peg_sprites = []
 
+        self.tile_sprite_list = arcade.SpriteList()
+        self.tile_sprites = []
+
         self.placement = placement
-        #print(f"filling {placement} w/ pegs!")
+
         # create 2D array of pegs
         for row in range(rows):
             # add nested lists to represent grid rows
@@ -32,7 +36,7 @@ class Grid:
             for col in range(columns):
                 # get the center coords for each peg
                 x = (col * (TILE_WIDTH + INNER_MARGIN) +
-                     (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN)
+                         (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN)
                 y = (row * (TILE_HEIGHT + INNER_MARGIN) +
                      (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
 
@@ -47,24 +51,41 @@ class Grid:
                     placement=self.placement,
                     position=[row, col]
                 )
-                peg.position = (x, y)
-                #print(peg.position)
+                if placement == "ai_dock":
+                    peg.position = (-1, -1)
+                else:
+                    peg.position = (x, y)
 
-                # add peg to the various sprite lists
+                # add peg to the sprite lists
                 self.peg_sprites[row].append(peg)
                 self.peg_sprite_list.append(peg)
-        #print(f"{placement} filled!: {len(self.peg_sprite_list)} pegs")
 
     def draw(self):
-        arcade.draw_rect_filled(
-            arcade.LBWH(left=OUTER_MARGIN,
-                        bottom=DOCK_OFFSET + OUTER_MARGIN,
-                        width=COLUMN_COUNT * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                        height=ROW_COUNT * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
-                        ),
-            color=arcade.color.SHADOW_BLUE
-        )
-        self.peg_sprite_list.draw()
+        # draw background boxes & their pegs depending on placement
+        if self.placement == "dock":
+            arcade.draw_rect_filled(
+                arcade.LBWH(
+                    left=OUTER_MARGIN,
+                    bottom=OUTER_MARGIN,
+                    width=self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+                    height=self.rows * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
+                ),
+                color=arcade.color.ROSY_BROWN
+            )
+            self.peg_sprite_list.draw()
+
+        if self.placement == "grid":
+            arcade.draw_rect_filled(
+                arcade.LBWH(
+                    left=OUTER_MARGIN,
+                    bottom=DOCK_OFFSET + OUTER_MARGIN,
+                    width=self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
+                    height=self.rows * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
+                ),
+                color=arcade.color.SHADOW_BLUE
+            )
+            self.peg_sprite_list.draw()
+
 
     def __str__(self):
         representation = ""
@@ -77,34 +98,14 @@ class Grid:
             representation += "\n"
         return representation
 
-
-
-
-class Dock(Grid):
-    def __init__(self, placement, columns, rows):
-        super().__init__(placement, columns, rows)
-        self.width = WINDOW_WIDTH
-        self.placement = placement
-        self.num_tiles = 0
-        self.num_pegs = 0
-
-    # default constructor for players
-    # def __init__(self):
-    #     super().__init__(placement="dock", columns=COLUMN_COUNT_DOCK, rows=ROW_COUNT_DOCK)
-
-
-    def draw(self):
-        arcade.draw_rect_filled(
-            arcade.LBWH(left=OUTER_MARGIN,
-                        bottom=OUTER_MARGIN,
-                        width=COLUMN_COUNT_DOCK * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-                        height= ROW_COUNT_DOCK * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN),
-            color=arcade.color.ROSY_BROWN
-        )
-        self.peg_sprite_list.draw()
-
     def get_sprites(self):
         return self.peg_sprite_list
+
+    def get_num_available_pegs(self):
+        total = len(self.peg_sprite_list)
+        for p in self.peg_sprite_list:
+            if p.tile:
+                total -= 1
 
 
 class Button():

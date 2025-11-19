@@ -40,8 +40,3 @@ class Tile(arcade.Sprite):
 
     def set_number(self, number):
         self.number = number
-
-if __name__ == "__main__":
-    tile = Tile("../tiles/black_1.png", TILE_SCALE)
-
-    print(tile)
