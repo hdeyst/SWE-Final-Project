@@ -19,11 +19,12 @@ from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, gameboard):
         self.hand = SpriteList()
         self.hand_capacity = COLUMN_COUNT_DOCK * ROW_COUNT_DOCK
         self.is_turn = False
         self.initial_melt = False
+        self.gameboard = gameboard
 
 
     def deal(self, tile):
@@ -101,6 +102,33 @@ class Player:
             return False
         else:
             return True
+
+    def get_grid_tiles(self):
+        grid_tiles = []
+        for peg in self.gameboard.all_pegs:
+            if peg.placement == "grid" and peg.is_occupied():
+                grid_tiles.append((peg, peg.get_tile()))
+        return grid_tiles
+
+    def find_placement_loc(self, col_len):
+        col = self.get_best_collection()
+        # Basic Idea:
+        for row in self.gameboard.grid.rows:
+            free = []
+            for peg in row:
+                if not peg.is_occupied():
+                    free.append(peg)
+                    if len(free) == len(col) + 2:
+                        # returns the list w/o 1st and last element
+                        return free[1:-1]
+        # otherwise returns an empty list
+        return []
+
+        #look through board until finding a space of size col_len + 2 (borders)
+        # make sure space isn't a part of two lines (starting on one line and ending on the next)
+        # return either a list of coords length col_len (only include the coords the tiles will acutally go on)
+        #TODO: Alternatively we can just change this function to directry place the tiles
+
 
     def turn(self):
         if self.initial_melt:

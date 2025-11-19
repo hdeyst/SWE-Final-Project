@@ -41,7 +41,7 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
 
         # keep list of ai players
-        self.ai_player = Player()
+        self.ai_player = Player(self.gameboard)
 
 
         # give each player 14 initial tiles
