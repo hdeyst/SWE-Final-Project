@@ -13,6 +13,7 @@ COLORS = {
     "black": arcade.color.BLACK,
 }
 NUM_TILE_VALUES = 13
+NUM_TILES = NUM_TILE_VALUES * 4 + 2
 
 # --- Board Constants ---
 INNER_MARGIN = 5
