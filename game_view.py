@@ -21,9 +21,9 @@ class GameView(arcade.View):
         self.background_color = arcade.color.ASH_GREY
 
         #initialize timer for turns
-        self.time = 0
+        self.time = 30
 
-        self.num_turns = 0
+        self.player_first_melt = True
 
         # initialize game components
         self.gameboard = Gameboard()
@@ -121,25 +121,21 @@ class GameView(arcade.View):
         print("Turn Saved")
 
     def end_turn(self):
-        played = 0
-        move_sum = 0
+        played = False
         for tile in self.tile_list:
             if tile.start_of_turn_x != 0:
-                if not tile.is_wild:
-                    move_sum = move_sum + tile.number
-                played += 1
-        if move_sum < 30 and self.num_turns == 0:
+                played = True
+                break
+
+        if played and self.check_valid_collections(self.player_first_melt):
+            self.save_turn()
+            if self.player_first_melt:
+                self.player_first_melt = False
+        elif played and not self.check_valid_collections(self.player_first_melt):
             self.roll_back()
             self.deal_tile_user()
         else:
-            if played >= 3 and self.check_valid_collections():
-                self.save_turn()
-                self.num_turns += 1
-            elif played >= 3 and not self.check_valid_collections():
-                self.roll_back()
-                self.deal_tile_user()
-            else:
-                self.deal_tile_user()
+            self.deal_tile_user()
 
 
     # Resets the position of tiles to their placement one turn before
@@ -274,11 +270,10 @@ class GameView(arcade.View):
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            self.roll_back()
             # TODO: this should be able to change depending on user
             #self.deal_tile_user()
-            self.time = 30
             self.end_turn()
+            self.time = 30
 
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
@@ -351,7 +346,7 @@ class GameView(arcade.View):
         )
         if self.time <= 0:
             self.end_turn()
-            #ai turn goes here?
+            #TODO: ai turn goes here?
             self.time = 30
 
     def pull_to_top(self, tile: arcade.Sprite):
@@ -384,10 +379,12 @@ class GameView(arcade.View):
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
 
-    def check_valid_collections(self):
+    def check_valid_collections(self, first_melt):
         open_collection = False
         empty = True
         reset = False
+        moved = False
+        first_sum = 0
         collection = Collection()
         # 4 cases, each peg is ONE of these...
         for row in self.gameboard.grid.peg_sprites:
@@ -403,12 +400,23 @@ class GameView(arcade.View):
                         collection.add(peg.get_tile())
                         open_collection = True
                         empty = False
+                        if peg.get_tile().start_of_turn_x != 0:
+                            moved = True
+                            first_sum += peg.get_tile().number
+                        else:
+                            moved = False
 
                     # if there is a tile ... and a curr collection
                     elif peg.is_occupied() and open_collection:
                         # print("Tile, open collection")
                         # adds tile to the collection
                         collection.add(peg.get_tile())
+                        if first_melt and peg.get_tile().start_of_turn_x != 0 and moved is False:
+                            return False
+                        elif first_melt and peg.get_tile().start_of_turn_x ==0 and moved is True:
+                            return False
+                        elif first_melt and peg.get_tile().start_of_turn_x != 0:
+                            first_sum += peg.get_tile().number
 
                     # if there is NO tile ... and a curr collection
                     elif not peg.is_occupied() and open_collection:
@@ -420,6 +428,8 @@ class GameView(arcade.View):
                             return False
                         else:
                             collection.clear()
+        if first_melt and first_sum < 30:
+            return False
         return True
 
     def on_key_press(self, symbol: int, modifiers: int):
