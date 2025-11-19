@@ -28,19 +28,14 @@ class Grid:
 
         self.placement = placement
 
-        left = OUTER_MARGIN * 2 + self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN
         # create 2D array of pegs
         for row in range(rows):
             # add nested lists to represent grid rows
             self.peg_sprites.append([])
 
             for col in range(columns):
-                if placement == "ai_dock":
-                    x = (col * (TILE_WIDTH + INNER_MARGIN) +
-                         (TILE_WIDTH / 2 + INNER_MARGIN) + left)
-                else:
                 # get the center coords for each peg
-                    x = (col * (TILE_WIDTH + INNER_MARGIN) +
+                x = (col * (TILE_WIDTH + INNER_MARGIN) +
                          (TILE_WIDTH / 2 + INNER_MARGIN) + OUTER_MARGIN)
                 y = (row * (TILE_HEIGHT + INNER_MARGIN) +
                      (TILE_HEIGHT / 2 + INNER_MARGIN) + OUTER_MARGIN)
@@ -56,10 +51,10 @@ class Grid:
                     placement=self.placement,
                     position=[row, col]
                 )
-                # if placement == "ai_dock":
-                #     peg.position = (-1, -1)
-                # else:
-                peg.position = (x, y)
+                if placement == "ai_dock":
+                    peg.position = (-1, -1)
+                else:
+                    peg.position = (x, y)
 
                 # add peg to the sprite lists
                 self.peg_sprites[row].append(peg)
@@ -90,20 +85,6 @@ class Grid:
                 color=arcade.color.SHADOW_BLUE
             )
             self.peg_sprite_list.draw()
-
-        # TODO: delete this once done, just here for development
-        # if the placement is in the computer player's dock, no need to display it
-        # if self.placement == "ai_dock":
-        #     arcade.draw_rect_filled(
-        #         arcade.LBWH(
-        #             left=OUTER_MARGIN*2 + self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-        #             bottom=OUTER_MARGIN,
-        #             width=self.columns * (TILE_WIDTH + INNER_MARGIN) + INNER_MARGIN,
-        #             height=self.rows * (TILE_HEIGHT + INNER_MARGIN) + INNER_MARGIN
-        #         ),
-        #         color=arcade.color.EERIE_BLACK
-        #     )
-        #     self.peg_sprite_list.draw()
 
 
     def __str__(self):

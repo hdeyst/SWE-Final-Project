@@ -39,7 +39,11 @@ class Collection:
     def get_num_tiles(self):
         return len(self.tiles)
 
-    def set(self): #3-4 same number, different colors
+    def get_tiles(self):
+        return self.tiles
+
+    # 3-4 tiles of the same number, different colors
+    def set(self):
         index = 0
         self.is_set = True
         if len(self.tiles) == 3:
@@ -69,7 +73,8 @@ class Collection:
 
         return self.is_set
 
-    def run(self): #3+ same color, increasing numbers by 1
+    # 3+tiles of the same color, increasing numbers by 1
+    def run(self):
         index = 0
         if len(self.tiles) < 3:
             return False

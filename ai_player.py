@@ -95,6 +95,41 @@ class Player:
         best_coll = max(cols, key=cols.get)
         return best_coll
 
+    def can_play(self):
+        cols = self.create_collections()
+        if cols == {}:
+            return False
+        else:
+            return True
+
+    def turn(self):
+        if self.initial_melt:
+            best_c = self.get_best_collection()
+            if best_c.value() > 30:
+                # TODO:
+                #  place best collection on board first
+                #  remove those tiles from player hand
+                pass
+            else:
+                # TODO:
+                #  draw tile
+                #  mark end of turn
+                return
+        # continue placing tiles
+
+        # while self.create_collections() != {}:
+        #  play each collection, while updating the tiles in hand
+        if self.create_collections() == {}:
+            # TODO:
+            #  draw tile
+            #  mark end of turn
+            return
+        for c in self.create_collections():
+            # TODO:
+            #  play each collection
+            #  remove those tiles from the players hand
+            pass
+
 
     def __repr__(self):
         """representation of player's hand for testing"""
