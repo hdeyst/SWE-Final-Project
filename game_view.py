@@ -257,7 +257,7 @@ class GameView(arcade.View):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.roll_back()
             # TODO: this should be able to change depending on user
-            self.deal_tile_user()
+            #self.deal_tile_user()
             self.time = 30
             self.end_turn()
 
