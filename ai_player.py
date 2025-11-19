@@ -11,6 +11,8 @@ Functions:
 
 """
 import arcade
+
+from collection import Collection
 from tile import Tile
 from arcade import SpriteList
 from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
@@ -34,8 +36,57 @@ class Player:
         self.hand.sort(key=lambda tile: tile.number)
         self.hand.sort(key=lambda tile: tile.color)
 
-    def place_tile(self):
-        pass
+    def create_set_dict(self):
+        self.sort_sets()
+
+        all_sets = {}
+        # add all tiles to set dictionary
+        for tile in self.hand:
+            if tile.number not in all_sets:
+                all_sets[tile.number] = [tile]
+            else:
+                all_sets[tile.number].append(tile)
+
+        sets = {}
+        for s in all_sets:
+            c = Collection()
+            # add all the tiles in initial set to a collection
+            for tile in all_sets[s]:
+                c.add(tile)
+            # validate collection
+            if c.is_valid():
+                sets[c] = c.get_value()
+        return sets
+
+
+    # this misses a few runs, b/c it organizes on color
+    # if all the colors do not create one set, but there is
+    # a subset w/in, then it won't be seen :o
+    def create_run_dict(self):
+        self.sort_runs()
+
+        all_vals = {}
+        for tile in self.hand:
+            if tile.color not in all_vals:
+                # c = Collection()
+                # c.add(tile)
+                all_vals[tile.color] = [tile]
+            else:
+                all_vals[tile.color].append(tile)
+
+        runs = {}
+        for r in all_vals:
+            c = Collection()
+            # add all the tiles in initial run to a collection
+            for tile in all_vals[r]:
+                c.add(tile)
+            # validate collection
+            if c.is_valid():
+                runs[c] = c.get_value()
+
+        return runs
+
+
 
     def __repr__(self):
         """representation of player's hand for testing"""
@@ -68,3 +119,8 @@ if __name__ == "__main__":
     print(f"set sorted: {player}")
     player.sort_runs()
     print(f"run sorted: {player}")
+
+    run_dict = player.create_run_dict()
+    print(f"runs: {run_dict}")
+    set_dict = player.create_set_dict()
+    print(f"sets: {set_dict}")

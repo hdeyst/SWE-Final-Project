@@ -89,3 +89,9 @@ class Collection:
         if self.set() or self.run():
             return True
         return False
+
+    def __str__(self):
+        rep = ""
+        for tile in self.tiles:
+            rep = rep + str(tile) + ", "
+        return rep

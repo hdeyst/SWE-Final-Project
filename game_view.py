@@ -131,11 +131,6 @@ class GameView(arcade.View):
         self.tile_list.append(tile)
 
 
-
-    # TODO: alter this so that the ai can also draw tiles into *their* dock
-    # I think that accessing all the player hands will let us accomplish this
-    # like in the game loop, we would have a current player and use that instead
-    # of user_dock
     def deal_tile_user(self):
         if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs():
             print("ERROR. Tile cannot be dealt")
