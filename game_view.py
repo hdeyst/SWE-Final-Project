@@ -22,6 +22,8 @@ class GameView(arcade.View):
         #initialize timer for turns
         self.time = 0
 
+        self.num_turns = 0
+
         # initialize game components
         self.gameboard = Gameboard()
 
@@ -73,19 +75,25 @@ class GameView(arcade.View):
         print("Turn Saved")
 
     def end_turn(self):
-        played = False
+        played = 0
+        move_sum = 0
         for tile in self.tile_list:
             if tile.start_of_turn_x != 0:
-                played = True
-                break
-
-        if played and self.check_valid_collections():
-            self.save_turn()
-        elif played and not self.check_valid_collections():
+                if not tile.is_wild:
+                    move_sum = move_sum + tile.number
+                played += 1
+        if move_sum < 30:
             self.roll_back()
             self.deal_tile()
         else:
-            self.deal_tile()
+            if played >= 3 and self.check_valid_collections():
+                self.save_turn()
+                self.num_turns += 1
+            elif played >= 3 and not self.check_valid_collections():
+                self.roll_back()
+                self.deal_tile()
+            else:
+                self.deal_tile()
 
 
     # Resets the position of tiles to their placement one turn before
@@ -194,6 +202,7 @@ class GameView(arcade.View):
         pos = [x, y]
         if self.pass_button.is_clicked(pos):
             self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
+            self.time = 30
             self.end_turn()
 
 
