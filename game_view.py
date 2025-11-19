@@ -116,16 +116,16 @@ class GameView(arcade.View):
                 played += 1
         if move_sum < 30 and self.num_turns == 0:
             self.roll_back()
-            self.deal_tile()
+            self.deal_tile_user()
         else:
             if played >= 3 and self.check_valid_collections():
                 self.save_turn()
                 self.num_turns += 1
             elif played >= 3 and not self.check_valid_collections():
                 self.roll_back()
-                self.deal_tile()
+                self.deal_tile_user()
             else:
-                self.deal_tile()
+                self.deal_tile_user()
 
 
     # Resets the position of tiles to their placement one turn before
