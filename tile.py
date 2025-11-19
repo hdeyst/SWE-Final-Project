@@ -22,12 +22,12 @@ class Tile(arcade.Sprite):
         split = filename.split("_")
         color_split = split[0].split("tiles/")
         self.color = color_split[1]
-
         number_split = split[1].split(".")
         try:
             self.number = int(number_split[0])
         except ValueError:
             self.color = color_split[1] + number_split[0]
+            self.number = 0
             self.is_wild = True
 
     def __str__(self):

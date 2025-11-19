@@ -82,7 +82,7 @@ class GameView(arcade.View):
                 if not tile.is_wild:
                     move_sum = move_sum + tile.number
                 played += 1
-        if move_sum < 30:
+        if move_sum < 30 and self.num_turns == 0:
             self.roll_back()
             self.deal_tile()
         else:
