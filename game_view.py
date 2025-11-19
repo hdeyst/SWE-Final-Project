@@ -50,7 +50,9 @@ class GameView(arcade.View):
         self.tile_list = arcade.SpriteList()
 
         # TODO: is num in hand the player's tile count in their dock? Yes
-        self.used_tiles = [0, 0, 0] # [num dealt, num in hand, num in ai hands]
+        self.total_num_dealt = 0
+        self.num_user_hand = 0
+        self.num_in_ai_hand = 0
 
         self.held_tiles = []
         self.held_tiles_original_position = []
@@ -87,10 +89,10 @@ class GameView(arcade.View):
             output += f"{self.held_tiles[-1]}, "
             print(output)
 
-        print(f"tiles left in deck: {len(self.tile_list) - self.used_tiles[0]}")
+        print(f"tiles left in deck: {len(self.tile_list) - self.total_num_dealt}")
 
-        print(f"num ai player tiles: {self.used_tiles[2]}\n"
-              f"num user tiles: {self.used_tiles[1]}\n")
+        print(f"num ai player tiles: {self.num_in_ai_hand}\n"
+              f"num user tiles: {self.num_user_hand}\n")
 
 
     def save_turn(self):
@@ -99,8 +101,8 @@ class GameView(arcade.View):
             tile.start_of_turn_y = 0
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
-                self.used_tiles[1] -= 1
-            if self.used_tiles[1] == 0:
+                self.num_user_hand -= 1
+            if self.num_user_hand == 0:
                 self.window.show_view(WinView())
         print("Turn Saved")
 
@@ -176,7 +178,7 @@ class GameView(arcade.View):
 
 
     def deal_tile_user(self):
-        if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs() or self.used_tiles[0] >= NUM_TILES:
+        if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs() or self.total_num_dealt >= NUM_TILES:
             print("ERROR. Tile cannot be dealt")
             return False
 
@@ -193,13 +195,13 @@ class GameView(arcade.View):
                     peg = space
                     break
 
-        tile = self.tile_list[self.used_tiles[0]]
+        tile = self.tile_list[self.total_num_dealt]
 
         tile.position = peg.center_x, peg.center_y
         peg.occupy_peg(tile)
 
-        self.used_tiles[0] += 1
-        self.used_tiles[1] += 1
+        self.total_num_dealt += 1
+        self.num_user_hand += 1
 
         self.print_player_info()
 
@@ -210,12 +212,12 @@ class GameView(arcade.View):
             print("ERROR. Tile cannot be dealt")
             return False
 
-        tile = self.tile_list[self.used_tiles[0]]
+        tile = self.tile_list[self.total_num_dealt]
         player.deal(tile)
 
-        self.used_tiles[0] += 1
+        self.total_num_dealt += 1
         # add to count in ai hands
-        self.used_tiles[2] += 1
+        self.num_in_ai_hand += 1
 
         self.print_player_info()
         return True
@@ -416,11 +418,11 @@ class GameView(arcade.View):
             self.deal_tile_user()
 
         elif symbol == arcade.key.W:
-            self.used_tiles[1] = 0
+            self.num_user_hand = 0
             self.window.show_view(WinView())
 
         elif symbol == arcade.key.L:
-            self.used_tiles[1] = 1
+            self.num_user_hand = 1
             self.window.show_view(LoseView())
 
         elif symbol == arcade.key.Q:
