@@ -3,7 +3,7 @@ import arcade
 import arcade.gui
 
 from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
-                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, NUM_AI_PLAYERS)
+                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, NUM_AI_PLAYERS, AI_DOCK_XPOS, AI_DOCK_YPOS)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, NUM_TILES
 from gameboard import Gameboard
 from game_components import Button
@@ -74,6 +74,20 @@ class GameView(arcade.View):
         # flag to show instructions
         self.show_instructions = False
 
+        # marker displaying num of tiles the ai player has in their hand
+        self.counter = arcade.XYWH(
+            x=AI_DOCK_XPOS,
+            y=AI_DOCK_YPOS,
+            width=30,
+            height=200
+        )
+        self.lbl = arcade.Text(
+            f"{self.num_in_ai_hand}",
+            x=AI_DOCK_XPOS-10,
+            y=AI_DOCK_YPOS,
+            color=arcade.color.WHITE,
+            font_size=12
+        )
 
 
     def print_player_info(self):
@@ -247,6 +261,9 @@ class GameView(arcade.View):
 
         if self.show_instructions:
             draw_instructions_screen(self)
+
+        arcade.draw_rect_filled(self.counter, color=arcade.color.COPPER)
+        self.lbl.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):

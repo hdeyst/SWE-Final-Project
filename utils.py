@@ -97,6 +97,10 @@ CHEATSHEET_HEIGHT = 25
 MINIMIZED_CS_WIDTH = 160
 
 
+# --- AI Dock Variables ---
+AI_DOCK_YPOS = WINDOW_HEIGHT - GRID_HEIGHT - OUTER_MARGIN *2
+AI_DOCK_XPOS = WINDOW_WIDTH - 23
+
 """ ================== Helper functions ================== """
 
 # --- Coordinate Converter ---

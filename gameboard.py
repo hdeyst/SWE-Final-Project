@@ -3,7 +3,8 @@ import arcade
 from game_components import Grid, Cheatsheet
 from utils import (COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK,
                    WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, CHEATSHEET_BOTTOM,
-                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT, NUM_AI_PLAYERS)
+                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT, NUM_AI_PLAYERS, DOCK_OFFSET, GRID_HEIGHT, AI_DOCK_YPOS,
+                   INNER_MARGIN, AI_DOCK_XPOS)
 
 class Gameboard:
     def __init__(self):
@@ -29,9 +30,6 @@ class Gameboard:
         self.logo_sprite = arcade.Sprite(self.texture, scale=.2)
         self.logo_sprite.center_y = WINDOW_HEIGHT - 25
         self.logo_sprite.center_x = WINDOW_WIDTH / 2
-
-        # TODO: create marker that displays the number of tiles
-        #  each ai player has in their hand
 
 
     def draw(self):
