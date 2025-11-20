@@ -3,7 +3,6 @@
 class Collection:
     def __init__(self):
         self.tiles = []
-        self.is_set = True
         self.contains_wild = False
 
     def add(self, tile):
@@ -42,36 +41,50 @@ class Collection:
     def get_tiles(self):
         return self.tiles
 
-    # 3-4 tiles of the same number, different colors
+    # 3-6  tiles of the same number, different colors (wilds included)
     def set(self):
-        index = 0
-        self.is_set = True
-        if len(self.tiles) == 3:
-            if (self.tiles[0].color == self.tiles[1].color or
-                    self.tiles[0].color == self.tiles[2].color or
-                    self.tiles[1].color == self.tiles[2].color):
-                return False
-        elif len(self.tiles) == 4:
-            if (self.tiles[0].color in (self.tiles[1].color, self.tiles[2].color,
-                                        self.tiles[3].color) or
-                    self.tiles[1].color in (self.tiles[2].color, self.tiles[3].color) or
-                    self.tiles == self.tiles[3].color):
-                return False
-        else: #incorrect length for set
-            return False
-        for i, tile in enumerate(self.tiles): #get index of the non-wild tile
+        valid_set = False
+        colors = []
+        num = []
+        wilds = 0
+        for tile in self.tiles:
+            if tile.is_wild:
+                wilds += 1
+                print(f"wild tile seen num wilds = {wilds}")
+            elif tile.color not in colors:
+                colors.append(tile.color)
+
+        # if num of colors == num of tiles return true
+        if len(colors) == len(self.tiles):
+            print(f"length of set tiles is {len(self.tiles)}")
+            valid_set = True
+        # if num of colors != num of tiles
+        else:
+             if len(self.tiles) == 3:
+                 # 3 tiles, two diff colors, 1 wild
+                 if len(colors) == 2 and wilds == 1:
+                     valid_set = True
+                 # 3 tiles, 1 color, 2 wilds
+                 if len(colors) == 1 and wilds == 2:
+                     valid_set = True
+             elif len(self.tiles) == 4:
+                 # 4 tiles, three diff colors, 1 wild
+                 if len(colors) == 3 and wilds == 1:
+                     valid_set = True
+                 # 4 tiles, 2 color, 2 wilds
+                 if len(colors) == 2 and wilds == 2:
+                     valid_set = True
+        for tile in self.tiles:  # check that all tiles have the same number
             if tile.is_wild:
                 pass
-            else:
-                index = i
-        for tile in self.tiles: #check that all tiles have the same number
-            if tile.number != self.tiles[index].number:
-                if tile.is_wild:
-                    pass
-                else:
-                    return False
+            elif tile.number not in num:
+                num.append(tile.number)
 
-        return self.is_set
+        if len(num) == 1:
+            valid_set = True
+        else:
+            valid_set = False
+        return valid_set
 
     # 3+tiles of the same color, increasing numbers by 1
     def run(self):
