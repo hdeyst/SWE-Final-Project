@@ -130,6 +130,12 @@ class Player:
         #TODO: Alternatively we can just change this function to directry place the tiles
 
 
+    # once a collection has been placed, remove those tiles from ai hand
+    def remove_tiles_from_hand(self, tiles):
+        for t in tiles:
+            self.hand.remove(t)
+
+
     def turn(self):
         if self.initial_melt:
             best_c = self.get_best_collection()
