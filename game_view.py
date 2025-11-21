@@ -402,7 +402,7 @@ class GameView(arcade.View):
                         empty = False
                         if peg.get_tile().start_of_turn_x != 0:
                             moved = True
-                            first_sum += peg.get_tile().number
+                            #first_sum += peg.get_tile().number
                         else:
                             moved = False
 
@@ -423,11 +423,15 @@ class GameView(arcade.View):
                         # print("No tile, open collection")
                         # close the collection
                         open_collection = False
+                        if collection.get_value() > first_sum:
+                            first_sum = collection.get_value()
                         if not collection.is_valid():
                             # if collection is invalid, bounce tiles
                             return False
                         else:
                             collection.clear()
+                #if len(collection.tiles) > 0 and collection.get_value() > first_sum:
+                    #first_sum = collection.get_value()
         if first_melt and first_sum < 30:
             return False
         return True

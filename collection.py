@@ -21,11 +21,52 @@ class Collection:
             return True
         return False
 
+    def get_wild_index(self):
+        wilds = []
+        for i, tile in enumerate(self.tiles):
+            if tile.is_wild:
+                wilds.append(i)
+        return wilds
+
     def get_value(self):
         total = 0
-        for tile in self.tiles:
-            total += tile.number
+        value = 0
+        if self.set():
+            for tile in self.tiles:
+                if tile.number > value:
+                    value = tile.number
+                total += tile.number
+            if self.contains_wild:
+                total += value * len(self.get_wild_index())
+        elif self.run():
+            for tile in self.tiles:
+                total += tile.number
+            if self.contains_wild:
+                wilds = self.get_wild_index()
+                #for i in range(len(wilds)):
+                if len(wilds) > 1:
+                    if wilds[0] == wilds[1] - 1:
+                        try:
+                            total += self.tiles[wilds[0] + 2].number - 2
+                            total += self.tiles[wilds[0] + 2].number - 1
+                        except IndexError:
+                            total += self.tiles[wilds[0] - 1].number + 1
+                            total += self.tiles[wilds[0] - 1].number + 2
+                    else:
+                        try:
+                            total += self.tiles[wilds[0] + 1].number - 1
+                            total += self.tiles[wilds[0] - 1].number + 1
+                        except IndexError:
+                            total += self.tiles[wilds[0] + 1].number - 1
+                            total += self.tiles[wilds[0] + 1].number - 1
+                else:
+                    try:
+                        total += self.tiles[wilds[0] + 1].number - 1
+                    except IndexError:
+                        total += self.tiles[wilds[0] - 1].number + 1
         return total
+
+
 
     def clear(self):
         self.tiles.clear()
@@ -55,7 +96,7 @@ class Collection:
                 colors.append(tile.color)
 
         # if num of colors == num of tiles return true
-        if len(colors) == len(self.tiles):# and len(self.tiles) > 2:
+        if len(colors) == len(self.tiles) and len(self.tiles) > 2:
             print(f"length of set tiles is {len(self.tiles)}")
             valid_set = True
         # if num of colors != num of tiles
