@@ -55,7 +55,7 @@ class Collection:
                 colors.append(tile.color)
 
         # if num of colors == num of tiles return true
-        if len(colors) == len(self.tiles):# and len(self.tiles) > 2:
+        if len(colors) == len(self.tiles) and len(self.tiles) > 2:
             print(f"length of set tiles is {len(self.tiles)}")
             valid_set = True
         # if num of colors != num of tiles
@@ -80,11 +80,11 @@ class Collection:
             elif tile.number not in num:
                 num.append(tile.number)
 
-        if len(num) == 1:
-            valid_set = True
+        if len(num) == 1 and valid_set:
+            return True
         else:
-            valid_set = False
-        return valid_set
+            return False
+
 
     # 3+tiles of the same color, increasing numbers by 1
     def run(self):
