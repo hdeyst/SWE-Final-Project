@@ -142,7 +142,13 @@ class GameView(arcade.View):
     # Resets the position of tiles to their placement one turn before
     def roll_back(self):
         for tile in self.tile_list:
+            if tile.in_dock:
+                tile.start_of_turn_x = 0
+                tile.start_of_turn_y = 0
             if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                if tile.start_in_dock and not tile.in_dock:
+                    tile.start_in_dock = False
+
                 # look through all pegs to find where tile was sitting (before we move it)
                 # then set that peg to unoccupied before we move it back.
                 for peg in self.gameboard.all_pegs:
@@ -345,7 +351,7 @@ class GameView(arcade.View):
             if peg.placement == "dock" and not primary_tile.start_in_dock:
                 reset_position = True
             else:
-                if peg.placement == "grid" and primary_tile.in_dock:
+                if peg.placement == "grid" and primary_tile.start_in_dock:
                     primary_tile.in_dock = False
 
                 # Move tiles to proper position
