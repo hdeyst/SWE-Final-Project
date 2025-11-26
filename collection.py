@@ -90,31 +90,31 @@ class Collection:
         colors = []
         num = []
         wilds = 0
+
+        if len(self.tiles) < 3 or len(self.tiles) > 4:
+            return False
+
         for tile in self.tiles:
             if tile.is_wild:
                 wilds += 1
             elif tile.color not in colors:
                 colors.append(tile.color)
 
-        # if num of colors == num of tiles return true
+        #checking that all non-wild tiles are diff colors
         if len(colors) == len(self.tiles):
             valid_set = True
-        # if num of colors != num of tiles
         else:
-             if len(self.tiles) == 3:
-                 # 3 tiles, two diff colors, 1 wild
-                 if len(colors) == 2 and wilds == 1:
+            if len(self.tiles) == 3:
+                if len(colors) == 2 and wilds == 1:
                      valid_set = True
-                 # 3 tiles, 1 color, 2 wilds
-                 if len(colors) == 1 and wilds == 2:
+                elif len(colors) == 1 and wilds == 2:
                      valid_set = True
-             elif len(self.tiles) == 4:
-                 # 4 tiles, three diff colors, 1 wild
+            else:
                  if len(colors) == 3 and wilds == 1:
                      valid_set = True
-                 # 4 tiles, 2 color, 2 wilds
                  if len(colors) == 2 and wilds == 2:
                      valid_set = True
+
         for tile in self.tiles:  # check that all tiles have the same number
             if tile.is_wild:
                 pass
