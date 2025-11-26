@@ -147,33 +147,10 @@ class Player:
         # return either a list of coords length col_len (only include the coords the tiles will acutally go on)
         #TODO: Alternatively we can just change this function to directry place the tiles
 
-    def turn(self):
-        if self.initial_melt:
-            best_c = self.get_best_collection()
-            if best_c.value() > 30:
-                # TODO:
-                #  place best collection on board first
-                #  remove those tiles from player hand
-                pass
-            else:
-                # TODO:
-                #  draw tile
-                #  mark end of turn
-                return
-        # continue placing tiles
-
-        # while self.create_collections() != {}:
-        #  play each collection, while updating the tiles in hand
-        if self.create_collections() == {}:
-            # TODO:
-            #  draw tile
-            #  mark end of turn
-            return
-        for c in self.create_collections():
-            # TODO:
-            #  play each collection
-            #  remove those tiles from the players hand
-            pass
+    def played(self):
+        col = self.get_best_collection()
+        for tile in col.tiles:
+            self.hand.remove(tile)
 
     def __repr__(self):
         """representation of player's hand for testing"""

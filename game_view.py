@@ -49,7 +49,6 @@ class GameView(arcade.View):
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
 
-        # TODO: is num in hand the player's tile count in their dock? Yes
         self.total_num_dealt = 0
         self.num_user_hand = 0
         self.num_in_ai_hand = 0
@@ -138,9 +137,7 @@ class GameView(arcade.View):
             self.deal_tile_user()
 
         # call ai turn
-        self.deal_tile_to_ai(self.ai_player)
         self.ai_turn(self.ai_player)
-
 
     # Resets the position of tiles to their placement one turn before
     def roll_back(self):
@@ -209,17 +206,26 @@ class GameView(arcade.View):
         return []
 
     def ai_turn(self, ai_player):
-        collection = ai_player.get_best_collection()
-        if collection:
+        if ai_player.can_play():
+            collection = ai_player.get_best_collection()
             free_pegs = self.find_placement_loc(collection, ai_player)
             if free_pegs:
                 for i in range(len(free_pegs)):
                     self.ai_move_tile(free_pegs[i], collection.tiles[i])
+                self.ai_player.played()
             else:
                 self.deal_tile_to_ai(ai_player)
         else:
             self.deal_tile_to_ai(ai_player)
 
+        #update GUI
+        self.lbl = arcade.Text(
+            f"{len(self.ai_player.hand)}",
+            x=AI_DOCK_XPOS - 10,
+            y=AI_DOCK_YPOS,
+            color=arcade.color.WHITE,
+            font_size=12
+        )
 
     def ai_move_tile(self, peg, tile):
         # 1st un-occupy the o.g. tile loc -> pass in coords of tile to get peg
@@ -231,7 +237,6 @@ class GameView(arcade.View):
         peg.occupy_peg(tile)
         tile.center_x = peg.center_x
         tile.center_y = peg.center_y
-
 
     def deal_tile_user(self):
         if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs() or self.total_num_dealt >= NUM_TILES:
@@ -278,7 +283,7 @@ class GameView(arcade.View):
         self.print_player_info()
         return True
 
-    # Draws the gameboard grid
+# ======================= BOARD FUNCTIONS ================================== #
     def on_draw(self):
         # We should always start by clearing the window pixels
         self.clear()
@@ -422,7 +427,6 @@ class GameView(arcade.View):
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
 
-
     def get_peg_at(self, x_coord, y_coord):
         # Use this function to get a peg from the two given coords
         for row in self.gameboard.grid.peg_sprites:
@@ -430,7 +434,6 @@ class GameView(arcade.View):
                 if peg.center_x == x_coord and peg.center_y == y_coord:
                     return peg
         return None
-
 
     def check_valid_collections(self, first_melt):
         open_collection = False
@@ -518,7 +521,6 @@ class GameView(arcade.View):
 
         elif symbol == arcade.key.K:
             self.gameboard.cheatsheet.show_keybinds = not self.gameboard.cheatsheet.show_keybinds
-
 
 class StartView(arcade.View):
     def __init__(self):
