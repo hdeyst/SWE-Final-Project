@@ -16,6 +16,7 @@ from collection import Collection
 from tile import Tile
 from arcade import SpriteList
 from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
+from gameboard import Gameboard
 
 
 class Player:
@@ -24,7 +25,6 @@ class Player:
         self.hand_capacity = COLUMN_COUNT_DOCK * ROW_COUNT_DOCK
         self.is_turn = False
         self.initial_melt = False
-
 
     def deal(self, tile):
         self.hand.append(tile)
@@ -67,20 +67,36 @@ class Player:
         #  a subset w/in, then it won't be recognized
         def find_runs():
             self.sort_runs()
+            wild_cards = []
+            wild_used = 0
 
             all_vals = {}
+            runs = {}
             for tile in self.hand:
-                if tile.color not in all_vals:
+                if tile.is_wild:
+                    wild_cards.append(tile)
+                elif tile.color not in all_vals:
                     all_vals[tile.color] = [tile]
                 else:
                     all_vals[tile.color].append(tile)
 
-            for r in all_vals:
+            for tile_lst in all_vals.values():
+                """list should be in ascending order so just running through it and seeing if next is +1"""
                 col = Collection()
-                # add all the tiles in initial run to a collection
-                for tile in all_vals[r]:
-                    col.add(tile)
-                # add valid collections to dict
+                for idx, tile in enumerate(tile_lst):
+                    if idx == 0:
+                        col.add(tile)
+                    elif tile.number == tile_lst[idx - 1].number + 1:
+                        col.add(tile)
+                    elif tile_lst[idx - 1] in wild_cards and idx > 1 and tile.number == tile_lst[idx - 2] + 2:
+                        col.add(tile)
+                    elif wild_used < len(wild_cards):
+                        col.add(wild_cards[wild_used])
+                        wild_used += 1
+                    else:
+                        runs[col] = col.get_value()
+                        col.clear()
+                        wild_used = 0
                 if col.is_valid():
                     collections[col] = col.get_value()
 
@@ -88,7 +104,6 @@ class Player:
         find_sets()
         find_runs()
         return collections
-
 
     def get_best_collection(self):
         cols = self.create_collections()
@@ -118,7 +133,6 @@ class Player:
         # return either a list of coords length col_len (only include the coords the tiles will acutally go on)
         #TODO: Alternatively we can just change this function to directry place the tiles
 
-
     def turn(self):
         if self.initial_melt:
             best_c = self.get_best_collection()
@@ -147,7 +161,6 @@ class Player:
             #  remove those tiles from the players hand
             pass
 
-
     def __repr__(self):
         """representation of player's hand for testing"""
         output = ""
@@ -159,9 +172,11 @@ class Player:
 if __name__ == "__main__":
     red2 = Tile(f"tiles/red_2.png", scale = TILE_SCALE)
     red3 = Tile(f"tiles/red_3.png", scale = TILE_SCALE)
-    red4 = Tile(f"tiles/red_4.png", scale = TILE_SCALE)
+    red5 = Tile(f"tiles/red_5.png", scale = TILE_SCALE)
+    wild = Tile("tiles/red_wild.png", scale=TILE_SCALE)
     yellow2 = Tile(f"tiles/yellow_2.png", scale = TILE_SCALE)
     yellow3 = Tile(f"tiles/yellow_3.png", scale = TILE_SCALE)
+    yellow4 = Tile(f"tiles/yellow_4.png", scale = TILE_SCALE)
     black2 = Tile(f"tiles/black_2.png", scale = TILE_SCALE)
     black5 = Tile(f"tiles/black_5.png", scale = TILE_SCALE)
 
@@ -172,7 +187,9 @@ if __name__ == "__main__":
     player.deal(yellow2)
     player.deal(black2)
     player.deal(red3)
-    player.deal(red4)
+    player.deal(red5)
+    player.deal(wild)
+    player.deal(yellow4)
 
     print(player)
     player.sort_sets()
