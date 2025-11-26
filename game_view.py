@@ -24,6 +24,7 @@ class GameView(arcade.View):
         self.time = 30
 
         self.player_first_melt = True
+        self.ai_first_melt = True
 
         # initialize game components
         self.gameboard = Gameboard()
@@ -105,7 +106,6 @@ class GameView(arcade.View):
 
         print(f"num ai player tiles: {self.num_in_ai_hand}\n"
               f"num user tiles: {self.num_user_hand}\n")
-
 
 # ============================= TURN FUNCTIONS ================================ #
     def save_turn(self):
@@ -208,11 +208,12 @@ class GameView(arcade.View):
     def ai_turn(self, ai_player):
         if ai_player.can_play():
             collection = ai_player.get_best_collection()
-            free_pegs = self.find_placement_loc(collection, ai_player)
-            if free_pegs:
-                for i in range(len(free_pegs)):
-                    self.ai_move_tile(free_pegs[i], collection.tiles[i])
-                self.ai_player.played()
+            if not self.ai_first_melt or (self.ai_first_melt and collection.get_value() >= 30):
+                free_pegs = self.find_placement_loc(collection, ai_player)
+                if free_pegs:
+                    for i in range(len(free_pegs)):
+                        self.ai_move_tile(free_pegs[i], collection.tiles[i])
+                    self.ai_player.played()
             else:
                 self.deal_tile_to_ai(ai_player)
         else:
