@@ -1,4 +1,6 @@
 """File containing collection class which holds logic for checking validity of sets and runs"""
+from tile import Tile
+from utils import TILE_SCALE
 
 class Collection:
     def __init__(self):
@@ -91,13 +93,11 @@ class Collection:
         for tile in self.tiles:
             if tile.is_wild:
                 wilds += 1
-                print(f"wild tile seen num wilds = {wilds}")
             elif tile.color not in colors:
                 colors.append(tile.color)
 
         # if num of colors == num of tiles return true
-        if len(colors) == len(self.tiles) and len(self.tiles) > 2:
-            print(f"length of set tiles is {len(self.tiles)}")
+        if len(colors) == len(self.tiles):
             valid_set = True
         # if num of colors != num of tiles
         else:
@@ -146,14 +146,112 @@ class Collection:
                 else:
                     return False
             if i > 0 and not self.tiles[i - 1].number + 1 == name.number:
-                if name.is_wild or self.tiles[i - 1].is_wild:
+                if name.is_wild or (self.tiles[i - 1].is_wild and self.tiles[i-2].number + 2 == name.number):
                     pass
                 else:
                     return False
         return True
 
-    def __str__(self):
+    def __repr__(self):
         rep = ""
         for tile in self.tiles:
             rep = rep + str(tile) + ", "
         return rep
+
+    def test_runs(self):
+        red2 = Tile(f"tiles/red_2.png", scale=TILE_SCALE)
+        red3 = Tile(f"tiles/red_3.png", scale=TILE_SCALE)
+        red4 = Tile(f"tiles/red_4.png", scale=TILE_SCALE)
+        wild = Tile("tiles/red_wild.png", scale=TILE_SCALE)
+        yellow2 = Tile(f"tiles/yellow_2.png", scale=TILE_SCALE)
+        yellow3 = Tile(f"tiles/yellow_3.png", scale=TILE_SCALE)
+        black2 = Tile(f"tiles/black_2.png", scale=TILE_SCALE)
+        black5 = Tile(f"tiles/black_5.png", scale=TILE_SCALE)
+
+        # testing sets
+        wrong1 = Collection()
+        wrong1.add(yellow2)
+        wrong1.add(yellow3)
+
+        wrong2 = Collection()
+        wrong2.add(black2)
+        wrong2.add(black5)
+
+        wrong3 = Collection()
+        wrong3.add(black2)
+        wrong3.add(wild)
+        wrong3.add(black5)
+
+        wrong4 = Collection()
+        wrong4.add(black2)
+        wrong4.add(black5)
+        wrong4.add(wild)
+
+        right1 = Collection()
+        right1.add(yellow2)
+        right1.add(yellow3)
+        right1.add(wild)
+
+        right2 = Collection()
+        right2.add(red2)
+        right2.add(red3)
+        right2.add(red4)
+
+        run_tests = [wrong1, wrong2, wrong3, wrong4, right1, right2]
+        for test in run_tests:
+            print(f"{test}: {test.run()}")
+
+    def test_sets(self):
+        red2 = Tile(f"tiles/red_2.png", scale=TILE_SCALE)
+        red3 = Tile(f"tiles/red_3.png", scale=TILE_SCALE)
+        red4 = Tile(f"tiles/red_4.png", scale=TILE_SCALE)
+        wild = Tile("tiles/red_wild.png", scale=TILE_SCALE)
+        yellow2 = Tile(f"tiles/yellow_2.png", scale=TILE_SCALE)
+        yellow3 = Tile(f"tiles/yellow_3.png", scale=TILE_SCALE)
+        black2 = Tile(f"tiles/black_2.png", scale=TILE_SCALE)
+        black5 = Tile(f"tiles/black_5.png", scale=TILE_SCALE)
+
+        # testing sets
+        wrong1 = Collection()
+        wrong1.add(yellow2)
+        wrong1.add(red2)
+
+        wrong2 = Collection()
+        wrong2.add(red2)
+        wrong2.add(red3)
+        wrong2.add(red4)
+
+        wrong3 = Collection()
+        wrong3.add(black2)
+        wrong3.add(wild)
+
+        wrong4 = Collection()
+        wrong4.add(black2)
+        wrong4.add(red4)
+        wrong4.add(wild)
+
+        wrong5 = Collection()
+        wrong5.add(black2)
+        wrong5.add(wild)
+        wrong5.add(red4)
+
+        right1 = Collection()
+        right1.add(yellow2)
+        right1.add(red2)
+        right1.add(wild)
+
+        right2 = Collection()
+        right2.add(red2)
+        right2.add(yellow2)
+        right2.add(black2)
+
+        set_tests = [wrong1, wrong2, wrong3, wrong4, wrong5, right1, right2]
+        for test in set_tests:
+            print(f"{test}: {test.set()}")
+
+if __name__ == "__main__":
+    collection = Collection()
+    print("Sets: 5 false, 2 true")
+    collection.test_sets()
+    #print("\nRuns: 4 false, 2 true")
+    #collection.test_runs()
