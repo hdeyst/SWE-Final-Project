@@ -88,17 +88,21 @@ class Player:
                         col.add(tile)
                     elif tile.number == tile_lst[idx - 1].number + 1:
                         col.add(tile)
-                    elif tile_lst[idx - 1] in wild_cards and idx > 1 and tile.number == tile_lst[idx - 2] + 2:
-                        col.add(tile)
-                    elif wild_used < len(wild_cards):
+                    elif wild_used < len(wild_cards) and tile_lst[idx - 1].number < 13:
                         col.add(wild_cards[wild_used])
                         wild_used += 1
+                        if tile.number == tile_lst[idx - 1].number + 2:
+                            col.add(tile)
                     else:
-                        runs[col] = col.get_value()
+                        if col.is_valid():
+                            runs[col] = col.get_value()
                         col.clear()
                         wild_used = 0
+                if wild_used < len(wild_cards):
+                    col.add(wild_cards[wild_used])
                 if col.is_valid():
                     collections[col] = col.get_value()
+                wild_used = 0
 
         # put it all together
         find_sets()
@@ -177,12 +181,12 @@ if __name__ == "__main__":
     yellow2 = Tile(f"tiles/yellow_2.png", scale = TILE_SCALE)
     yellow3 = Tile(f"tiles/yellow_3.png", scale = TILE_SCALE)
     yellow4 = Tile(f"tiles/yellow_4.png", scale = TILE_SCALE)
+    black1 = Tile(f"tiles/black_1.png", scale = TILE_SCALE)
     black2 = Tile(f"tiles/black_2.png", scale = TILE_SCALE)
-    black5 = Tile(f"tiles/black_5.png", scale = TILE_SCALE)
 
     player = Player()
     player.deal(yellow3)
-    player.deal(black5)
+    player.deal(black1)
     player.deal(red2)
     player.deal(yellow2)
     player.deal(black2)
