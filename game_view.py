@@ -196,14 +196,15 @@ class GameView(arcade.View):
         """Find available placement locations for a collection"""
         if not col:
             return []
-        collection_length = len(col.tiles)
+        # Add 2 for the left and right buffer spaces, we wil return the list w/o these
+        collection_length = len(col.tiles) + 2
         for row in self.gameboard.grid.peg_sprites:
             free_pegs = []
             for peg in row:
                 if not peg.is_occupied():
                     free_pegs.append(peg)
                     if len(free_pegs) >= collection_length:
-                        return free_pegs[:collection_length]
+                        return free_pegs[1:-1]
                 else:
                     free_pegs = []
         return []
