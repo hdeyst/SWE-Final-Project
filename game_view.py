@@ -222,10 +222,15 @@ class GameView(arcade.View):
 
 
     def ai_move_tile(self, peg, tile):
+        # 1st un-occupy the o.g. tile loc -> pass in coords of tile to get peg
+        old_peg = self.get_peg_at(tile.center_x, tile.center_y)
+        if old_peg is not None:
+            old_peg.empty_peg()
+
+        # 2nd Occupy peg and move tile
         peg.occupy_peg(tile)
         tile.center_x = peg.center_x
         tile.center_y = peg.center_y
-
 
 
     def deal_tile_user(self):
@@ -419,6 +424,16 @@ class GameView(arcade.View):
                 # print(primary_tile.center_x)
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
+
+
+    def get_peg_at(self, x_coord, y_coord):
+        # Use this function to get a peg from the two given coords
+        for row in self.gameboard.grid.peg_sprites:
+            for peg in row:
+                if peg.center_x == x_coord and peg.center_y == y_coord:
+                    return peg
+        return None
+
 
     def check_valid_collections(self, first_melt):
         open_collection = False

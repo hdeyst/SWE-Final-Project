@@ -94,7 +94,7 @@ class Player:
         cols = self.create_collections()
         if not cols:
             print("AI: No valid collections found. Drawing a tile instead.")
-            return None
+            return []
         best_coll = max(cols, key=cols.get)
         return best_coll
 
