@@ -89,7 +89,6 @@ class GameView(arcade.View):
             font_size=12
         )
 
-
     def print_player_info(self):
         print("ai dock hand: ")
         if self.ai_player.hand:
@@ -279,7 +278,6 @@ class GameView(arcade.View):
         self.print_player_info()
         return True
 
-
     # Draws the gameboard grid
     def on_draw(self):
         # We should always start by clearing the window pixels
@@ -308,7 +306,6 @@ class GameView(arcade.View):
         arcade.draw_rect_filled(self.counter, color=arcade.color.COPPER)
         self.lbl.draw()
 
-
     def on_mouse_press(self, x, y, button, modifiers):
         # get any tiles that might be selected
         self.pick_up_tile(x, y)
@@ -321,7 +318,6 @@ class GameView(arcade.View):
             #self.deal_tile_user()
             self.end_turn()
             self.time = 30
-
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
