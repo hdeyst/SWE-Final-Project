@@ -45,11 +45,15 @@ class Player:
         def find_sets():
             # Add sets to dictionary
             self.sort_sets()
+            wild_cards = []
+            wild_used = 0
 
             all_sets = {}
             # add all tiles to set dictionary
             for tile in self.hand:
-                if tile.number not in all_sets:
+                if tile.is_wild:
+                    wild_cards.append(tile)
+                elif tile.number not in all_sets:
                     all_sets[tile.number] = [tile]
                 else:
                     all_sets[tile.number].append(tile)
@@ -60,11 +64,17 @@ class Player:
                 for tile in all_sets[s]:
                     col.add(tile)
                 # add valid collections to dict
+
+                if len(wild_cards) == 1:
+                    col.add(wild_cards[wild_used])
+                elif len(wild_cards) == 2:
+                    col.add(wild_cards[wild_used])
+                    col.add(wild_cards[wild_used])
+
                 if col.is_valid():
                     collections[col] = col.get_value()
 
-        # TODO: if all the colors do not create one set, but there is
-        #  a subset w/in, then it won't be recognized
+
         def find_runs():
             self.sort_runs()
             wild_cards = []
