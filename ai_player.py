@@ -19,12 +19,11 @@ from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
 
 
 class Player:
-    def __init__(self, gameboard):
+    def __init__(self):
         self.hand = SpriteList()
         self.hand_capacity = COLUMN_COUNT_DOCK * ROW_COUNT_DOCK
         self.is_turn = False
         self.initial_melt = False
-        self.gameboard = gameboard
 
 
     def deal(self, tile):
@@ -93,6 +92,9 @@ class Player:
 
     def get_best_collection(self):
         cols = self.create_collections()
+        if not cols:
+            print("AI: No valid collections found. Drawing a tile instead.")
+            return None
         best_coll = max(cols, key=cols.get)
         return best_coll
 
@@ -110,19 +112,6 @@ class Player:
                 grid_tiles.append((peg, peg.get_tile()))
         return grid_tiles
 
-    def find_placement_loc(self, col_len):
-        col = self.get_best_collection()
-        # Basic Idea:
-        for row in self.gameboard.grid.rows:
-            free = []
-            for peg in row:
-                if not peg.is_occupied():
-                    free.append(peg)
-                    if len(free) == len(col) + 2:
-                        # returns the list w/o 1st and last element
-                        return free[1:-1]
-        # otherwise returns an empty list
-        return []
 
         #look through board until finding a space of size col_len + 2 (borders)
         # make sure space isn't a part of two lines (starting on one line and ending on the next)

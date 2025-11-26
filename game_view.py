@@ -61,7 +61,7 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
 
         # keep list of ai players
-        self.ai_player = Player(self.gameboard)
+        self.ai_player = Player()
 
 
         # give each player 14 initial tiles
@@ -109,6 +109,7 @@ class GameView(arcade.View):
               f"num user tiles: {self.num_user_hand}\n")
 
 
+# ============================= TURN FUNCTIONS ================================ #
     def save_turn(self):
         for tile in self.tile_list:
             tile.start_of_turn_x = 0
@@ -136,6 +137,10 @@ class GameView(arcade.View):
             self.deal_tile_user()
         else:
             self.deal_tile_user()
+
+        # call ai turn
+        self.deal_tile_to_ai(self.ai_player)
+        self.ai_turn(self.ai_player)
 
 
     # Resets the position of tiles to their placement one turn before
@@ -185,6 +190,42 @@ class GameView(arcade.View):
         tile.center_x = deck_x_pos
         tile.center_y = deck_y_pos
         self.tile_list.append(tile)
+
+# ============================= AI FUNCTIONS ================================ #
+    def find_placement_loc(self, col, ai_player):
+        """Find available placement locations for a collection"""
+        if not col:
+            return []
+        collection_length = len(col.tiles)
+        for row in self.gameboard.grid.peg_sprites:
+            free_pegs = []
+            for peg in row:
+                if not peg.is_occupied():
+                    free_pegs.append(peg)
+                    if len(free_pegs) >= collection_length:
+                        return free_pegs[:collection_length]
+                else:
+                    free_pegs = []
+        return []
+
+    def ai_turn(self, ai_player):
+        collection = ai_player.get_best_collection()
+        if collection:
+            free_pegs = self.find_placement_loc(collection, ai_player)
+            if free_pegs:
+                for i in range(len(free_pegs)):
+                    self.ai_move_tile(free_pegs[i], collection.tiles[i])
+            else:
+                self.deal_tile_to_ai(ai_player)
+        else:
+            self.deal_tile_to_ai(ai_player)
+
+
+    def ai_move_tile(self, peg, tile):
+        peg.occupy_peg(tile)
+        tile.center_x = peg.center_x
+        tile.center_y = peg.center_y
+
 
 
     def deal_tile_user(self):
