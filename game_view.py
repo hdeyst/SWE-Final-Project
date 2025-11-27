@@ -122,7 +122,7 @@ class GameView(arcade.View):
     def end_turn(self):
         played = False
         for tile in self.tile_list:
-            if tile.start_of_turn_x != 0:
+            if tile.start_in_dock and not tile.in_dock:
                 played = True
                 break
 
@@ -142,12 +142,9 @@ class GameView(arcade.View):
     # Resets the position of tiles to their placement one turn before
     def roll_back(self):
         for tile in self.tile_list:
-            if tile.in_dock:
-                tile.start_of_turn_x = 0
-                tile.start_of_turn_y = 0
             if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
                 if tile.start_in_dock and not tile.in_dock:
-                    tile.start_in_dock = False
+                    tile.in_dock = True
 
                 # look through all pegs to find where tile was sitting (before we move it)
                 # then set that peg to unoccupied before we move it back.
@@ -351,7 +348,7 @@ class GameView(arcade.View):
             if peg.placement == "dock" and not primary_tile.start_in_dock:
                 reset_position = True
             else:
-                if peg.placement == "grid" and primary_tile.start_in_dock:
+                if peg.placement == "grid":
                     primary_tile.in_dock = False
 
                 # Move tiles to proper position
@@ -442,13 +439,14 @@ class GameView(arcade.View):
                     return peg
         return None
 
+    #first melt logic: collections must have been fully placed from players dock
     def check_valid_collections(self, first_melt):
         open_collection = False
         empty = True
         reset = False
         moved = False
         first_sum = 0
-        collection = Collection()
+        first_placed = False
         # 4 cases, each peg is ONE of these...
         for row in self.gameboard.grid.peg_sprites:
             collection = Collection()
@@ -459,10 +457,11 @@ class GameView(arcade.View):
                 if peg.placement == "grid":
                     # if there is a tile ... and no current collection
                     if peg.is_occupied() and not open_collection:
-                        print("Tile, closed collection")
                         collection.add(peg.get_tile())
                         open_collection = True
                         empty = False
+                        if first_melt and peg.get_tile().start_in_dock:
+                            first_placed = True
                         if peg.get_tile().start_of_turn_x != 0:
                             moved = True
                             #first_sum += peg.get_tile().number
@@ -471,28 +470,27 @@ class GameView(arcade.View):
 
                     # if there is a tile ... and a curr collection
                     elif peg.is_occupied() and open_collection:
-                        # print("Tile, open collection")
-                        # adds tile to the collection
                         collection.add(peg.get_tile())
-                        if first_melt and peg.get_tile().start_of_turn_x != 0 and moved is False:
+                        # if there is a mix of player's tiles and tiles that were already on the board,
+                        # return false
+                        if first_melt and first_placed and not peg.get_tile().start_in_dock:
                             return False
-                        elif first_melt and peg.get_tile().start_of_turn_x ==0 and moved is True:
+                        elif first_melt and not first_placed and peg.get_tile().start_in_dock:
                             return False
-                        elif first_melt and peg.get_tile().start_of_turn_x != 0:
-                            first_sum += peg.get_tile().number
 
                     # if there is NO tile ... and a curr collection
                     elif not peg.is_occupied() and open_collection:
                         # print("No tile, open collection")
                         # close the collection
                         open_collection = False
-                        if collection.get_value() > first_sum:
-                            first_sum = collection.get_value()
+                        if first_melt and first_placed:
+                            first_sum += collection.get_value()
                         if not collection.is_valid():
                             # if collection is invalid, bounce tiles
                             return False
                         else:
                             collection.clear()
+                            first_placed = False
                 #if len(collection.tiles) > 0 and collection.get_value() > first_sum:
                     #first_sum = collection.get_value()
         if first_melt and first_sum < 30:
@@ -520,7 +518,7 @@ class GameView(arcade.View):
             self.window.show_view(LoseView())
 
         elif symbol == arcade.key.Q:
-            self.check_valid_collections()
+            self.check_valid_collections(self.player_first_melt)
 
         # press H to toggle help/instructions
         elif symbol == arcade.key.H:
