@@ -3,10 +3,10 @@ import arcade
 import arcade.gui
 
 from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
-                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, NUM_AI_PLAYERS, AI_DOCK_XPOS, AI_DOCK_YPOS)
+                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, AI_DOCK_XPOS, AI_DOCK_YPOS)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, NUM_TILES
 from gameboard import Gameboard
-from game_components import Button
+from game_components import Button, ButtonRect
 from tile import Tile
 from collection import Collection
 from ai_player import Player
@@ -32,13 +32,13 @@ class GameView(arcade.View):
         self.pass_button = Button(
             50,
             arcade.color.GREEN,
-            [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2],
+            [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2.7],
             ""
         )
         self.button_text = arcade.Text(
             "Pass",
             WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2,
-            TILE_HEIGHT * 2.1,
+            TILE_HEIGHT * 2.8,
             arcade.color.BLACK,
             16,
             anchor_x="center",
@@ -46,6 +46,14 @@ class GameView(arcade.View):
             font_name="Belwe Bold",
         )
         self.pass_button.font_size = 14
+
+        self.end_turn_button = ButtonRect(
+            100,
+            40,
+            arcade.color.HONOLULU_BLUE,
+            [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT],
+            "End turn"
+        )
 
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
@@ -305,6 +313,7 @@ class GameView(arcade.View):
         # draw the pass button
         self.pass_button.draw()
         self.button_text.draw()
+        self.end_turn_button.draw()
 
         #draw the timer
         self.timer_text.draw()
@@ -328,11 +337,18 @@ class GameView(arcade.View):
             self.end_turn()
             self.time = 30
 
+        if self.end_turn_button.is_clicked(pos):
+            self.end_turn_button.set_color(arcade.color.NAVY_BLUE)
+            self.end_turn()
+            self.time = 30
+
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
         # revert pass button color
         if self.pass_button.is_clicked([x, y]):
             self.pass_button.set_color(arcade.color.GREEN)
+        if self.end_turn_button.is_clicked([x, y]):
+            self.end_turn_button.set_color(arcade.color.HONOLULU_BLUE)
 
         if len(self.held_tiles) == 0:
             return
@@ -389,7 +405,7 @@ class GameView(arcade.View):
         self.timer_text = arcade.Text(
             f"{self.time: .0f}",
             WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2,
-            TILE_HEIGHT * 1.7,
+            TILE_HEIGHT * 2.4,
             arcade.color.BLACK,
             12,
             anchor_x="center",
@@ -505,7 +521,6 @@ class GameView(arcade.View):
         elif symbol == arcade.key.S:
             self.save_turn()
 
-        # TODO: this needs to be able to change based on who's turn it is
         elif symbol == arcade.key.D:
             self.deal_tile_user()
 
@@ -534,7 +549,7 @@ class StartView(arcade.View):
         self.start = Button(100, arcade.color.LEMON_CHIFFON,
                                  [WINDOW_WIDTH / 4,
                                   WINDOW_HEIGHT / 4],
-                                 "Start Game!") #TODO should we add fonts
+                                 "Start Game!")
 
         self.rules = Button(100, arcade.color.LEMON_CHIFFON, [WINDOW_WIDTH * 3 / 4,
                                                              WINDOW_HEIGHT / 4], "Rules")
@@ -628,7 +643,6 @@ class LoseView(arcade.View):
         pos = [x, y]
         if self.quit.is_clicked(pos):
             arcade.exit()
-        #TODO: should we save scores? any other data we would want saved?
         if self.play_again.is_clicked(pos):
             self.play_again.set_color(arcade.color.LIGHT_KHAKI)
             game_view = GameView()

@@ -3,8 +3,7 @@ import arcade
 from game_components import Grid, Cheatsheet
 from utils import (COLUMN_COUNT, COLUMN_COUNT_DOCK, ROW_COUNT, ROW_COUNT_DOCK,
                    WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, CHEATSHEET_BOTTOM,
-                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT, NUM_AI_PLAYERS, DOCK_OFFSET, GRID_HEIGHT, AI_DOCK_YPOS,
-                   INNER_MARGIN, AI_DOCK_XPOS)
+                   CHEATSHEET_WIDTH, CHEATSHEET_HEIGHT)
 
 class Gameboard:
     def __init__(self):

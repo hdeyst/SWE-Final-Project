@@ -145,6 +145,52 @@ class Button():
         self.color = color
 
 
+class ButtonRect():
+    def __init__(self, width, height, color, pos, text=''):
+        self.width = width
+        self.height = height
+        self.pos = pos
+
+        self.color = color
+        self.pressed_color = arcade.color.NAVY_BLUE
+
+        self.text = text
+        self.pressed = False
+        self.font_size = 12
+
+        arcade.load_font("./misc/belwebold.otf")
+
+    def draw(self):
+        if not self.pressed:
+            arcade.draw_rect_filled(arcade.XYWH(self.pos[0], self.pos[1], self.width, self.height), self.color)
+        else:
+            arcade.draw_rect_filled(arcade.XYWH(self.pos[0], self.pos[1], self.width, self.height), self.pressed_color)
+        button_text = arcade.Text(
+            self.text,
+            self.pos[0],
+            self.pos[1],
+            arcade.color.BLACK,
+            font_size=self.font_size,
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Belwe Bold",
+        )
+        button_text.draw()
+
+    def is_clicked(self, pos):
+        x_bounded = False
+        y_bounded = False
+        if (self.pos[0] - self.width/2 <= pos[0]) and (self.pos[0] + self.width/2 >= pos[0]):
+            x_bounded = True
+        if (self.pos[1] - self.height/2 <= pos[1]) and (pos[1] + self.height/2 >= pos[1]):
+            y_bounded = True
+
+        return x_bounded and y_bounded
+
+    def set_color(self, color):
+        self.color = color
+
+
 class Cheatsheet:
     def __init__(self, left, bottom, width, height):
         self.section_size = width / len(KEY_BINDINGS)
