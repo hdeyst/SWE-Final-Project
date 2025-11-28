@@ -337,7 +337,7 @@ class GameView(arcade.View):
             self.end_turn()
             self.time = 30
 
-        if self.end_turn_button.is_clicked(pos):
+        elif self.end_turn_button.is_clicked(pos):
             self.end_turn_button.set_color(arcade.color.NAVY_BLUE)
             self.end_turn()
             self.time = 30
@@ -519,7 +519,7 @@ class GameView(arcade.View):
             self.roll_back()
 
         elif symbol == arcade.key.S:
-            self.save_turn()
+            self.end_turn()
 
         elif symbol == arcade.key.D:
             self.deal_tile_user()
