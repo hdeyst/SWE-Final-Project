@@ -24,6 +24,7 @@ class GameView(arcade.View):
         self.time = 30
 
         self.player_first_melt = True
+        self.ai_first_melt = True
 
         # initialize game components
         self.gameboard = Gameboard()
@@ -49,7 +50,6 @@ class GameView(arcade.View):
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
 
-        # TODO: is num in hand the player's tile count in their dock? Yes
         self.total_num_dealt = 0
         self.num_user_hand = 0
         self.num_in_ai_hand = 0
@@ -61,7 +61,7 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
 
         # keep list of ai players
-        self.ai_player = Player(self.gameboard)
+        self.ai_player = Player()
 
 
         # give each player 14 initial tiles
@@ -89,7 +89,6 @@ class GameView(arcade.View):
             font_size=12
         )
 
-
     def print_player_info(self):
         print("ai dock hand: ")
         if self.ai_player.hand:
@@ -108,7 +107,7 @@ class GameView(arcade.View):
         print(f"num ai player tiles: {self.num_in_ai_hand}\n"
               f"num user tiles: {self.num_user_hand}\n")
 
-
+# ============================= TURN FUNCTIONS ================================ #
     def save_turn(self):
         for tile in self.tile_list:
             tile.start_of_turn_x = 0
@@ -123,7 +122,7 @@ class GameView(arcade.View):
     def end_turn(self):
         played = False
         for tile in self.tile_list:
-            if tile.start_of_turn_x != 0:
+            if tile.start_in_dock and not tile.in_dock:
                 played = True
                 break
 
@@ -137,11 +136,16 @@ class GameView(arcade.View):
         else:
             self.deal_tile_user()
 
+        # call ai turn
+        self.ai_turn(self.ai_player)
 
     # Resets the position of tiles to their placement one turn before
     def roll_back(self):
         for tile in self.tile_list:
             if tile.start_of_turn_x != 0 and tile.start_of_turn_y != 0:
+                if tile.start_in_dock and not tile.in_dock:
+                    tile.in_dock = True
+
                 # look through all pegs to find where tile was sitting (before we move it)
                 # then set that peg to unoccupied before we move it back.
                 for peg in self.gameboard.all_pegs:
@@ -186,6 +190,57 @@ class GameView(arcade.View):
         tile.center_y = deck_y_pos
         self.tile_list.append(tile)
 
+# ============================= AI FUNCTIONS ================================ #
+    def find_placement_loc(self, col, ai_player):
+        """Find available placement locations for a collection"""
+        if not col:
+            return []
+        # Add 2 for the left and right buffer spaces, we wil return the list w/o these
+        collection_length = len(col.tiles) + 2
+        for row in self.gameboard.grid.peg_sprites:
+            free_pegs = []
+            for peg in row:
+                if not peg.is_occupied():
+                    free_pegs.append(peg)
+                    if len(free_pegs) >= collection_length:
+                        return free_pegs[1:-1]
+                else:
+                    free_pegs = []
+        return []
+
+    def ai_turn(self, ai_player):
+        if ai_player.can_play():
+            collection = ai_player.get_best_collection()
+            if not self.ai_first_melt or (self.ai_first_melt and collection.get_value() >= 30):
+                free_pegs = self.find_placement_loc(collection, ai_player)
+                if free_pegs:
+                    for i in range(len(free_pegs)):
+                        self.ai_move_tile(free_pegs[i], collection.tiles[i])
+                    self.ai_player.played()
+            else:
+                self.deal_tile_to_ai(ai_player)
+        else:
+            self.deal_tile_to_ai(ai_player)
+
+        #update GUI
+        self.lbl = arcade.Text(
+            f"{len(self.ai_player.hand)}",
+            x=AI_DOCK_XPOS - 10,
+            y=AI_DOCK_YPOS,
+            color=arcade.color.WHITE,
+            font_size=12
+        )
+
+    def ai_move_tile(self, peg, tile):
+        # 1st un-occupy the o.g. tile loc -> pass in coords of tile to get peg
+        old_peg = self.get_peg_at(tile.center_x, tile.center_y)
+        if old_peg is not None:
+            old_peg.empty_peg()
+
+        # 2nd Occupy peg and move tile
+        peg.occupy_peg(tile)
+        tile.center_x = peg.center_x
+        tile.center_y = peg.center_y
 
     def deal_tile_user(self):
         if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs() or self.total_num_dealt >= NUM_TILES:
@@ -232,8 +287,7 @@ class GameView(arcade.View):
         self.print_player_info()
         return True
 
-
-    # Draws the gameboard grid
+# ======================= BOARD FUNCTIONS ================================== #
     def on_draw(self):
         # We should always start by clearing the window pixels
         self.clear()
@@ -261,7 +315,6 @@ class GameView(arcade.View):
         arcade.draw_rect_filled(self.counter, color=arcade.color.COPPER)
         self.lbl.draw()
 
-
     def on_mouse_press(self, x, y, button, modifiers):
         # get any tiles that might be selected
         self.pick_up_tile(x, y)
@@ -274,7 +327,6 @@ class GameView(arcade.View):
             #self.deal_tile_user()
             self.end_turn()
             self.time = 30
-
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
@@ -296,7 +348,7 @@ class GameView(arcade.View):
             if peg.placement == "dock" and not primary_tile.start_in_dock:
                 reset_position = True
             else:
-                if peg.placement == "grid" and primary_tile.in_dock:
+                if peg.placement == "grid":
                     primary_tile.in_dock = False
 
                 # Move tiles to proper position
@@ -379,13 +431,22 @@ class GameView(arcade.View):
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
                 # print(primary_tile.start_of_turn_x)
 
+    def get_peg_at(self, x_coord, y_coord):
+        # Use this function to get a peg from the two given coords
+        for row in self.gameboard.grid.peg_sprites:
+            for peg in row:
+                if peg.center_x == x_coord and peg.center_y == y_coord:
+                    return peg
+        return None
+
+    #first melt logic: collections must have been fully placed from players dock
     def check_valid_collections(self, first_melt):
         open_collection = False
         empty = True
         reset = False
         moved = False
         first_sum = 0
-        collection = Collection()
+        first_placed = False
         # 4 cases, each peg is ONE of these...
         for row in self.gameboard.grid.peg_sprites:
             collection = Collection()
@@ -396,38 +457,42 @@ class GameView(arcade.View):
                 if peg.placement == "grid":
                     # if there is a tile ... and no current collection
                     if peg.is_occupied() and not open_collection:
-                        print("Tile, closed collection")
                         collection.add(peg.get_tile())
                         open_collection = True
                         empty = False
+                        if first_melt and peg.get_tile().start_in_dock:
+                            first_placed = True
                         if peg.get_tile().start_of_turn_x != 0:
                             moved = True
-                            first_sum += peg.get_tile().number
+                            #first_sum += peg.get_tile().number
                         else:
                             moved = False
 
                     # if there is a tile ... and a curr collection
                     elif peg.is_occupied() and open_collection:
-                        # print("Tile, open collection")
-                        # adds tile to the collection
                         collection.add(peg.get_tile())
-                        if first_melt and peg.get_tile().start_of_turn_x != 0 and moved is False:
+                        # if there is a mix of player's tiles and tiles that were already on the board,
+                        # return false
+                        if first_melt and first_placed and not peg.get_tile().start_in_dock:
                             return False
-                        elif first_melt and peg.get_tile().start_of_turn_x ==0 and moved is True:
+                        elif first_melt and not first_placed and peg.get_tile().start_in_dock:
                             return False
-                        elif first_melt and peg.get_tile().start_of_turn_x != 0:
-                            first_sum += peg.get_tile().number
 
                     # if there is NO tile ... and a curr collection
                     elif not peg.is_occupied() and open_collection:
                         # print("No tile, open collection")
                         # close the collection
                         open_collection = False
+                        if first_melt and first_placed:
+                            first_sum += collection.get_value()
                         if not collection.is_valid():
                             # if collection is invalid, bounce tiles
                             return False
                         else:
                             collection.clear()
+                            first_placed = False
+                #if len(collection.tiles) > 0 and collection.get_value() > first_sum:
+                    #first_sum = collection.get_value()
         if first_melt and first_sum < 30:
             return False
         return True
@@ -453,7 +518,7 @@ class GameView(arcade.View):
             self.window.show_view(LoseView())
 
         elif symbol == arcade.key.Q:
-            self.check_valid_collections()
+            self.check_valid_collections(self.player_first_melt)
 
         # press H to toggle help/instructions
         elif symbol == arcade.key.H:
@@ -461,7 +526,6 @@ class GameView(arcade.View):
 
         elif symbol == arcade.key.K:
             self.gameboard.cheatsheet.show_keybinds = not self.gameboard.cheatsheet.show_keybinds
-
 
 class StartView(arcade.View):
     def __init__(self):
