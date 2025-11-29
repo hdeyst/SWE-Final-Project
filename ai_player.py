@@ -12,7 +12,7 @@ Functions:
 """
 
 from collection import Collection
-from game_components.tile import Tile
+from tile import Tile
 from arcade import SpriteList
 from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
 

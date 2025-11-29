@@ -25,7 +25,7 @@ class Gameboard:
         )
 
         # create the logo
-        self.texture = arcade.load_texture("../misc/rummikub.png", )
+        self.texture = arcade.load_texture("misc/rummikub.png", )
         self.logo_sprite = arcade.Sprite(self.texture, scale=.2)
         self.logo_sprite.center_y = WINDOW_HEIGHT - 25
         self.logo_sprite.center_x = WINDOW_WIDTH / 2

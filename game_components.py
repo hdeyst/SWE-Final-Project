@@ -10,7 +10,7 @@ import arcade
 from utils import GRID_WIDTH, GRID_HEIGHT, TILE_WIDTH, TILE_HEIGHT
 from utils import INNER_MARGIN, OUTER_MARGIN, DOCK_OFFSET
 from utils import KEY_BINDINGS, MINIMIZED_CS_WIDTH
-from game_components.peg import Peg
+from peg import Peg
 
 
 class Grid:
