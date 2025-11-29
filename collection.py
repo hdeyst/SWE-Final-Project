@@ -144,7 +144,7 @@ class Collection:
                 else:
                     return False
             if i > 0 and not self.tiles[i - 1].number + 1 == name.number:
-                if name.is_wild or (self.tiles[i - 1].is_wild and self.tiles[i+1].number - 1 == name.number):
+                if name.is_wild or (self.tiles[i - 1].is_wild and self.tiles[i-2].number + 2 == name.number):
                     pass
                 else:
                     return False
