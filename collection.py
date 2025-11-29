@@ -45,22 +45,20 @@ class Collection:
                 total += tile.number
             if self.contains_wild:
                 wilds = self.get_wild_index()
-                #for i in range(len(wilds)):
                 if len(wilds) > 1:
-                    if wilds[0] == wilds[1] - 1:
-                        try:
+                    if wilds[0] == wilds[1] - 1: # if there are two wild tiles and they are right next to eachother
+                        try: #grab the value from the tile after the wilds in the collection
                             total += self.tiles[wilds[0] + 2].number - 2
                             total += self.tiles[wilds[0] + 2].number - 1
-                        except IndexError:
+                        except IndexError: #grab the value from the value before the wilds in the collection
                             total += self.tiles[wilds[0] - 1].number + 1
                             total += self.tiles[wilds[0] - 1].number + 2
-                    else:
-                        try:
-                            total += self.tiles[wilds[0] + 1].number - 1
-                            total += self.tiles[wilds[0] - 1].number + 1
-                        except IndexError:
-                            total += self.tiles[wilds[0] + 1].number - 1
-                            total += self.tiles[wilds[0] + 1].number - 1
+                    else: #if the two wild tiles are seperated and have a tile in between them
+                        total += self.tiles[wilds[0] + 1].number - 1
+                        total += self.tiles[wilds[1] - 1].number + 1
+                        #except IndexError:
+                            #total += self.tiles[wilds[0] + 1].number - 1
+                            #total += self.tiles[wilds[0] + 1].number - 1
                 else:
                     try:
                         total += self.tiles[wilds[0] + 1].number - 1
@@ -146,7 +144,7 @@ class Collection:
                 else:
                     return False
             if i > 0 and not self.tiles[i - 1].number + 1 == name.number:
-                if name.is_wild or (self.tiles[i - 1].is_wild and self.tiles[i-2].number + 2 == name.number):
+                if name.is_wild or (self.tiles[i - 1].is_wild and self.tiles[i+1].number - 1 == name.number):
                     pass
                 else:
                     return False
