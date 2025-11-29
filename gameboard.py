@@ -49,5 +49,10 @@ class Gameboard:
 
         self.cheatsheet.draw()
 
+        # draw the pass button
+        self.pass_button.draw()
+        self.button_text.draw()
+        self.end_turn_button.draw()
+
     def get_user_dock(self):
         return self.user_dock

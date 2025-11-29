@@ -1,13 +1,14 @@
+import arcade
+
 from utils import *
 from gameboard import Gameboard
-from game_components import Button, ButtonRect, Deck
+from deck import Deck
 from ai_player import Player
 
-class GameViewScratch():
+class GameViewScratch(arcade.View):
     def __init__(self):
-        # super().__init__()
+        super().__init__()
         self.background_color = arcade.color.ASH_GREY
-
         self.gameboard = Gameboard()
         self.ai_player = Player()
 
@@ -26,19 +27,8 @@ class GameViewScratch():
         self.ai_time = 5 # makes for a better game experience if ai takes time
         self.timer_text = None
 
-        # flag to show instructions
+        # flag variables
         self.show_instructions = False
-
-        # marker displaying num of tiles the ai player has in their hand
-        self.counter = arcade.XYWH(x=AI_DOCK_XPOS, y=AI_DOCK_YPOS, width=30, height=200)
-        self.lbl = arcade.Text(
-            f"{len(self.deck.ai_hand)}",
-            x=AI_DOCK_XPOS - 10,
-            y=AI_DOCK_YPOS,
-            color=arcade.color.WHITE,
-            font_size=12
-        )
-
         self.player_first_melt = True
         self.ai_first_melt = True
 
@@ -91,7 +81,7 @@ class GameViewScratch():
     def aiturn(self):
         pass
 
-    def on_mouse_press(self, x, y, _):
+    def on_mouse_press(self, x, y, button, modifier) :
         # get any tiles that might be selected
         self.user_pick_up_tile(x, y)
 
@@ -107,7 +97,7 @@ class GameViewScratch():
             self.end_turn()
             self.time = 30
 
-    def on_mouse_release(self, x: float, y: float, _):
+    def on_mouse_release(self, x: float, y: float, button, modifier):
         """ Called when the user presses a mouse button. """
         # revert pass button color
         if self.gameboard.pass_button.is_clicked([x, y]):
@@ -194,7 +184,49 @@ class GameViewScratch():
         self.deck.tile_list.remove(tile)
         self.deck.tile_list.append(tile)
 
+    def on_draw(self):
+        # We should always start by clearing the window pixels
+        self.clear()
+        self.gameboard.draw()
+
+        # Batch draw the grid sprites
+        self.gameboard.all_pegs.draw()
+
+        for peg in self.gameboard.all_pegs:
+            arcade.draw_point(peg.center_x, peg.center_y, arcade.color.WHITE, size=5)
+
+        # draw the tiles
+        self.deck.tile_list.draw()
+
+        #draw the timer
+        # self.timer_text.draw()
+
+        if self.show_instructions:
+            draw_instructions_screen(self)
+
+        # marker displaying num of tiles the ai player has in their hand
+        counter = arcade.XYWH(x=AI_DOCK_XPOS, y=AI_DOCK_YPOS, width=30, height=200)
+        lbl = arcade.Text(
+            f"{len(self.deck.ai_hand)}",
+            x=AI_DOCK_XPOS - 10,
+            y=AI_DOCK_YPOS,
+            color=arcade.color.WHITE,
+            font_size=12
+        )
+
+        arcade.draw_rect_filled(counter, color=arcade.color.COPPER)
+        lbl.draw()
+
+
 
 if __name__ == "__main__":
-    view = GameViewScratch()
-    print(view.deck)
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameViewScratch()
+
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
