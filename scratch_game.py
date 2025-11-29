@@ -178,44 +178,6 @@ class GameViewScratch(arcade.View):
                 og_peg.occupy_peg(card)
                 print(f"RE occuping peg {og_peg}")
 
-    def pull_to_top(self, tile: arcade.Sprite):
-        self.deck.tile_list.remove(tile)
-        self.deck.tile_list.append(tile)
-
-    def on_draw(self):
-        # We should always start by clearing the window pixels
-        self.clear()
-        self.gameboard.draw()
-
-        # Batch draw the grid sprites
-        self.gameboard.all_pegs.draw()
-
-        for peg in self.gameboard.all_pegs:
-            arcade.draw_point(peg.center_x, peg.center_y, arcade.color.WHITE, size=5)
-
-        # draw the tiles
-        self.deck.tile_list.draw()
-
-        #draw the timer
-        # self.timer_text.draw()
-
-        if self.show_instructions:
-            draw_instructions_screen(self)
-
-        # marker displaying num of tiles the ai player has in their hand
-        counter = arcade.XYWH(x=AI_DOCK_XPOS, y=AI_DOCK_YPOS, width=30, height=200)
-        lbl = arcade.Text(
-            f"{len(self.deck.ai_hand)}",
-            x=AI_DOCK_XPOS - 10,
-            y=AI_DOCK_YPOS,
-            color=arcade.color.WHITE,
-            font_size=12
-        )
-
-        arcade.draw_rect_filled(counter, color=arcade.color.COPPER)
-        lbl.draw()
-
-
 
 if __name__ == "__main__":
     # Create a window class. This is what actually shows up on screen
