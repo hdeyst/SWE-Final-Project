@@ -125,6 +125,10 @@ class GameView(arcade.View):
         if self.deck.user_hand == 0:
             self.window.show_view(WinView())
 
+        if self.deck.remainder_in_deck == 0:
+            self.window.show_view(LoseView())
+            print("you ran out of cards in the deck!")
+
 
 
     # Resets the position of tiles to their placement one turn before
@@ -443,7 +447,6 @@ class GameView(arcade.View):
             # Bookmark the starting x and y when you pick up a tile ONLY ON FIRST TIME GRABBING TILE
             if primary_tile.start_of_turn_x == 0 and primary_tile.start_of_turn_y == 0:
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
-        self.update_deck()
 
     def get_peg_at(self, x_coord, y_coord):
         # Use this function to get a peg from the two given coords

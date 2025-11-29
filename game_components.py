@@ -189,7 +189,7 @@ class ButtonRect():
         y_bounded = False
         if (self.pos[0] - self.width/2 <= pos[0]) and (self.pos[0] + self.width/2 >= pos[0]):
             x_bounded = True
-        if (self.pos[1] - self.height/2 <= pos[1]) and (pos[1] + self.height/2 >= pos[1]):
+        if (self.pos[1] - self.height/2 <= pos[1]) and (self.pos[1] + self.height/2 >= pos[1]):
             y_bounded = True
 
         return x_bounded and y_bounded
