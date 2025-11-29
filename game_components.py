@@ -108,6 +108,14 @@ class Grid:
             if p.tile:
                 total -= 1
 
+    def get_num_occupied_pegs(self):
+        count = 0
+        for p in self.peg_sprite_list:
+            if p.tile:
+                count += 1
+        return count
+
+
 
 class Button():
     def __init__(self, radius, color, pos, text=''):

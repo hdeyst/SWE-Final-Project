@@ -64,6 +64,7 @@ class GameView(arcade.View):
             color=arcade.color.WHITE,
             font_size=12
         )
+        self.update_deck()
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -74,6 +75,7 @@ class GameView(arcade.View):
         # decrement count in player hand appropriately
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
+        self.update_deck()
 
         if self.deck.user_hand == 0:
             self.window.show_view(WinView())
@@ -93,13 +95,29 @@ class GameView(arcade.View):
 
         elif played and not self.check_valid_collections(self.player_first_melt):
             self.roll_back()
-            self.deck.revert_to_user()
             self.deal_tile_user()
         else:
             self.deal_tile_user()
 
+        # TODO: create an update deck function and call here
+        self.update_deck()
+
         # call ai turn
         self.ai_turn(self.ai_player)
+
+    def update_deck(self):
+        print("Updating Deck...")
+        self.deck.update_user_hand(self.gameboard.user_dock.get_num_occupied_pegs())
+        self.deck.update_ai_hand(len(self.ai_player.hand))
+        self.deck.update_on_board(self.gameboard.grid.get_num_occupied_pegs())
+
+        # remaining in deck
+        self.deck.remainder_in_deck = (
+                len(self.tile_list) - self.deck.on_board - self.deck.ai_hand - self.deck.user_hand
+        )
+        print(self.deck)
+        print()
+
 
     # Resets the position of tiles to their placement one turn before
     def roll_back(self):
@@ -125,6 +143,7 @@ class GameView(arcade.View):
                 # set the start of turns back to 0 meaning "unchanged"
                 tile.start_of_turn_x = 0
                 tile.start_of_turn_y = 0
+        self.update_deck()
         print("Turn Rebased")
 
     # creates all possible tiles and puts them in a deck
@@ -193,7 +212,10 @@ class GameView(arcade.View):
         )
         self.ai_num_turns += 1
         print(f"ai turn count: {self.ai_num_turns}\n")
-        print(self.deck)
+        self.update_deck()
+
+        if self.deck.ai_hand == 0:
+            self.window.show_view(LoseView())
 
     def ai_move_tile(self, peg, tile):
         # 1st un-occupy the o.g. tile loc -> pass in coords of tile to get peg
@@ -205,9 +227,8 @@ class GameView(arcade.View):
         peg.occupy_peg(tile)
         tile.center_x = peg.center_x
         tile.center_y = peg.center_y
-
-        self.deck.ai_places_tile()
         tile.in_ai_hand = False
+        self.update_deck()
 
     def deal_tile_user(self):
         if (self.deck.remainder_in_deck < 1 or
@@ -234,10 +255,8 @@ class GameView(arcade.View):
         tile.position = peg.center_x, peg.center_y
         peg.occupy_peg(tile)
 
-        self.deck.add_to_user()
-
-        print(f"Dealing tile {tile}...")
-        print(self.deck)
+        print(f"Dealing tile {tile} to user...")
+        self.update_deck()
         return True
 
     def deal_tile_to_ai(self, player):
@@ -248,10 +267,8 @@ class GameView(arcade.View):
         tile = self.tile_list[self.deck.count_used_tiles()]
         player.deal(tile)
 
-        self.deck.add_to_ai()
-
         print(f"Dealing tile {tile} to ai...")
-        print(self.deck)
+        self.update_deck()
         return True
 
 # ======================= BOARD FUNCTIONS ================================== #
@@ -307,6 +324,7 @@ class GameView(arcade.View):
             return
         else:
             self.user_drop_tile()
+        self.update_deck()
 
     def user_drop_tile(self):
         peg, _ = arcade.get_closest_sprite(self.held_tiles[0], self.gameboard.all_pegs)
@@ -319,6 +337,18 @@ class GameView(arcade.View):
 
             if peg.placement == "dock" and not primary_tile.start_in_dock:
                 reset_position = True
+            elif peg.placement == "dock" and primary_tile.start_in_dock:
+                # Move tiles to proper position
+                primary_tile.position = peg.center_x, peg.center_y
+
+                # There is a tile on the peg
+                p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
+
+                p.occupy_peg(primary_tile)
+                print(p)
+
+                # Success, don't reset position of tiles
+                reset_position = False
             else:
                 if peg.placement == "grid":
                     primary_tile.in_dock = False
@@ -330,8 +360,6 @@ class GameView(arcade.View):
                 p = arcade.get_sprites_at_point(primary_tile.position, self.gameboard.all_pegs)[-1]
 
                 p.occupy_peg(primary_tile)
-                # update deck accordingly
-                self.deck.user_places_tile()
                 print(p)
 
                 # Success, don't reset position of tiles
@@ -342,6 +370,7 @@ class GameView(arcade.View):
 
         # empty out held tile list
         self.held_tiles = []
+        self.update_deck()
 
     # Reset each tile's position to its original spot
     def revert_revert(self):
@@ -354,6 +383,8 @@ class GameView(arcade.View):
                 og_peg = pegs[-1]
                 og_peg.occupy_peg(card)
                 print(f"RE occuping peg {og_peg}")
+
+        self.update_deck()
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         for tile in self.held_tiles:
@@ -404,7 +435,7 @@ class GameView(arcade.View):
             # Bookmark the starting x and y when you pick up a tile ONLY ON FIRST TIME GRABBING TILE
             if primary_tile.start_of_turn_x == 0 and primary_tile.start_of_turn_y == 0:
                 primary_tile.set_start_of_turn_pos(primary_tile.center_x, primary_tile.center_y)
-
+        self.update_deck()
 
     def get_peg_at(self, x_coord, y_coord):
         # Use this function to get a peg from the two given coords
