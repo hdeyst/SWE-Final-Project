@@ -137,12 +137,14 @@ class Collection:
                 pass
             else:
                 index = i
+                break
 
         if index < len(self.tiles) - 1:
             if self.tiles[index].number == 13:
                 return False
 
-
+        non_wilds = 0
+        wilds_end = False
         for i, name in enumerate(self.tiles): # check that all tiles have the same color
             if name.color != self.tiles[index].color:
                 if name.is_wild:
@@ -150,11 +152,22 @@ class Collection:
                 else:
                     return False
             difference = abs(index - i)
+            if name.is_wild:
+                if wilds_end:
+                    non_wilds += 1
+                pass
+            elif name.number == self.tiles[index].number + non_wilds:
+                wilds_end = True
+                non_wilds += 1
+                pass
+            else:
+                return False
+            """   
             if i > 0 and not self.tiles[i - 1].number + 1 == name.number:
                 if name.is_wild or (self.tiles[i - 1].is_wild and name.number == (self.tiles[index].number - difference)):
                     pass
                 else:
-                    return False
+                    return False"""
         return True
 
     def __repr__(self):
