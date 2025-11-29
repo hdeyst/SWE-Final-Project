@@ -309,8 +309,8 @@ class GameView(arcade.View):
 
         elif self.gameboard.end_turn_button.is_clicked(pos):
             self.gameboard.end_turn_button.set_color(arcade.color.NAVY_BLUE)
-            self.end_turn()
-            self.time = 30
+            game_view = GameView()
+            self.window.show_view(game_view)
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
