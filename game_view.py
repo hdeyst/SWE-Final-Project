@@ -92,11 +92,8 @@ class GameView(arcade.View):
             self.save_turn()
             if self.player_first_melt:
                 self.player_first_melt = False
-
-        elif played and not self.check_valid_collections(self.player_first_melt):
-            self.roll_back()
-            self.deal_tile_user()
         else:
+            self.roll_back()
             self.deal_tile_user()
 
         # TODO: create an update deck function and call here
