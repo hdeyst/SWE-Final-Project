@@ -270,14 +270,15 @@ class GameView(arcade.View):
         # draw the tiles
         self.tile_list.draw()
 
-        #draw the timer
+        # draw the timer
         self.timer_text.draw()
+
+        arcade.draw_rect_filled(self.counter, color=arcade.color.COPPER)
+        self.lbl.draw()
 
         if self.show_instructions:
             draw_instructions_screen(self)
 
-        arcade.draw_rect_filled(self.counter, color=arcade.color.COPPER)
-        self.lbl.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
         # get any tiles that might be selected

@@ -18,3 +18,6 @@ Included are various key binds that are very helpful for testing:
 
 ### Necessary packages:
 - pyarcade
+
+### The official Rummikub Instructions:
+- https://rummikub.com/wp-content/uploads/2019/12/2600-English-1.pdf
