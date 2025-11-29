@@ -6,6 +6,8 @@ Defines 2 different types: Grid, and Button
 """
 import math
 import arcade
+from arcade.color import NAVY_BLUE
+
 from utils import GRID_WIDTH, GRID_HEIGHT, ROW_COUNT, COLUMN_COUNT, TILE_WIDTH, TILE_HEIGHT
 from utils import INNER_MARGIN, OUTER_MARGIN, DOCK_OFFSET, WINDOW_WIDTH, ROW_COUNT_DOCK
 from utils import COLUMN_COUNT_DOCK
@@ -146,14 +148,12 @@ class Button():
 
 
 class ButtonRect():
-    def __init__(self, width, height, color, pos, text=''):
+    def __init__(self, width, height, pos, text=''):
         self.width = width
         self.height = height
         self.pos = pos
 
-        self.color = color
-        self.pressed_color = arcade.color.NAVY_BLUE
-
+        self.color = arcade.color.HONOLULU_BLUE
         self.text = text
         self.pressed = False
         self.font_size = 12
@@ -189,6 +189,17 @@ class ButtonRect():
 
     def set_color(self, color):
         self.color = color
+
+    def press(self, pos):
+        if self.is_clicked(pos):
+            self.pressed = True
+            self.set_color(arcade.color.NAVY_BLUE)
+
+
+    def release(self):
+        self.pressed = False
+        self.set_color(arcade.color.HONOLULU_BLUE)
+
 
 
 class Cheatsheet:

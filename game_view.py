@@ -38,7 +38,7 @@ class GameView(arcade.View):
         self.pass_button.font_size = 14
 
         self.end_turn_button = (
-            ButtonRect(100, 40, arcade.color.HONOLULU_BLUE, END_TURN_BUTTON_POS, "End turn")
+            ButtonRect(100, 40, END_TURN_BUTTON_POS, "End turn")
         )
 
         # Initialize tiles
