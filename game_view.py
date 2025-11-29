@@ -42,10 +42,6 @@ class GameView(arcade.View):
         self.tile_list.shuffle()
 
         self.deck = Deck(self.tile_list)
-        self.total_num_dealt = 0
-        self.num_user_hand = 0
-        self.num_in_ai_hand = 0
-
 
         self.ai_player = Player()
         self.ai_num_turns = 0
@@ -62,32 +58,12 @@ class GameView(arcade.View):
         # marker displaying num of tiles the ai player has in their hand
         self.counter = arcade.XYWH(x=AI_DOCK_XPOS, y=AI_DOCK_YPOS, width=30, height=200)
         self.lbl = arcade.Text(
-            f"{self.num_in_ai_hand}",
+            f"{self.deck.ai_hand}",
             x=AI_DOCK_XPOS-10,
             y=AI_DOCK_YPOS,
             color=arcade.color.WHITE,
             font_size=12
         )
-
-    def print_player_info(self):
-        print("ai dock hand: ")
-        if self.ai_player.hand:
-            print(self.ai_player)
-
-        print("\nuser hand: ")
-        if self.held_tiles:
-            output = ""
-            for tile in self.held_tiles[:-1]:
-                output += f"{tile}, "
-            output += f"{self.held_tiles[-1]}, "
-            print(output)
-
-        print(f"tiles left in deck: {len(self.tile_list) - self.total_num_dealt}")
-
-        print(f"num ai player tiles: {self.num_in_ai_hand}\n"
-              f"num user tiles: {self.num_user_hand}\n")
-
-# ============================= TURN FUNCTIONS ================================ #
 
     def save_turn(self):
         for tile in self.tile_list:
@@ -98,9 +74,8 @@ class GameView(arcade.View):
         # decrement count in player hand appropriately
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
-                self.num_user_hand -= 1
 
-        if self.num_user_hand == 0:
+        if self.deck.user_hand == 0:
             self.window.show_view(WinView())
         print("Turn Saved")
 
@@ -118,6 +93,7 @@ class GameView(arcade.View):
 
         elif played and not self.check_valid_collections(self.player_first_melt):
             self.roll_back()
+            self.deck.revert_to_user()
             self.deal_tile_user()
         else:
             self.deal_tile_user()
@@ -195,6 +171,10 @@ class GameView(arcade.View):
             if not self.ai_first_melt or (self.ai_first_melt and collection.get_value() >= 30):
                 free_pegs = self.find_placement_loc(collection, ai_player)
                 if free_pegs:
+                    str = f"Ai player placing collection...\n"
+                    for t in collection.tiles:
+                        str += f"{t}, "
+                    print(str)
                     for i in range(len(free_pegs)):
                         self.ai_move_tile(free_pegs[i], collection.tiles[i])
                     self.ai_player.played()
@@ -212,7 +192,8 @@ class GameView(arcade.View):
             font_size=12
         )
         self.ai_num_turns += 1
-        print(f"ai turn count: {self.ai_num_turns}")
+        print(f"ai turn count: {self.ai_num_turns}\n")
+        print(self.deck)
 
     def ai_move_tile(self, peg, tile):
         # 1st un-occupy the o.g. tile loc -> pass in coords of tile to get peg
@@ -225,8 +206,8 @@ class GameView(arcade.View):
         tile.center_x = peg.center_x
         tile.center_y = peg.center_y
 
+        self.deck.ai_places_tile()
         tile.in_ai_hand = False
-        self.num_in_ai_hand -= 1
 
     def deal_tile_user(self):
         if (self.deck.remainder_in_deck < 1 or
@@ -249,41 +230,29 @@ class GameView(arcade.View):
                     peg = space
                     break
 
-        tile = self.tile_list[self.total_num_dealt]
+        tile = self.tile_list[self.deck.count_used_tiles()]
 
         tile.position = peg.center_x, peg.center_y
         peg.occupy_peg(tile)
 
-        self.total_num_dealt += 1
-        self.num_user_hand += 1
-
         self.deck.add_to_user()
-        self.print_player_info()
 
         print(f"Dealing tile {tile}...")
         print(self.deck)
-        print("total num dealt: ", self.total_num_dealt)
-
         return True
 
     def deal_tile_to_ai(self, player):
-        if (len(self.tile_list) - self.total_num_dealt) < 1 or len(player.hand) == player.hand_capacity:
+        if self.deck.remainder_in_deck < 1 or len(player.hand) == player.hand_capacity:
             print("ERROR. Tile cannot be dealt")
             return False
 
-        tile = self.tile_list[self.total_num_dealt]
+        tile = self.tile_list[self.deck.count_used_tiles()]
         player.deal(tile)
 
-        self.total_num_dealt += 1
-        # add to count in ai hands
-        self.num_in_ai_hand += 1
-
         self.deck.add_to_ai()
-        self.print_player_info()
 
-        print(f"Dealing tile {tile}...")
+        print(f"Dealing tile {tile} to ai...")
         print(self.deck)
-        print("total num dealt: ", self.total_num_dealt)
         return True
 
 # ======================= BOARD FUNCTIONS ================================== #

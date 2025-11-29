@@ -41,4 +41,5 @@ class Deck:
         return (f"Of {self.total_tiles} tiles, {self.remainder_in_deck} tiles remain in deck \n"
                 f"In user hand: {self.user_hand} \n"
                 f"AI hand: {self.ai_hand} \n"
-                f"Number on board: {self.on_board} \n")
+                f"Number on board: {self.on_board} \n"
+                f"Num used tiles: {self.count_used_tiles()} \n")
