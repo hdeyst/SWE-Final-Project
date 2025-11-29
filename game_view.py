@@ -211,9 +211,8 @@ class GameView(arcade.View):
 
     def deal_tile_user(self):
         if (self.deck.remainder_in_deck < 1 or
-                self.gameboard.user_dock.get_num_available_pegs() or
-                self.deck.count_used_tiles() >= NUM_TILES
-        ):
+                self.gameboard.user_dock.get_num_available_pegs() == 0 or
+                self.deck.count_used_tiles() >= NUM_TILES):
             print("ERROR. Tile cannot be dealt")
             return False
 
