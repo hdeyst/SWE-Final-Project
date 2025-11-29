@@ -70,6 +70,7 @@ class Collection:
 
     def clear(self):
         self.tiles.clear()
+        self.contains_wild = False
 
     def is_valid(self):
         if self.set() or self.run():
