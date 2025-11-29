@@ -18,28 +18,17 @@ class GameView(arcade.View):
         super().__init__()
 
         # Set the background color of the window
-        self.timer_text = None
         self.background_color = arcade.color.ASH_GREY
 
         #initialize timer for turns
         self.time = 30
+        self.timer_text = None
 
         self.player_first_melt = True
         self.ai_first_melt = True
 
         # ------------- Initialize game components ------------- #
         self.gameboard = Gameboard()
-
-        self.pass_button = Button(50, arcade.color.GREEN,PASS_BUTTON_POS, "")
-        self.button_text = (
-            arcade.Text("Pass", BUTTON_X, BUTTON_Y, arcade.color.BLACK, 16,
-                        anchor_x="center", anchor_y="center", font_name="Belwe Bold")
-        )
-        self.pass_button.font_size = 14
-
-        self.end_turn_button = (
-            ButtonRect(100, 40, END_TURN_BUTTON_POS, "End turn")
-        )
 
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
@@ -304,11 +293,6 @@ class GameView(arcade.View):
         # draw the tiles
         self.tile_list.draw()
 
-        # draw the pass button
-        self.pass_button.draw()
-        self.button_text.draw()
-        self.end_turn_button.draw()
-
         #draw the timer
         self.timer_text.draw()
 
@@ -324,25 +308,23 @@ class GameView(arcade.View):
 
         # indicate pass_button was selected
         pos = [x, y]
-        if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-            # TODO: this should be able to change depending on user
-            #self.deal_tile_user()
+        if self.gameboard.pass_button.is_clicked(pos):
+            self.gameboard.pass_button.set_color(arcade.color.LINCOLN_GREEN)
             self.end_turn()
             self.time = 30
 
-        elif self.end_turn_button.is_clicked(pos):
-            self.end_turn_button.set_color(arcade.color.NAVY_BLUE)
+        elif self.gameboard.end_turn_button.is_clicked(pos):
+            self.gameboard.end_turn_button.set_color(arcade.color.NAVY_BLUE)
             self.end_turn()
             self.time = 30
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """
         # revert pass button color
-        if self.pass_button.is_clicked([x, y]):
-            self.pass_button.set_color(arcade.color.GREEN)
-        if self.end_turn_button.is_clicked([x, y]):
-            self.end_turn_button.set_color(arcade.color.HONOLULU_BLUE)
+        if self.gameboard.pass_button.is_clicked([x, y]):
+            self.gameboard.pass_button.set_color(arcade.color.GREEN)
+        if self.gameboard.end_turn_button.is_clicked([x, y]):
+            self.gameboard.end_turn_button.set_color(arcade.color.HONOLULU_BLUE)
 
         if len(self.held_tiles) == 0:
             return
