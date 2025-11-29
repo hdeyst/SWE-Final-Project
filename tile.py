@@ -15,6 +15,7 @@ class Tile(arcade.Sprite):
     peg = None
     in_dock = True
     start_in_dock = True #for reset functionality
+    placement = "deck"
 
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)

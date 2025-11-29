@@ -3,7 +3,8 @@ import arcade
 import arcade.gui
 
 from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
-                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, AI_DOCK_XPOS, AI_DOCK_YPOS)
+                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, AI_DOCK_XPOS, AI_DOCK_YPOS, PASS_BUTTON_POS,
+                   BUTTON_X, BUTTON_Y, END_TURN_BUTTON_POS)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, NUM_TILES
 from gameboard import Gameboard
 from game_components import Button, ButtonRect
@@ -26,69 +27,49 @@ class GameView(arcade.View):
         self.player_first_melt = True
         self.ai_first_melt = True
 
-        # initialize game components
+        # ------------- Initialize game components ------------- #
         self.gameboard = Gameboard()
 
-        self.pass_button = Button(
-            50,
-            arcade.color.GREEN,
-            [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2.7],
-            ""
-        )
-        self.button_text = arcade.Text(
-            "Pass",
-            WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2,
-            TILE_HEIGHT * 2.8,
-            arcade.color.BLACK,
-            16,
-            anchor_x="center",
-            anchor_y="center",
-            font_name="Belwe Bold",
+        self.pass_button = Button(50, arcade.color.GREEN,PASS_BUTTON_POS, "")
+        self.button_text = (
+            arcade.Text("Pass", BUTTON_X, BUTTON_Y, arcade.color.BLACK, 16,
+                        anchor_x="center", anchor_y="center", font_name="Belwe Bold")
         )
         self.pass_button.font_size = 14
 
-        self.end_turn_button = ButtonRect(
-            100,
-            40,
-            arcade.color.HONOLULU_BLUE,
-            [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT],
-            "End turn"
+        self.end_turn_button = (
+            ButtonRect(100, 40, arcade.color.HONOLULU_BLUE, END_TURN_BUTTON_POS, "End turn")
         )
 
         # Initialize tiles
         self.tile_list = arcade.SpriteList()
 
-        self.total_num_dealt = 0
-        self.num_user_hand = 0
-        self.num_in_ai_hand = 0
-
+        # tiles currently held by mouse
         self.held_tiles = []
         self.held_tiles_original_position = []
 
         self.build_deck(-20, -20)
         self.tile_list.shuffle()
 
-        # keep list of ai players
+        self.total_num_dealt = 0
+        self.num_user_hand = 0
+        self.num_in_ai_hand = 0
+
+
         self.ai_player = Player()
+        self.ai_num_turns = 0
 
 
         # give each player 14 initial tiles
         for _ in range(STARTING_TILE_AMT):
-            # fill user dock
             self.deal_tile_user()
-
             self.deal_tile_to_ai(self.ai_player)
 
         # flag to show instructions
         self.show_instructions = False
 
         # marker displaying num of tiles the ai player has in their hand
-        self.counter = arcade.XYWH(
-            x=AI_DOCK_XPOS,
-            y=AI_DOCK_YPOS,
-            width=30,
-            height=200
-        )
+        self.counter = arcade.XYWH(x=AI_DOCK_XPOS, y=AI_DOCK_YPOS, width=30, height=200)
         self.lbl = arcade.Text(
             f"{self.num_in_ai_hand}",
             x=AI_DOCK_XPOS-10,
@@ -116,13 +97,18 @@ class GameView(arcade.View):
               f"num user tiles: {self.num_user_hand}\n")
 
 # ============================= TURN FUNCTIONS ================================ #
+
     def save_turn(self):
         for tile in self.tile_list:
+            # reset the start of turn positions for the tiles
             tile.start_of_turn_x = 0
             tile.start_of_turn_y = 0
+
+            # decrement count in player hand appropriately
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
                 self.num_user_hand -= 1
+
             if self.num_user_hand == 0:
                 self.window.show_view(WinView())
         print("Turn Saved")
@@ -138,6 +124,7 @@ class GameView(arcade.View):
             self.save_turn()
             if self.player_first_melt:
                 self.player_first_melt = False
+
         elif played and not self.check_valid_collections(self.player_first_melt):
             self.roll_back()
             self.deal_tile_user()
@@ -238,6 +225,8 @@ class GameView(arcade.View):
             color=arcade.color.WHITE,
             font_size=12
         )
+        self.ai_num_turns += 1
+        print(f"ai turn count: {self.ai_num_turns}")
 
     def ai_move_tile(self, peg, tile):
         # 1st un-occupy the o.g. tile loc -> pass in coords of tile to get peg
@@ -250,8 +239,13 @@ class GameView(arcade.View):
         tile.center_x = peg.center_x
         tile.center_y = peg.center_y
 
+        tile.in_ai_hand = False
+        self.num_in_ai_hand -= 1
+
     def deal_tile_user(self):
-        if len(self.tile_list) < 1 or self.gameboard.user_dock.get_num_available_pegs() or self.total_num_dealt >= NUM_TILES:
+        if ((len(self.tile_list) - self.total_num_dealt) < 1 or
+                self.gameboard.user_dock.get_num_available_pegs() or
+                self.total_num_dealt >= NUM_TILES):
             print("ERROR. Tile cannot be dealt")
             return False
 
@@ -281,7 +275,7 @@ class GameView(arcade.View):
         return True
 
     def deal_tile_to_ai(self, player):
-        if len(self.tile_list) < 1 or len(player.hand) == player.hand_capacity:
+        if (len(self.tile_list) - self.total_num_dealt) < 1 or len(player.hand) == player.hand_capacity:
             print("ERROR. Tile cannot be dealt")
             return False
 
@@ -541,6 +535,11 @@ class GameView(arcade.View):
 
         elif symbol == arcade.key.K:
             self.gameboard.cheatsheet.show_keybinds = not self.gameboard.cheatsheet.show_keybinds
+
+
+
+
+""" ==================== Start and End Game Screens ==================== """
 
 class StartView(arcade.View):
     def __init__(self):

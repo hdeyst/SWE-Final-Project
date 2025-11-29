@@ -1,6 +1,7 @@
 """File containing the constants used throughout the project
     as well as any functions that aren't part of a class"""
 import arcade
+from arcade.examples.sound_demo import BUTTON_X_POSITIONS
 
 # --- Tile constants ---
 TILE_SCALE = .265
@@ -56,7 +57,7 @@ PEG_COLORS = {
         "empty": arcade.color.TRANSPARENT_BLACK
     }
 }
-PLACEMENTS = ["grid", "dock", "ai_dock"]
+PLACEMENTS = ["grid", "dock", "ai_dock", "deck"]
 
 # --- Gameplay constants ---
 STARTING_TILE_AMT = 14
@@ -101,6 +102,13 @@ MINIMIZED_CS_WIDTH = 160
 AI_DOCK_YPOS = WINDOW_HEIGHT - GRID_HEIGHT - OUTER_MARGIN *2
 AI_DOCK_XPOS = WINDOW_WIDTH - 23
 
+
+PASS_BUTTON_POS = [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT * 2.7]
+
+BUTTON_X = WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2
+BUTTON_Y = TILE_HEIGHT * 2.8
+
+END_TURN_BUTTON_POS = [WINDOW_WIDTH - OUTER_MARGIN * 2 - INNER_MARGIN * 2, TILE_HEIGHT]
 """ ================== Helper functions ================== """
 
 # --- Coordinate Converter ---

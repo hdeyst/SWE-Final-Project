@@ -27,6 +27,8 @@ class Player:
         self.initial_melt = False
 
     def deal(self, tile):
+        tile.in_ai_hand = True
+        tile.start_in_dock = False
         self.hand.append(tile)
 
     def sort_sets(self):
