@@ -1,100 +1,46 @@
 from utils import *
 from gameboard import Gameboard
-from game_components import Button, ButtonRect
-from tile import Tile
+from game_components import Button, ButtonRect, Deck
 from ai_player import Player
-
-# Class to help keep track of all tile movement
-class Deck:
-    def __init__(self):
-        # Initialize tiles
-        self.tile_list = arcade.SpriteList()
-        self.build_deck_()
-        self.tile_list.shuffle()
-
-        self.user_hand = []
-        self.ai_hand = []
-        self.on_board = []
-        self.remainder_in_deck = self.tile_list
-
-    def add_to_user(self, tile):
-        self.user_hand.append(tile)
-        self.remainder_in_deck.remove(tile)
-
-    def add_to_ai(self, tile):
-        self.ai_hand.append(tile)
-        self.remainder_in_deck.remove(tile)
-
-    def user_places_tile(self, tile):
-        self.on_board.append(tile)
-        self.user_hand.remove(tile)
-
-    def ai_places_tile(self, tile):
-        self.on_board.append(tile)
-        self.ai_hand.remove(tile)
-
-    def count_used_tiles(self):
-        return len(self.tile_list) - len(self.remainder_in_deck)
-
-    def build_deck_(self):
-        for color in COLORS:
-            for j in range(NUM_TILE_VALUES):
-                # there are two of each type of tile in the deck
-                for _ in range(2):
-                    tile = Tile(f"tiles/{color}_{j + 1}.png", scale=TILE_SCALE)
-                    # Stacked tile placement, places all tiles in the corner stacked on one another
-                    tile.center_x = -20
-                    tile.center_y = -20
-                    self.tile_list.append(tile)
-
-        # add wild cards to the deck
-        wild = [Tile("tiles/red_wild.png", scale=TILE_SCALE),
-                Tile("tiles/black_wild.png", scale=TILE_SCALE)]
-        for w_card in wild:
-            w_card.center_x = -20
-            w_card.center_y = -20
-            self.tile_list.append(w_card)
-
-    # toString for debugging
-    def __str__(self):
-        user_h = "User hand: "
-        ai_h = "AI hand: "
-        for u in self.user_hand:
-            user_h += f"{u} "
-        for a in self.ai_hand:
-            ai_h += f"{a} "
-        return f"{user_h}\n{ai_h}"
-
 
 class GameViewScratch():
     def __init__(self):
         # super().__init__()
         self.background_color = arcade.color.ASH_GREY
+
         self.gameboard = Gameboard()
-
-        # initialize buttons
-        self.pass_button = Button(50, arcade.color.GREEN, PASS_BUTTON_POS, "")
-        self.button_text = (
-            arcade.Text("Pass", BUTTON_X, BUTTON_Y, arcade.color.BLACK, 16,
-                        anchor_x="center", anchor_y="center", font_name="Belwe Bold")
-        )
-        self.end_turn_button = (
-            ButtonRect(100, 40, END_TURN_BUTTON_POS, "End turn")
-        )
-
         self.ai_player = Player()
 
         # Initialize tiles
         self.deck = Deck()
-
-        # give each player 14 initial tiles
         for _ in range(STARTING_TILE_AMT):
             self.deal_tile_u()
             self.deal_tile_ai()
 
-        # tiles currently held by user cursor
+        # tiles currently held w/ user cursor
         self.held_tiles = []
         self.held_tiles_original_position = []
+
+        # initialize timer for turns
+        self.user_time = 30
+        self.ai_time = 5 # makes for a better game experience if ai takes time
+        self.timer_text = None
+
+        # flag to show instructions
+        self.show_instructions = False
+
+        # marker displaying num of tiles the ai player has in their hand
+        self.counter = arcade.XYWH(x=AI_DOCK_XPOS, y=AI_DOCK_YPOS, width=30, height=200)
+        self.lbl = arcade.Text(
+            f"{len(self.deck.ai_hand)}",
+            x=AI_DOCK_XPOS - 10,
+            y=AI_DOCK_YPOS,
+            color=arcade.color.WHITE,
+            font_size=12
+        )
+
+        self.player_first_melt = True
+        self.ai_first_melt = True
 
 
     def deal_tile_u(self):
@@ -105,6 +51,7 @@ class GameViewScratch():
             print("ERROR. Tile cannot be dealt")
             return False
 
+        # find a place in user dock for the tile
         peg = None
         found = False
         for space in self.gameboard.user_dock.peg_sprite_list[-COLUMN_COUNT_DOCK:]:
@@ -150,21 +97,23 @@ class GameViewScratch():
 
         # indicate which button was selected
         pos = [x, y]
-        if self.pass_button.is_clicked(pos):
-            self.pass_button.set_color(arcade.color.LINCOLN_GREEN)
-        elif self.end_turn_button.is_clicked(pos):
-            self.end_turn_button.press(pos)
+        if self.gameboard.pass_button.is_clicked(pos):
+            self.gameboard.pass_button.set_color(arcade.color.LINCOLN_GREEN)
+            self.end_turn()
+            self.time = 30
 
-        self.end_turn()
-        self.time = 30
+        elif self.gameboard.end_turn_button.is_clicked(pos):
+            self.gameboard.end_turn_button.press(pos)
+            self.end_turn()
+            self.time = 30
 
     def on_mouse_release(self, x: float, y: float, _):
         """ Called when the user presses a mouse button. """
         # revert pass button color
-        if self.pass_button.is_clicked([x, y]):
-            self.pass_button.set_color(arcade.color.GREEN)
-        if self.end_turn_button.is_clicked([x, y]):
-            self.end_turn_button.release()
+        if self.gameboard.pass_button.is_clicked([x, y]):
+            self.gameboard.pass_button.set_color(arcade.color.GREEN)
+        if self.gameboard.end_turn_button.is_clicked([x, y]):
+            self.gameboard.end_turn_button.release()
 
         if len(self.held_tiles) == 0:
             return

@@ -18,11 +18,11 @@ class GameView(arcade.View):
         super().__init__()
 
         # Set the background color of the window
-        self.timer_text = None
         self.background_color = arcade.color.ASH_GREY
 
         #initialize timer for turns
         self.time = 30
+        self.timer_text = None
 
         self.player_first_melt = True
         self.ai_first_melt = True
@@ -35,8 +35,6 @@ class GameView(arcade.View):
             arcade.Text("Pass", BUTTON_X, BUTTON_Y, arcade.color.BLACK, 16,
                         anchor_x="center", anchor_y="center", font_name="Belwe Bold")
         )
-        self.pass_button.font_size = 14
-
         self.end_turn_button = (
             ButtonRect(100, 40, END_TURN_BUTTON_POS, "End turn")
         )
