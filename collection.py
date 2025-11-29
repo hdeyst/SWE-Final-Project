@@ -137,6 +137,11 @@ class Collection:
             else:
                 index = i
 
+        if index < len(self.tiles) - 1:
+            if self.tiles[index].number == 13:
+                return False
+
+
         for i, name in enumerate(self.tiles): # check that all tiles have the same color
             if name.color != self.tiles[index].color:
                 if name.is_wild:
