@@ -102,13 +102,13 @@ class GameView(arcade.View):
             tile.start_of_turn_x = 0
             tile.start_of_turn_y = 0
 
-            # decrement count in player hand appropriately
+        # decrement count in player hand appropriately
             if tile.start_in_dock != tile.in_dock:
                 tile.start_in_dock = tile.in_dock
                 self.num_user_hand -= 1
 
-            if self.num_user_hand == 0:
-                self.window.show_view(WinView())
+        if self.num_user_hand == 0:
+            self.window.show_view(WinView())
         print("Turn Saved")
 
     def end_turn(self):
