@@ -28,6 +28,9 @@ class GameView(arcade.View):
         self.player_first_melt = True
         self.ai_first_melt = True
 
+        # the number of tiles on the board should never decrease
+        self.board_counter = 0
+
         # ------------- Initialize game components ------------- #
         self.gameboard = Gameboard()
 
@@ -115,8 +118,16 @@ class GameView(arcade.View):
         self.deck.remainder_in_deck = (
                 len(self.tile_list) - self.deck.on_board - self.deck.ai_hand - self.deck.user_hand
         )
+
         print(self.deck)
         print()
+
+        if self.deck.ai_hand == 0:
+            self.window.show_view(LoseView())
+
+        if self.deck.user_hand == 0:
+            self.window.show_view(WinView())
+
 
 
     # Resets the position of tiles to their placement one turn before
