@@ -95,11 +95,8 @@ class GameView(arcade.View):
             self.save_turn()
             if self.player_first_melt:
                 self.player_first_melt = False
-
-        elif played and not self.check_valid_collections(self.player_first_melt):
-            self.roll_back()
-            self.deal_tile_user()
         else:
+            self.roll_back()
             self.deal_tile_user()
 
         # TODO: create an update deck function and call here
@@ -320,8 +317,8 @@ class GameView(arcade.View):
 
         elif self.gameboard.end_turn_button.is_clicked(pos):
             self.gameboard.end_turn_button.set_color(arcade.color.NAVY_BLUE)
-            self.end_turn()
-            self.time = 30
+            game_view = GameView()
+            self.window.show_view(game_view)
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """ Called when the user presses a mouse button. """

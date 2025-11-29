@@ -37,7 +37,7 @@ class Gameboard:
                         anchor_x="center", anchor_y="center", font_name="Belwe Bold")
         )
         self.end_turn_button = (
-            ButtonRect(100, 40, END_TURN_BUTTON_POS, "End turn")
+            ButtonRect(125, 40, END_TURN_BUTTON_POS, "Restart Game")
         )
 
 
