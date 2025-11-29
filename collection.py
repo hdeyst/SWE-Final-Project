@@ -1,5 +1,5 @@
 """File containing collection class which holds logic for checking validity of sets and runs"""
-from tile import Tile
+from game_components.tile import Tile
 from utils import TILE_SCALE
 
 class Collection:

@@ -6,9 +6,9 @@ from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
                    TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, AI_DOCK_XPOS, AI_DOCK_YPOS, PASS_BUTTON_POS,
                    BUTTON_X, BUTTON_Y, END_TURN_BUTTON_POS)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, NUM_TILES
-from gameboard import Gameboard
+from game_components.gameboard import Gameboard
 from game_components import Button, ButtonRect
-from tile import Tile
+from game_components.tile import Tile
 from collection import Collection
 from ai_player import Player
 

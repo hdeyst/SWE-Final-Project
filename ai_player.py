@@ -10,13 +10,11 @@ Functions:
     - "Check can lay down?"
 
 """
-import arcade
 
 from collection import Collection
-from tile import Tile
+from game_components.tile import Tile
 from arcade import SpriteList
 from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
-from gameboard import Gameboard
 
 
 class Player:

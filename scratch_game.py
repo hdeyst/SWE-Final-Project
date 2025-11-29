@@ -1,8 +1,6 @@
-import arcade
-
 from utils import *
-from gameboard import Gameboard
-from deck import Deck
+from game_components.gameboard import Gameboard
+from game_components.deck import Deck
 from ai_player import Player
 
 class GameViewScratch(arcade.View):

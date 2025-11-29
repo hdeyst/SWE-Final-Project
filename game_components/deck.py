@@ -47,8 +47,8 @@ class Deck:
                     self.tile_list.append(tile)
 
         # add wild cards to the deck
-        wild = [Tile("tiles/red_wild.png", scale=TILE_SCALE),
-                Tile("tiles/black_wild.png", scale=TILE_SCALE)]
+        wild = [Tile("../tiles/red_wild.png", scale=TILE_SCALE),
+                Tile("../tiles/black_wild.png", scale=TILE_SCALE)]
         for w_card in wild:
             w_card.center_x = -20
             w_card.center_y = -20

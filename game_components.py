@@ -7,11 +7,11 @@ Defines 2 different types: Grid, and Button
 import math
 import arcade
 
-from utils import GRID_WIDTH, GRID_HEIGHT, TILE_WIDTH, TILE_HEIGHT, NUM_TILE_VALUES, TILE_SCALE, COLORS
+from utils import GRID_WIDTH, GRID_HEIGHT, TILE_WIDTH, TILE_HEIGHT
 from utils import INNER_MARGIN, OUTER_MARGIN, DOCK_OFFSET
 from utils import KEY_BINDINGS, MINIMIZED_CS_WIDTH
-from peg import Peg
-from tile import Tile
+from game_components.peg import Peg
+
 
 class Grid:
     def __init__(self, placement, columns, rows):
