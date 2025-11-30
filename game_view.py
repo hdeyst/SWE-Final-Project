@@ -135,6 +135,7 @@ class GameView(arcade.View):
         if self.ai_player.hand:
             print(self.ai_player)
 
+
         print("\nuser hand: ")
         if self.gameboard.user_dock.get_num_occupied_pegs():
             output = ""
@@ -279,6 +280,32 @@ class GameView(arcade.View):
         tile.in_ai_hand = False
         self.update_deck()
 
+    def find_tile_to_deal(self):
+        u_hand = set()
+        if self.gameboard.user_dock.get_num_occupied_pegs():
+            for peg in self.gameboard.user_dock.peg_sprite_list:
+                if peg.tile:
+                    u_hand.add(peg.tile)
+
+        on_grid = set()
+        if self.gameboard.grid.get_num_occupied_pegs():
+            for peg in self.gameboard.grid.peg_sprite_list:
+                if peg.tile:
+                    on_grid.add(peg.tile)
+
+        for tile in self.tile_list:
+            print(tile)
+            # if not self.ai_player.hand and not u_hand and not on_grid:
+            #     return tile
+            if tile not in self.ai_player.hand and tile not in u_hand and tile not in on_grid:
+                return tile
+
+        return None
+
+
+
+
+
     def deal_tile_user(self):
         if (self.deck.remainder_in_deck < 1 or
                 self.gameboard.user_dock.get_num_available_pegs() == 0 or
@@ -299,7 +326,7 @@ class GameView(arcade.View):
                     peg = space
                     break
 
-        tile = self.tile_list[self.deck.count_used_tiles()]
+        tile = self.find_tile_to_deal()
 
         tile.position = peg.center_x, peg.center_y
         peg.occupy_peg(tile)
@@ -313,7 +340,7 @@ class GameView(arcade.View):
             print("ERROR. Tile cannot be dealt")
             return False
 
-        tile = self.tile_list[self.deck.count_used_tiles()]
+        tile = self.find_tile_to_deal()
         player.deal(tile)
 
         print(f"Dealing tile {tile} to ai...")
