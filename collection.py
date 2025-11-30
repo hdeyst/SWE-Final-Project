@@ -132,12 +132,20 @@ class Collection:
         if len(self.tiles) < 3:
             return False
 
+        high_tile = -1
         for i, tile in enumerate(self.tiles): #get index of the non-wild tile
             if tile.is_wild:
                 pass
             else:
                 index = i
                 break
+
+        for i, tile in enumerate(self.tiles): #get index of the non-wild tile
+            if tile.number == 13 and i != len(self.tiles)-1:
+                return False
+            if tile.number == 12:
+                if len(self.get_wild_index()) > 1 and i != len(self.tiles)-2:
+                    return False
 
         non_wilds = 0
         wilds_end = False
@@ -163,8 +171,6 @@ class Collection:
                     pass
                 else:
                     return False"""
-        if self.tiles[index].number + non_wilds > 13:
-            return False
         return True
 
     def __repr__(self):
