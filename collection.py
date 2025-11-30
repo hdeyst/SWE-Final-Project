@@ -151,7 +151,6 @@ class Collection:
                     pass
                 else:
                     return False
-            difference = abs(index - i)
             if name.is_wild:
                 if wilds_end:
                     non_wilds += 1
@@ -168,6 +167,8 @@ class Collection:
                     pass
                 else:
                     return False"""
+        if self.tiles[index].number + non_wilds > 13:
+            return False
         return True
 
     def __repr__(self):
