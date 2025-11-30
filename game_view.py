@@ -115,6 +115,16 @@ class GameView(arcade.View):
         # call ai turn
         self.ai_turn(self.ai_player)
 
+        if self.deck.ai_hand == 0:
+            self.window.show_view(LoseView())
+
+        if self.deck.user_hand == 0:
+            self.window.show_view(WinView())
+
+        if self.deck.remainder_in_deck == 0:
+            self.window.show_view(LoseView())
+            print("you ran out of cards in the deck!")
+
     def update_deck(self):
         print("Updating Deck...")
         self.deck.update_user_hand(self.gameboard.user_dock.get_num_occupied_pegs())
@@ -128,16 +138,6 @@ class GameView(arcade.View):
 
         print(self.deck)
         print()
-
-        if self.deck.ai_hand == 0:
-            self.window.show_view(LoseView())
-
-        if self.deck.user_hand == 0:
-            self.window.show_view(WinView())
-
-        if self.deck.remainder_in_deck == 0:
-            self.window.show_view(LoseView())
-            print("you ran out of cards in the deck!")
 
 
 
@@ -530,7 +530,7 @@ class GameView(arcade.View):
             self.roll_back()
 
         elif symbol == arcade.key.S:
-            self.end_turn()
+            self.save_turn()
 
         elif symbol == arcade.key.D:
             self.deal_tile_user()
@@ -631,7 +631,7 @@ class WinView(arcade.View):
             self.play_again.set_color(arcade.color.LIGHT_KHAKI)
             game_view = GameView()
             self.window.show_view(game_view)
-
+        #self.window.show_view(LoseView())
         if self.quit.is_clicked(pos):
             self.quit.set_color(arcade.color.LIGHT_KHAKI)
             arcade.exit()
