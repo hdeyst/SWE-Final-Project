@@ -106,19 +106,15 @@ INSTR_WIDTH = WINDOW_WIDTH - OUTER_MARGIN
 INSTR_HEIGHT = WINDOW_HEIGHT - OUTER_MARGIN
 
 KEY_BINDINGS = {
-    "D": "Draw tile",
-    "S": "Save turn",
     "H": "Help screen",
     "K": "Show hotkeys",
     "L": "Lose screen",
-    "Q": "Check moves",
-    "U": "Undo changes",
     "W": "Win screen"
 }
 
 # --- Cheatsheet Variables ---
 CHEATSHEET_BOTTOM = DOCK_OFFSET + 20
-CHEATSHEET_WIDTH = WINDOW_WIDTH - OUTER_MARGIN * 5
+CHEATSHEET_WIDTH = 500
 CHEATSHEET_HEIGHT = 25
 MINIMIZED_CS_WIDTH = 160
 

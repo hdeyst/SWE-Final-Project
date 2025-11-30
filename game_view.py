@@ -579,26 +579,13 @@ class GameView(arcade.View):
         return True
 
     def on_key_press(self, symbol: int, modifiers: int):
-
-        if symbol == arcade.key.U:
-            self.roll_back()
-
-        elif symbol == arcade.key.S:
-            self.save_turn()
-
-        elif symbol == arcade.key.D:
-            self.deal_tile_user()
-
-        elif symbol == arcade.key.W:
+        if symbol == arcade.key.W:
             self.num_user_hand = 0
             self.window.show_view(WinView())
 
         elif symbol == arcade.key.L:
             self.num_user_hand = 1
             self.window.show_view(LoseView())
-
-        elif symbol == arcade.key.Q:
-            self.check_valid_collections(self.player_first_melt)
 
         # press H to toggle help/instructions
         elif symbol == arcade.key.H:
