@@ -146,6 +146,11 @@ class Collection:
             if tile.number == 12:
                 if len(self.get_wild_index()) > 1 and i != len(self.tiles)-2:
                     return False
+            if tile.number == 1 and i != 0:
+                return False
+            if tile.number == 2:
+                if len(self.get_wild_index()) > 1 and i != 1:
+                    return False
 
         non_wilds = 0
         wilds_end = False
