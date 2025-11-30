@@ -86,18 +86,28 @@ class GameView(arcade.View):
 
     def end_turn(self):
         played = False
+        moved = False
         for tile in self.tile_list:
             if tile.start_in_dock and not tile.in_dock:
                 played = True
+                moved = True
+                break
+            elif not tile.in_dock and tile.start_of_turn_x != 0:
+                moved = True
                 break
 
-        if played and self.check_valid_collections(self.player_first_melt):
+
+        if moved and self.check_valid_collections(self.player_first_melt):
             self.save_turn()
-            if self.player_first_melt:
+            if played and self.player_first_melt:
                 self.player_first_melt = False
-        else:
+        elif moved:
             self.roll_back()
             self.deal_tile_user()
+        else:
+            self.save_turn()
+            self.deal_tile_user()
+
 
         # TODO: create an update deck function and call here
         self.update_deck()
