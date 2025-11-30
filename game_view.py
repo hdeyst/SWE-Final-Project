@@ -130,6 +130,28 @@ class GameView(arcade.View):
         self.deck.remainder_in_deck = (
                 len(self.tile_list) - self.deck.on_board - self.deck.ai_hand - self.deck.user_hand
         )
+
+        print("\nai hand: ")
+        if self.ai_player.hand:
+            print(self.ai_player)
+
+        print("\nuser hand: ")
+        if self.gameboard.user_dock.get_num_occupied_pegs():
+            output = ""
+            for peg in self.gameboard.user_dock.peg_sprite_list:
+                if peg.tile:
+                    output += f"{str(peg.tile)}, "
+            print(output)
+
+        print("\ngame board: ")
+        if self.gameboard.grid.get_num_occupied_pegs():
+            output = ""
+            for peg in self.gameboard.grid.peg_sprite_list:
+                if peg.tile:
+                    output += f"{str(peg.tile)}, "
+            print(output)
+
+
         print(self.deck)
         print()
 

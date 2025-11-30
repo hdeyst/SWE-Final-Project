@@ -33,7 +33,7 @@ class Tile(arcade.Sprite):
             self.is_wild = True
 
     def __str__(self):
-        return f"id #{self.id}{self.color}{self.number}"
+        return f"#{self.id} {self.color}{self.number}"
 
     #sets start of turn positions (x and y) to input
     def set_start_of_turn_pos(self, x, y):
