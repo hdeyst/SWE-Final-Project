@@ -16,6 +16,7 @@ class Tile(arcade.Sprite):
     in_dock = True
     start_in_dock = True #for reset functionality
     placement = "deck"
+    id = -1 # give tiles a unique identifier
 
     def __init__(self, filename, scale=1):
         super().__init__(filename, scale)
@@ -32,7 +33,7 @@ class Tile(arcade.Sprite):
             self.is_wild = True
 
     def __str__(self):
-        return f"{self.color}{self.number}"
+        return f"id #{self.id}{self.color}{self.number}"
 
     #sets start of turn positions (x and y) to input
     def set_start_of_turn_pos(self, x, y):
@@ -41,3 +42,4 @@ class Tile(arcade.Sprite):
 
     def set_number(self, number):
         self.number = number
+

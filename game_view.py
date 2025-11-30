@@ -28,9 +28,6 @@ class GameView(arcade.View):
         self.player_first_melt = True
         self.ai_first_melt = True
 
-        # the number of tiles on the board should never decrease
-        self.board_counter = 0
-
         # ------------- Initialize game components ------------- #
         self.gameboard = Gameboard()
 
@@ -108,8 +105,6 @@ class GameView(arcade.View):
             self.save_turn()
             self.deal_tile_user()
 
-
-        # TODO: create an update deck function and call here
         self.update_deck()
 
         # call ai turn
@@ -135,7 +130,6 @@ class GameView(arcade.View):
         self.deck.remainder_in_deck = (
                 len(self.tile_list) - self.deck.on_board - self.deck.ai_hand - self.deck.user_hand
         )
-
         print(self.deck)
         print()
 
@@ -170,6 +164,7 @@ class GameView(arcade.View):
 
     # creates all possible tiles and puts them in a deck
     def build_deck(self):
+        ids = 1
         for color in COLORS:
             for j in range(NUM_TILE_VALUES):
                 # there are two of each type of tile in the deck
@@ -179,6 +174,8 @@ class GameView(arcade.View):
                     tile.center_x = -20
                     tile.center_y = -20
                     self.tile_list.append(tile)
+                    tile.id = ids
+                    ids += 1
 
         # add wild cards to the deck
         wild = [Tile("tiles/red_wild.png", scale=TILE_SCALE),
@@ -186,7 +183,15 @@ class GameView(arcade.View):
         for w_card in wild:
             w_card.center_x = -20
             w_card.center_y = -20
+            w_card.id = ids
             self.tile_list.append(w_card)
+            ids += 1
+
+        # TODO: delete extra print stmts
+        s = f""
+        for t in self.tile_list:
+            s += f"{t} "
+        print(s)
 
 # ============================= AI FUNCTIONS ================================ #
     def find_placement_loc(self, col, ai_player):
