@@ -1,7 +1,6 @@
 """File containing the constants used throughout the project
     as well as any functions that aren't part of a class"""
 import arcade
-from arcade.examples.sound_demo import BUTTON_X_POSITIONS
 
 # --- Tile constants ---
 TILE_SCALE = .265
@@ -71,36 +70,46 @@ RIGHT_BOUND = 100000
 
 TAB = " " * 4
 # --- Instruction Values ---
-INSTRUCTIONS = [f"Goal: be the first player to play all the tiles from your rack by forming them into sets",
+INSTRUCTIONS = ["Goal: be the first player to play all the tiles from your rack "
+                "by forming them into sets",
 
-                f"Placing tiles: ",
+                "Placing tiles: ",
                 f"{TAB} - Each tile is worth its face value (the number shown on the tile). ",
-                f"{TAB}{TAB} - There are two jokers in the game. Each joker can be used as any tile in a set, and its "
+                f"{TAB}{TAB} - There are two jokers in the game. "
+                    f"Each joker can be used as any tile in a set, and its "
                     f"number and color are that of the tile needed to complete the set",
-                f"{TAB} - On turns after a player has made their initial meld, that player can build onto other sets "
-                f"on the table with tiles from their rack.",
-                f"{TAB} - When players cannot play any tiles from their racks, or choose not to, they must draw a tile."
-                    f" After they draw, their turn is over.",
+                f"{TAB} - On turns after a player has made their initial meld, "
+                f"that player can build onto other sets on the table with tiles from their rack.",
+                f"{TAB} - When players cannot play any tiles from their racks, or choose not to, "
+                f"they must draw a tile. After they draw, their turn is over.",
 
                 f"{TAB} - Initial meld: ",
-                f"{TAB}{TAB} - For their initial meld, players may not use tiles already played on the table",
-                f"{TAB}{TAB} - In order to make an initial meld, each player must place tiles on the table in one or "
-                    f"more sets that total at least 30 points.",
-                f"{TAB}{TAB} - A joker used in the initial meld scores the value of the tile it represents.",
+                f"{TAB}{TAB} - For their initial meld, players may not use tiles "
+                    f"already played on the table",
+                f"{TAB}{TAB} - In order to make an initial meld, each player must place tiles "
+                    f"in one or more sets that total at least 30 points.",
+                f"{TAB}{TAB} - A joker used in the initial meld scores the value "
+                    f"of the tile it represents.",
                 f"{TAB}",
 
-                f"Manipulation",
+                "Manipulation",
                 f"{TAB} - Add one or more tiles from rack to make new set",
-                f"{TAB} - Remove a fourth tile from a group and use it to form a new set",
-                f"{TAB} - Add a fourth tile to a set and remove one tile from it, to make another set",
-                f"{TAB} - Split an available set into two sets, and add tiles from rack to validate them",
+                f"{TAB} - Remove a fourth tile from a group and use it to "
+                    f"form a new set",
+                f"{TAB} - Add a fourth tile to a set and remove one tile from "
+                    f"it, to make another set",
+                f"{TAB} - Split an available set into two sets, and add "
+                    f"tiles from rack to validate them",
                 f"{TAB} - Each player has 30 seconds to make their turn",
                 f"{TAB} ",
 
-                f"Sets: ",
-                f"{TAB} - A group is a set of either three or four tiles of the same number in different colors.",
-                f"{TAB} - A run is a set of three or more consecutive numbers all in the same color.",
-                f"{TAB} - The number 1 is always played as the lowest number, it cannot follow the number 13.",
+                "Sets: ",
+                f"{TAB} - A group is a set of either three or four tiles "
+                    f"of the same number in different colors.",
+                f"{TAB} - A run is a set of three or more consecutive numbers "
+                    f"all in the same color.",
+                f"{TAB} - The number 1 is always played as the lowest number, "
+                    f"it cannot follow the number 13.",
                 ]
 INSTR_WIDTH = WINDOW_WIDTH - OUTER_MARGIN
 INSTR_HEIGHT = WINDOW_HEIGHT - OUTER_MARGIN
@@ -157,11 +166,12 @@ def draw_instructions_screen(self):
 
     start_y = WINDOW_HEIGHT - 90
     start_x = OUTER_MARGIN
-    for i, line in enumerate(INSTRUCTIONS):
+    for _, line in enumerate(INSTRUCTIONS):
         txt = arcade.Text(line, start_x, start_y, color=arcade.color.WHITE)
         txt.draw()
         start_y -= 30
 
-    note = "For the official instructions, visit: https://rummikub.com/wp-content/uploads/2019/12/2600-English-1.pdf"
+    note = ("For the official instructions, "
+            "visit: https://rummikub.com/wp-content/uploads/2019/12/2600-English-1.pdf")
     ps = arcade.Text(note, start_x, 35, color=arcade.color.WHITE, font_size=10)
     ps.draw()

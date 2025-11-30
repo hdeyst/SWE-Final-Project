@@ -4,11 +4,11 @@ import arcade.gui
 
 from deck import Deck
 from utils import (WINDOW_WIDTH, WINDOW_HEIGHT, OUTER_MARGIN, INNER_MARGIN,
-                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen, AI_DOCK_XPOS, AI_DOCK_YPOS, PASS_BUTTON_POS,
-                   BUTTON_X, BUTTON_Y, END_TURN_BUTTON_POS)
+                   TILE_HEIGHT, NUM_TILE_VALUES, draw_instructions_screen,
+                   AI_DOCK_XPOS, AI_DOCK_YPOS)
 from utils import STARTING_TILE_AMT, COLORS, TILE_SCALE, COLUMN_COUNT_DOCK, NUM_TILES
 from gameboard import Gameboard
-from game_components import Button, ButtonRect
+from game_components import Button
 from tile import Tile
 from collection import Collection
 from ai_player import Player
@@ -210,14 +210,8 @@ class GameView(arcade.View):
             self.tile_list.append(w_card)
             ids += 1
 
-        # TODO: delete extra print stmts
-        s = f""
-        for t in self.tile_list:
-            s += f"{t} "
-        print(s)
-
 # ============================= AI FUNCTIONS ================================ #
-    def find_placement_loc(self, col, ai_player):
+    def find_placement_loc(self, col):
         """Find available placement locations for a collection"""
         if not col:
             return []
@@ -238,12 +232,12 @@ class GameView(arcade.View):
         if ai_player.can_play():
             collection = ai_player.get_best_collection()
             if not self.ai_first_melt or (self.ai_first_melt and collection.get_value() >= 30):
-                free_pegs = self.find_placement_loc(collection, ai_player)
+                free_pegs = self.find_placement_loc(collection)
                 if free_pegs:
-                    str = f"Ai player placing collection...\n"
+                    string = "Ai player placing collection...\n"
                     for t in collection.tiles:
-                        str += f"{t}, "
-                    print(str)
+                        string += f"{t}, "
+                    print(string)
                     for i in range(len(free_pegs)):
                         self.ai_move_tile(free_pegs[i], collection.tiles[i])
                     self.ai_player.played()
@@ -481,7 +475,6 @@ class GameView(arcade.View):
         )
         if self.time <= 0:
             self.end_turn()
-            #TODO: ai turn goes here?
             self.time = 30
 
     def pull_to_top(self, tile: arcade.Sprite):
@@ -552,8 +545,8 @@ class GameView(arcade.View):
                     # if there is a tile ... and a curr collection
                     elif peg.is_occupied() and open_collection:
                         collection.add(peg.get_tile())
-                        # if there is a mix of player's tiles and tiles that were already on the board,
-                        # return false
+                        # if there is a mix of player's tiles and tiles that were already
+                        # on the board, return false
                         if first_melt and first_placed and not peg.get_tile().start_in_dock:
                             return False
                         elif first_melt and not first_placed and peg.get_tile().start_in_dock:
@@ -580,11 +573,9 @@ class GameView(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.W:
-            self.num_user_hand = 0
             self.window.show_view(WinView())
 
         elif symbol == arcade.key.L:
-            self.num_user_hand = 1
             self.window.show_view(LoseView())
 
         # press H to toggle help/instructions

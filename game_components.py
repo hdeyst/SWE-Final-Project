@@ -169,9 +169,13 @@ class ButtonRect():
 
     def draw(self):
         if not self.pressed:
-            arcade.draw_rect_filled(arcade.XYWH(self.pos[0], self.pos[1], self.width, self.height), self.color)
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.pos[0], self.pos[1], self.width, self.height), self.color)
         else:
-            arcade.draw_rect_filled(arcade.XYWH(self.pos[0], self.pos[1], self.width, self.height), self.pressed_color)
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.pos[0], self.pos[1], self.width, self.height),
+                arcade.color.NAVY_BLUE
+            )
         button_text = arcade.Text(
             self.text,
             self.pos[0],

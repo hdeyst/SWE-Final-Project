@@ -1,7 +1,6 @@
 """a tile sprite which has a color, number, and reset/position functionality"""
 
 import arcade
-from utils import TILE_SCALE
 
 class Tile(arcade.Sprite):
     """A single tile sprite."""

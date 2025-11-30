@@ -10,11 +10,9 @@ Functions:
     - "Check can lay down?"
 
 """
-
-from collection import Collection
-from tile import Tile
 from arcade import SpriteList
-from utils import TILE_SCALE, COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
+from collection import Collection
+from utils import COLUMN_COUNT_DOCK, ROW_COUNT_DOCK
 
 
 class Player:
@@ -89,9 +87,8 @@ class Player:
                     all_vals[tile.color] = [tile]
                 else:
                     all_vals[tile.color].append(tile)
-
+            # list should be in ascending order so just running through it and seeing if next is +1
             for tile_lst in all_vals.values():
-                """list should be in ascending order so just running through it and seeing if next is +1"""
                 col = Collection()
                 for idx, tile in enumerate(tile_lst):
                     if idx == 0:
@@ -129,23 +126,10 @@ class Player:
 
     def can_play(self):
         cols = self.create_collections()
-        if cols == {}:
+        if not cols:
             return False
-        else:
-            return True
+        return True
 
-    def get_grid_tiles(self):
-        grid_tiles = []
-        for peg in self.gameboard.all_pegs:
-            if peg.placement == "grid" and peg.is_occupied():
-                grid_tiles.append((peg, peg.get_tile()))
-        return grid_tiles
-
-
-        #look through board until finding a space of size col_len + 2 (borders)
-        # make sure space isn't a part of two lines (starting on one line and ending on the next)
-        # return either a list of coords length col_len (only include the coords the tiles will acutally go on)
-        #TODO: Alternatively we can just change this function to directry place the tiles
 
     def played(self):
         col = self.get_best_collection()
@@ -159,38 +143,3 @@ class Player:
             output += f"{tile}, "
         output += f"{self.hand[-1]}, "
         return output
-
-if __name__ == "__main__":
-    red2 = Tile(f"tiles/red_2.png", scale = TILE_SCALE)
-    red3 = Tile(f"tiles/red_3.png", scale = TILE_SCALE)
-    red5 = Tile(f"tiles/red_5.png", scale = TILE_SCALE)
-    wild = Tile("tiles/red_wild.png", scale=TILE_SCALE)
-    yellow2 = Tile(f"tiles/yellow_2.png", scale = TILE_SCALE)
-    yellow3 = Tile(f"tiles/yellow_3.png", scale = TILE_SCALE)
-    yellow4 = Tile(f"tiles/yellow_4.png", scale = TILE_SCALE)
-    black1 = Tile(f"tiles/black_1.png", scale = TILE_SCALE)
-    black2 = Tile(f"tiles/black_2.png", scale = TILE_SCALE)
-
-    player = Player()
-    player.deal(yellow3)
-    player.deal(black1)
-    player.deal(red2)
-    player.deal(yellow2)
-    player.deal(black2)
-    player.deal(red3)
-    player.deal(red5)
-    player.deal(wild)
-    player.deal(yellow4)
-
-    print(player)
-    player.sort_sets()
-    print(f"set sorted: {player}")
-    player.sort_runs()
-    print(f"run sorted: {player}")
-
-    colls = player.create_collections()
-    print(f"all collections:")
-    for c in colls:
-        print(f"{c}: {colls[c]}")
-
-    print(f"best collection: {player.get_best_collection()}")
